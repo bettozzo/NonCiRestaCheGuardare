@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="unitn.app.test.MainActivity">
+
+    <com.google.android.material.tabs.TabLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/MediaSelection"
+        android:background="#008c00"
+        app:tabTextColor="@color/white"
+        app:tabSelectedTextAppearance="@color/black">
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/filmSelected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Films" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/seriesSelected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#14ED1D"
+            android:text="Serie TV" />
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <Button
+        android:id="@+id/goToSearchMediaButton"
+        android:layout_width="wrap_content"
+        android:layout_height="75dp"
+        android:layout_below="@+id/MediaSelection"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="593dp"
+        android:layout_marginEnd="12dp"
+        android:text="Search" />
+
+
+        <GridView
+        android:id="@+id/GridView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/MediaSelection"
+        android:layout_marginTop="0dp"
+        android:columnWidth="128dp"
+        android:numColumns="auto_fit" />
+</RelativeLayout>
