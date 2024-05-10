@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">test</string>
+    <string name="app_name">Non ci resta che guardare</string>
+    <string name="api_key_tmdb">f256ec040f1c2b91ad903cc394728e55</string>
 </resources>

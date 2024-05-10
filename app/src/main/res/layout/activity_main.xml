@@ -5,15 +5,15 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="unitn.app.test.MainActivity">
+    tools:context="unitn.app.MainActivity">
 
     <com.google.android.material.tabs.TabLayout
+        android:id="@+id/MediaSelection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/MediaSelection"
         android:background="#008c00"
-        app:tabTextColor="@color/white"
-        app:tabSelectedTextAppearance="@color/black">
+        app:tabSelectedTextAppearance="@color/black"
+        app:tabTextColor="@color/white">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/filmSelected"
@@ -30,6 +30,15 @@
 
     </com.google.android.material.tabs.TabLayout>
 
+    <GridView
+        android:id="@+id/GridView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/MediaSelection"
+        android:layout_gravity="center"
+        android:numColumns="3"
+        android:stretchMode="columnWidth" />
+
     <Button
         android:id="@+id/goToSearchMediaButton"
         android:layout_width="wrap_content"
@@ -41,12 +50,4 @@
         android:text="Search" />
 
 
-        <GridView
-        android:id="@+id/GridView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/MediaSelection"
-        android:layout_marginTop="0dp"
-        android:columnWidth="128dp"
-        android:numColumns="auto_fit" />
 </RelativeLayout>

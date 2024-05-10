@@ -1,4 +1,4 @@
-package com.example.NonCiRestaCheGuardare.api
+package unitn.app.api
 
 data class Platforms(
     val logo_path: String,

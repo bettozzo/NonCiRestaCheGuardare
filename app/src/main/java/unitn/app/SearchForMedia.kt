@@ -1,4 +1,4 @@
-package unitn.app.test
+package unitn.app
 
 import android.os.Bundle
 import android.os.StrictMode
@@ -9,9 +9,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.NonCiRestaCheGuardare.api.MediaDetails
-import com.example.NonCiRestaCheGuardare.api.Movies
 import com.example.test.R
+import unitn.app.api.MediaDetails
+import unitn.app.api.Movies
 
 class SearchForMedia : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,8 +34,9 @@ class SearchForMedia : AppCompatActivity() {
         val searchBar = findViewById<EditText>(R.id.Base)
 
         val buttonToSearch = findViewById<Button>(R.id.buttonToSearch)
+        val apiKey = resources.getString(R.string.api_key_tmdb)
         buttonToSearch.setOnClickListener {
-            films = MediaDetails().getDetails(searchBar.text.toString())
+            films = MediaDetails().getDetails(searchBar.text.toString(), apiKey)
             if (films.isNotEmpty()) {
                 val stringBuilder: StringBuilder = StringBuilder("")
                 for (film in films) {

@@ -1,4 +1,4 @@
-package com.example.NonCiRestaCheGuardare.api
+package unitn.app.api
 
 data class Titles(
     val iso_3166_1: String,

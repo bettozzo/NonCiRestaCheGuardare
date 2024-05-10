@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="unitn.app.test.MainActivity">
+    tools:context="unitn.app.MainActivity">
 
     <EditText
         android:id="@+id/Base"
@@ -28,13 +28,20 @@
         android:layout_marginTop="5dp"
         android:text="Search" />
 
-    <TextView
-        android:id="@+id/Results"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@id/buttonToSearch"
-        android:layout_centerHorizontal="true"
-        android:text="tmp" />
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:id="@+id/Results"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Loading"/>
+    </ScrollView>
 
 
 </RelativeLayout>

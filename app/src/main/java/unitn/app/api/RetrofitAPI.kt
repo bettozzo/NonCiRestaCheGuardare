@@ -1,4 +1,4 @@
-package com.example.NonCiRestaCheGuardare.api
+package unitn.app.api
 
 import retrofit2.Call
 import retrofit2.http.GET
@@ -18,9 +18,8 @@ interface RetrofitAPI {
     @GET("providers?")
     fun getPlatform(@Query("api_key") api_key: String): Call<StreamingResult?>?
 
-    @GET("alternative_titles?")
-    fun getItalianTitle(
-        @Query("api_key") api_key: String,
-        @Query("country") country: String
-    ): Call<TitlesResult>?
+    @GET("images?")
+    fun getPoster(
+        @Query("api_key") apiKey: String
+    ): Call<MovieResults?>?
 }
