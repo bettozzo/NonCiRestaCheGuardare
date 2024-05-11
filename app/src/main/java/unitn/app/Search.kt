@@ -11,10 +11,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.test.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import unitn.app.api.MediaDetails
 import unitn.app.api.Movies
 
 class Search : AppCompatActivity() {
+    @OptIn(DelicateCoroutinesApi::class)
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,8 +43,12 @@ class Search : AppCompatActivity() {
         val buttonToSearch = findViewById<Button>(R.id.buttonToSearch)
         val apiKey = resources.getString(R.string.api_key_tmdb)
         buttonToSearch.setOnClickListener {
-            films = MediaDetails().getDetails(searchBar.text.toString(), apiKey)
-            gridView.adapter = CustomAdapter(this@Search, films)
+            CoroutineScope(Dispatchers.IO).launch(Dispatchers.IO) {
+                films =  MediaDetails().getDetails(searchBar.text.toString(), apiKey)
+                runOnUiThread {
+                    gridView.adapter = CustomAdapter(this@Search, films)
+                }
+            }
         }
     }
 }

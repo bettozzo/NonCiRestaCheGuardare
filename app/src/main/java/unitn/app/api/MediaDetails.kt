@@ -1,22 +1,30 @@
 package unitn.app.api
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
-import kotlin.math.absoluteValue
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
-class MediaDetails  {
-    fun getDetails(filmTitle: String, apiKey: String): List<Movies> {
+
+class MediaDetails {
+    suspend fun getDetails(filmTitle: String, apiKey: String): List<Movies> = withContext(
+        Dispatchers.IO) {
 
         val listMovies = mutableListOf<Movies>()
         getFullMovie(filmTitle, apiKey, listMovies)
 
-        return listMovies
+        return@withContext listMovies
     }
 }
 
-fun main() {
+fun main() = runBlocking {
     val listMovies = MediaDetails().getDetails("Kill Bill", "f256ec040f1c2b91ad903cc394728e55")
     println("Printing movies...")
     for (movie in listMovies) {
@@ -25,7 +33,7 @@ fun main() {
     println("Printed movies")
 }
 
-fun getFullMovie(query: String, apiKey: String, listMovies: MutableList<Movies>) {
+suspend fun getFullMovie(query: String, apiKey: String, listMovies: MutableList<Movies>) {
 
     val apiCallerMovies = Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/")
         .addConverterFactory(GsonConverterFactory.create()).build().create(RetrofitAPI::class.java)
@@ -48,18 +56,24 @@ fun getFullMovie(query: String, apiKey: String, listMovies: MutableList<Movies>)
 }
 
 
-fun getMoviesDetails(movieSearchCall: Call<MovieResult?>?): List<QueriedMovie> {
-    val response = movieSearchCall?.execute()
-    if (response == null) {
-        System.err.println("Response to MovieDetails is NULL")
-        return emptyList()
+suspend fun getMoviesDetails(movieSearchCall: Call<MovieResult?>?): List<QueriedMovie> {
+
+    return suspendCoroutine { continuation ->
+        movieSearchCall?.enqueue(object : Callback<MovieResult?> {
+            override fun onResponse(call: Call<MovieResult?>, response: Response<MovieResult?>) {
+                if (!response.isSuccessful) throw IOException("Unexpected code $response")
+                continuation.resume(response.body()!!.results)
+            }
+
+            override fun onFailure(call: Call<MovieResult?>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
     }
-    if (!response.isSuccessful) throw IOException("Unexpected code $response")
-    return response.body()!!.results
 }
 
 
-fun getMoviesPlatform(id: Int, apiKey: String): MutableList<String> {
+suspend fun getMoviesPlatform(id: Int, apiKey: String): MutableList<String> {
     val platforms = mutableListOf<String>()
 
     val apiCallerPlatforms =
@@ -67,58 +81,90 @@ fun getMoviesPlatform(id: Int, apiKey: String): MutableList<String> {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(RetrofitAPI::class.java)
-    val response = apiCallerPlatforms.getPlatform(apiKey)?.execute()
 
-    if (response == null) {
-        System.err.println("Response to MovieDetails is NULL")
-        return emptyList<String>().toMutableList()
+    return suspendCoroutine { continuation ->
+        apiCallerPlatforms.getPlatform(apiKey)?.enqueue(object : Callback<StreamingResult?> {
+            override fun onResponse(
+                call: Call<StreamingResult?>,
+                response: Response<StreamingResult?>
+            ) {
+
+                if (!response.isSuccessful) throw IOException("Unexpected code $response")
+
+                val optionsInItaly = response.body()!!.results.IT
+                if (optionsInItaly == null) {
+                    continuation.resume(emptyList<String>().toMutableList())
+                    return;
+                }
+
+                val flatrate = optionsInItaly.flatrate
+                if (flatrate == null) {
+                    continuation.resume(emptyList<String>().toMutableList())
+                    return;
+                }
+                for (platform in flatrate) {
+                    platforms.add(platform.provider_name)
+                }
+                continuation.resume(platforms)
+            }
+
+            override fun onFailure(call: Call<StreamingResult?>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
     }
-
-    if (!response.isSuccessful) throw IOException("Unexpected code $response")
-
-    val optionsInItaly = response.body()!!.results.IT ?: return emptyList<String>().toMutableList()
-    val flatrate = optionsInItaly.flatrate ?: return emptyList<String>().toMutableList()
-
-    for (platform in flatrate) {
-        platforms.add(platform.provider_name)
-    }
-    return platforms
 }
 
-fun getMoviePoster(id: Int, apiKey: String): String? {
+suspend fun getMoviePoster(id: Int, apiKey: String): String? {
     val apiCallerPlatforms =
         Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/movie/$id/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(RetrofitAPI::class.java)
-    val response = apiCallerPlatforms.getPoster(apiKey)?.execute()
 
-    if (response == null) {
-        System.err.println("Response to MovieDetails is NULL")
-        return ""
+    return suspendCoroutine { continuation ->
+        apiCallerPlatforms.getPoster(apiKey)?.enqueue(object : Callback<MovieResults?> {
+            override fun onResponse(call: Call<MovieResults?>, response: Response<MovieResults?>) {
+                if (!response.isSuccessful) throw IOException("Unexpected co de $response")
+
+                val posters = response.body()!!.posters ?: emptyList();
+                val backdrops = response.body()!!.backdrops ?: emptyList();
+                val logo = response.body()!!.logo ?: emptyList();
+
+                val resolution = "w300"
+
+                if (posters.isNotEmpty()) {
+                    continuation.resume(
+                        "https://image.tmdb.org/t/p/$resolution" + filterImages(
+                            posters
+                        )
+                    )
+                    return;
+                }
+                if (logo.isNotEmpty()) {
+                    continuation.resume("https://image.tmdb.org/t/p/$resolution" + filterImages(logo))
+                    return;
+                }
+                if (backdrops.isNotEmpty()) {
+                    continuation.resume(
+                        "https://image.tmdb.org/t/p/$resolution" + filterImages(
+                            backdrops
+                        )
+                    )
+                    return;
+                }
+                continuation.resume(null)
+                return;
+            }
+
+            override fun onFailure(call: Call<MovieResults?>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
-
-    if (!response.isSuccessful) throw IOException("Unexpected code $response")
-
-    val posters = response.body()!!.posters ?: emptyList();
-    val backdrops = response.body()!!.backdrops ?: emptyList();
-    val logo = response.body()!!.logo ?: emptyList();
-
-    val resolution = "w300"
-
-    if (logo.isNotEmpty()) {
-        return "https://image.tmdb.org/t/p/$resolution" + filterImages(logo)
-    }
-    if (posters.isNotEmpty()) {
-        return "https://image.tmdb.org/t/p/$resolution" + filterImages(posters)
-    }
-    if (backdrops.isNotEmpty()) {
-        return "https://image.tmdb.org/t/p/$resolution" + filterImages(backdrops)
-    }
-    return null
 }
 
-//get italian image with the ratio closest to 1, if no italian movie is found then the best english image with ratio closest to 1
 fun filterImages(listImages: List<MovieImageInfo>): String {
     var bestFilmSoFar = listImages[0].file_path
 
@@ -131,19 +177,4 @@ fun filterImages(listImages: List<MovieImageInfo>): String {
         }
     }
     return bestFilmSoFar
-//    var bestFilmSoFar = Triple(listImages[0].file_path, listImages[0].aspect_ratio, listImages[0].iso_639_1);
-//
-//    for (image in listImages) {
-//        if (image.iso_639_1 == "it") {
-//            if((1-bestFilmSoFar.second).absoluteValue > (1-image.aspect_ratio).absoluteValue){
-//                bestFilmSoFar = Triple(image.file_path, image.aspect_ratio, "it")
-//            }
-//        }
-//        if (bestFilmSoFar.third != "it" && image.iso_639_1 == "en") {
-//            if((1-bestFilmSoFar.second).absoluteValue > (1-image.aspect_ratio).absoluteValue){
-//                bestFilmSoFar = Triple(image.file_path, image.aspect_ratio, "en")
-//            }
-//        }
-//    }
-//    return bestFilmSoFar.first
 }

@@ -1,5 +1,6 @@
 [versions]
 agp = "8.3.0"
+ankoDesign = "0.10.5"
 kotlin = "1.9.0"
 coreKtx = "1.13.0"
 junit = "4.13.2"
@@ -17,6 +18,7 @@ squareupPicasso = "2.8"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+anko-design = { module = "org.jetbrains.anko:anko-design", version.ref = "ankoDesign" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofitVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
