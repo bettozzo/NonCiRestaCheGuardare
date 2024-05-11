@@ -38,50 +38,34 @@ class DettaglioFilm : AppCompatActivity() {
         }
         //id
         val id = extras.getInt("id");
+
         //titolo
-        val titotloFilm = findViewById<TextView>(R.id.titoloFilm);
-        titotloFilm.text = extras.getString("titoloFilm")
-        titotloFilm.ellipsize = TextUtils.TruncateAt.MARQUEE;
-        titotloFilm.marqueeRepeatLimit = -1;
+        val titoloFilm = findViewById<TextView>(R.id.titoloFilm);
+        setTitleProperties(titoloFilm, extras)
 
         //poster
         Picasso.get().load(extras.getString("poster")).placeholder(R.drawable.missing_poster)
             .into(findViewById<ImageView>(R.id.poster))
 
         //platforms
-        val plaformList = findViewById<LinearLayout>(R.id.plaformList)
-        val netflixLogo = extras.getString("NetflixPath")
-        val primevideoLogo = extras.getString("AmazonPath")
-        val disneyplusLogo = extras.getString("DisneyPath")
+        showAvailablePlatforms(extras)
 
-        if (netflixLogo != null) {
-            val netflixView = ImageView(this);
-            Picasso.get().load(netflixLogo).into(netflixView);
-            plaformList.addView(netflixView);
-        }
-        if (primevideoLogo != null) {
-            val primeView = ImageView(this);
-            Picasso.get().load(primevideoLogo).into(primeView);
-            plaformList.addView(primeView);
-        }
-        if (disneyplusLogo != null) {
-            val disneyView = ImageView(this);
-            Picasso.get().load(disneyplusLogo).into(disneyView);
-            plaformList.addView(disneyView);
-        }
-
-        if (netflixLogo == null && primevideoLogo == null && disneyplusLogo == null) {
-            val noProviders = ImageView(this);
-            Picasso.get().load(R.drawable.no_providers).into(noProviders);
-            plaformList.addView(noProviders);
-        }
         // TODO switch
+
         //buttons
         val buttonDel = findViewById<ImageButton>(R.id.buttonDelete)
         val buttonSeen = findViewById<ImageButton>(R.id.buttonSeen)
         val buttonOk = findViewById<ImageButton>(R.id.buttonOk)
+        setButtonProperties(buttonDel, buttonSeen, buttonOk, id)
+    }
 
-        buttonDel.setOnClickListener {
+    private fun setButtonProperties(
+        deleteBtn: ImageButton,
+        seenBtn: ImageButton,
+        okBtn: ImageButton,
+        movieId: Int
+    ) {
+        deleteBtn.setOnClickListener {
             val intent = Intent(this@DettaglioFilm, HomePage::class.java)
             lifecycleScope.launch {
                 val movieDao = Room.databaseBuilder(
@@ -89,12 +73,12 @@ class DettaglioFilm : AppCompatActivity() {
                     MoviesDatabase::class.java, "database-name"
                 ).addTypeConverter(Converters())
                     .build().movieDao()
-                movieDao.deleteMovie(id)
+                movieDao.deleteMovie(movieId)
                 startActivity(intent)
             }
         }
 
-        buttonSeen.setOnClickListener {
+        seenBtn.setOnClickListener {
             val intent = Intent(this@DettaglioFilm, HomePage::class.java)
             lifecycleScope.launch {
                 val movieDao = Room.databaseBuilder(
@@ -102,14 +86,53 @@ class DettaglioFilm : AppCompatActivity() {
                     MoviesDatabase::class.java, "database-name"
                 ).addTypeConverter(Converters())
                     .build().movieDao()
-                movieDao.deleteMovie(id)
+                movieDao.deleteMovie(movieId)
                 startActivity(intent)
             }
         }
 
-        buttonOk.setOnClickListener {
+        okBtn.setOnClickListener {
             val intent = Intent(this@DettaglioFilm, HomePage::class.java)
             startActivity(intent)
         }
     }
+
+    private fun showAvailablePlatforms(extras: Bundle) {
+        val platformList = findViewById<LinearLayout>(R.id.plaformList)
+        val netflixLogo = extras.getString("NetflixPath")
+        val primevideoLogo = extras.getString("AmazonPath")
+        val disneyplusLogo = extras.getString("DisneyPath")
+
+
+        if (netflixLogo == null && primevideoLogo == null && disneyplusLogo == null) {
+            addPlatform(null, platformList)
+        } else {
+            if (netflixLogo != null) {
+                addPlatform(netflixLogo, platformList)
+            }
+            if (primevideoLogo != null) {
+                addPlatform(primevideoLogo, platformList)
+            }
+            if (disneyplusLogo != null) {
+                addPlatform(disneyplusLogo, platformList)
+            }
+        }
+    }
+
+    private fun addPlatform(logoPath: String?, platformList: LinearLayout) {
+        val platformView = ImageView(this);
+        Picasso.get().load(logoPath).placeholder(R.drawable.no_providers).into(platformView);
+        platformList.addView(platformView);
+    }
+
+
+    private fun setTitleProperties(titoloFilm: TextView, extras: Bundle) {
+        titoloFilm.text = extras.getString("titoloFilm")
+        titoloFilm.ellipsize = TextUtils.TruncateAt.MARQUEE;
+        titoloFilm.marqueeRepeatLimit = -1;
+        titoloFilm.setSingleLine(true);
+        titoloFilm.setSelected(true);
+    }
+
 }
+

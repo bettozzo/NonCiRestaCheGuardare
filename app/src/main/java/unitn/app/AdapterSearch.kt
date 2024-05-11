@@ -37,29 +37,33 @@ class AdapterSearch(private var context: Context, private var movies: List<Movie
             itemInGrid = myView.tag as ViewHolderSearch
         }
 
-
-        //set title
-        itemInGrid.title!!.text = movies[position].title
+        setTitleProperties(itemInGrid, movies[position])
+        setPosterProperties(itemInGrid, movies[position])
+        return myView
+    }
+    private fun setTitleProperties(itemInGrid: ViewHolderSearch, movie: Movies) {
+        itemInGrid.title!!.text = movie.title
         itemInGrid.title!!.ellipsize = TextUtils.TruncateAt.MARQUEE;
         itemInGrid.title!!.marqueeRepeatLimit = -1;
         itemInGrid.title!!.setSingleLine(true);
         itemInGrid.title!!.setSelected(true);
-
-        //set poster image
-        Picasso.get().load(movies[position].posterPath).placeholder(R.drawable.missing_poster)
+    }
+    private fun setPosterProperties(itemInGrid: ViewHolderSearch, movie: Movies) {
+        Picasso.get().load(movie.posterPath).placeholder(R.drawable.missing_poster)
             .into(itemInGrid.poster);
 
         itemInGrid.poster!!.setOnClickListener {
             val intent = Intent(context, InfoFilm::class.java)
-            intent.putExtra("titoloFilm", movies[position].title)
-            intent.putExtra("poster", movies[position].posterPath)
-            intent.putExtra("id", movies[position].id)
+            prepareExtras(intent, movie);
             context.startActivity(intent)
         }
-
-        return myView
     }
 
+    private fun prepareExtras(intent: Intent, movie: Movies) {
+        intent.putExtra("id", movie.id)
+        intent.putExtra("titoloFilm", movie.title)
+        intent.putExtra("poster", movie.posterPath)
+    }
     override fun getItem(p0: Int): Any {
         return movies[p0]
     }
