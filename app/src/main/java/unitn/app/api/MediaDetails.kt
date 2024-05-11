@@ -4,8 +4,9 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
+import kotlin.math.absoluteValue
 
-class MediaDetails {
+class MediaDetails  {
     fun getDetails(filmTitle: String, apiKey: String): List<Movies> {
 
         val listMovies = mutableListOf<Movies>()
@@ -104,27 +105,45 @@ fun getMoviePoster(id: Int, apiKey: String): String? {
     val logo = response.body()!!.logo ?: emptyList();
 
     val resolution = "w300"
+
+    if (logo.isNotEmpty()) {
+        return "https://image.tmdb.org/t/p/$resolution" + filterImages(logo)
+    }
     if (posters.isNotEmpty()) {
         return "https://image.tmdb.org/t/p/$resolution" + filterImages(posters)
     }
     if (backdrops.isNotEmpty()) {
         return "https://image.tmdb.org/t/p/$resolution" + filterImages(backdrops)
     }
-    if (logo.isNotEmpty()) {
-        return "https://image.tmdb.org/t/p/$resolution" + filterImages(logo)
-    }
     return null
 }
 
+//get italian image with the ratio closest to 1, if no italian movie is found then the best english image with ratio closest to 1
 fun filterImages(listImages: List<MovieImageInfo>): String {
-    var firstGoodOrEnglishImage = listImages[0].file_path;
+    var bestFilmSoFar = listImages[0].file_path
+
     for (image in listImages) {
         if (image.iso_639_1 == "it") {
-            return image.file_path
+            return image.file_path;
         }
-        if (image.iso_639_1 == "en" && firstGoodOrEnglishImage == listImages[0].file_path) {
-            firstGoodOrEnglishImage = image.file_path
+        if (image.iso_639_1 == "en" && bestFilmSoFar == listImages[0].file_path) {
+            bestFilmSoFar = image.file_path
         }
     }
-    return firstGoodOrEnglishImage
+    return bestFilmSoFar
+//    var bestFilmSoFar = Triple(listImages[0].file_path, listImages[0].aspect_ratio, listImages[0].iso_639_1);
+//
+//    for (image in listImages) {
+//        if (image.iso_639_1 == "it") {
+//            if((1-bestFilmSoFar.second).absoluteValue > (1-image.aspect_ratio).absoluteValue){
+//                bestFilmSoFar = Triple(image.file_path, image.aspect_ratio, "it")
+//            }
+//        }
+//        if (bestFilmSoFar.third != "it" && image.iso_639_1 == "en") {
+//            if((1-bestFilmSoFar.second).absoluteValue > (1-image.aspect_ratio).absoluteValue){
+//                bestFilmSoFar = Triple(image.file_path, image.aspect_ratio, "en")
+//            }
+//        }
+//    }
+//    return bestFilmSoFar.first
 }

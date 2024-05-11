@@ -1,10 +1,11 @@
 package unitn.app
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.StrictMode
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
+import android.widget.GridView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -13,11 +14,12 @@ import com.example.test.R
 import unitn.app.api.MediaDetails
 import unitn.app.api.Movies
 
-class SearchForMedia : AppCompatActivity() {
+class Search : AppCompatActivity() {
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_search_for_media)
+        setContentView(R.layout.activity_search)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -30,22 +32,15 @@ class SearchForMedia : AppCompatActivity() {
 
 
         var films: List<Movies>
-        val results = findViewById<TextView>(R.id.Results)
+        val gridView = findViewById<GridView>(R.id.GridView)
         val searchBar = findViewById<EditText>(R.id.Base)
 
         val buttonToSearch = findViewById<Button>(R.id.buttonToSearch)
         val apiKey = resources.getString(R.string.api_key_tmdb)
         buttonToSearch.setOnClickListener {
             films = MediaDetails().getDetails(searchBar.text.toString(), apiKey)
-            if (films.isNotEmpty()) {
-                val stringBuilder: StringBuilder = StringBuilder("")
-                for (film in films) {
-                    stringBuilder.append(film.toString()).append("\n")
-                }
-                results.text = stringBuilder
-            } else {
-                results.text = "NONE!!!"
-            }
+            gridView.adapter = CustomAdapter(this@Search, films)
         }
     }
 }
+

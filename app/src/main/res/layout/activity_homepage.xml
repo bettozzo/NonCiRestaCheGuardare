@@ -25,7 +25,6 @@
             android:id="@+id/seriesSelected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#14ED1D"
             android:text="Serie TV" />
 
     </com.google.android.material.tabs.TabLayout>
@@ -35,7 +34,6 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/MediaSelection"
-        android:layout_gravity="center"
         android:numColumns="3"
         android:stretchMode="columnWidth" />
 
@@ -47,7 +45,8 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="593dp"
         android:layout_marginEnd="12dp"
-        android:text="Search" />
+        android:backgroundTint="#008c00"
+        android:text="Aggiungi" />
 
 
 </RelativeLayout>

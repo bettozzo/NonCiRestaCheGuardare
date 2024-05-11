@@ -2,67 +2,65 @@ package unitn.app
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.graphics.Color
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import com.example.test.R
 import com.squareup.picasso.Picasso
 import unitn.app.api.Movies
 
-class CustomAdapter(context: Context, movies: List<Movies>) :
+class ViewHolder {
+    var poster: ImageView? = null
+    var title: TextView? = null
+}
+
+class CustomAdapter(private var context: Context, private var movies: List<Movies>) :
     BaseAdapter() {
-
-    var context = context
-    var movies = movies
-
-
-    //Auto Generated Method
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
+        val itemInGrid: ViewHolder
         var myView = convertView
-        var holder: ViewHolder
-
-
         if (myView == null) {
-
-            //If our View is Null than we Inflater view using Layout Inflater
-
             val mInflater = (context as Activity).layoutInflater
-
-            //Inflating our grid_item.
             myView = mInflater.inflate(R.layout.grid_item, parent, false)
 
-            //Create Object of ViewHolder Class and set our View to it
-            holder = ViewHolder()
+            itemInGrid = ViewHolder()
+            itemInGrid.poster = myView!!.findViewById(R.id.imageView)!!
+            itemInGrid.title = myView.findViewById(R.id.textView)!!
 
-
-            //Find view By Id For all our Widget taken in grid_item.
-            holder.mImageView = myView!!.findViewById<ImageView>(R.id.imageView) as ImageView
-            holder.mTextView = myView.findViewById<TextView>(R.id.textView) as TextView
-
-            //Set A Tag to Identify our view.
-            myView.setTag(holder)
+            myView.tag = itemInGrid
         } else {
-            //If Our View in not Null than Just get View using Tag and pass to holder Object.
-            holder = myView.getTag() as ViewHolder
+            itemInGrid = myView.tag as ViewHolder
         }
 
-        Log.d("PRINT", movies[position].posterPath)
-        Picasso.get().load(movies[position].posterPath).into(holder.mImageView);
-        holder.mTextView!!.text = movies[position].title
-        holder.mTextView!!.ellipsize = TextUtils.TruncateAt.MARQUEE;
-        holder.mTextView!!.marqueeRepeatLimit = -1;
-        holder.mTextView!!.setSingleLine(true);
-        holder.mTextView!!.setSelected(true);
+        //set poster image
+        Picasso.get().load(movies[position].posterPath).placeholder(R.drawable.missing_poster).into(itemInGrid.poster);
+
+        //set title
+        itemInGrid.title!!.text = movies[position].title
+        itemInGrid.title!!.ellipsize = TextUtils.TruncateAt.MARQUEE;
+        itemInGrid.title!!.marqueeRepeatLimit = -1;
+        itemInGrid.title!!.setSingleLine(true);
+        itemInGrid.title!!.setSelected(true);
+
+        itemInGrid.poster!!.setBackgroundColor(Color.parseColor("#f0f0f0"))
+        itemInGrid.poster!!.setOnClickListener {
+            val intent = Intent(context, DettaglioFilm::class.java)
+            intent.putExtra("titoloFilm", movies[position].title)
+            intent.putExtra("poster", movies[position].posterPath)
+            context.startActivity(intent)
+        }
         return myView
     }
 
     override fun getItem(p0: Int): Any {
-        return movies.get(p0)
+        return movies[p0]
     }
 
     override fun getItemId(p0: Int): Long {
@@ -72,12 +70,4 @@ class CustomAdapter(context: Context, movies: List<Movies>) :
     override fun getCount(): Int {
         return movies.size
     }
-
-
-    //Create A class To hold over View like we taken in grid_item.xml
-    class ViewHolder {
-        var mImageView: ImageView? = null
-        var mTextView: TextView? = null
-    }
-
 }
