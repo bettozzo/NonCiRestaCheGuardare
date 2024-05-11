@@ -73,8 +73,8 @@ suspend fun getMoviesDetails(movieSearchCall: Call<MovieResult?>?): List<Queried
 }
 
 
-suspend fun getMoviesPlatform(id: Int, apiKey: String): MutableList<String> {
-    val platforms = mutableListOf<String>()
+suspend fun getMoviesPlatform(id: Int, apiKey: String): MutableList<Pair<String, String>> {
+    val platforms = mutableListOf<Pair<String, String>>()
 
     val apiCallerPlatforms =
         Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/movie/$id/watch/")
@@ -93,17 +93,17 @@ suspend fun getMoviesPlatform(id: Int, apiKey: String): MutableList<String> {
 
                 val optionsInItaly = response.body()!!.results.IT
                 if (optionsInItaly == null) {
-                    continuation.resume(emptyList<String>().toMutableList())
+                    continuation.resume(emptyList<Pair<String, String>>().toMutableList())
                     return;
                 }
 
                 val flatrate = optionsInItaly.flatrate
                 if (flatrate == null) {
-                    continuation.resume(emptyList<String>().toMutableList())
+                    continuation.resume(emptyList<Pair<String, String>>().toMutableList())
                     return;
                 }
                 for (platform in flatrate) {
-                    platforms.add(platform.provider_name)
+                    platforms.add(Pair(platform.provider_name, "https://image.tmdb.org/t/p/w185/"+platform.logo_path))
                 }
                 continuation.resume(platforms)
             }

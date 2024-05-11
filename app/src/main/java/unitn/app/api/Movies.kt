@@ -3,7 +3,7 @@ package unitn.app.api
 data class Movies(
     val id: Int,
     val title: String,
-    val platform: List<String>,
+    val platform: List<Pair<String, String>>,
     val posterPath: String
 ) {
     override fun toString(): String {

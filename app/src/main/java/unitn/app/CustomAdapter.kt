@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat.startActivity
 import com.example.test.R
 import com.squareup.picasso.Picasso
 import unitn.app.api.Movies
@@ -40,7 +39,8 @@ class CustomAdapter(private var context: Context, private var movies: List<Movie
         }
 
         //set poster image
-        Picasso.get().load(movies[position].posterPath).placeholder(R.drawable.missing_poster).into(itemInGrid.poster);
+        Picasso.get().load(movies[position].posterPath).placeholder(R.drawable.missing_poster)
+            .into(itemInGrid.poster);
 
         //set title
         itemInGrid.title!!.text = movies[position].title
@@ -54,6 +54,21 @@ class CustomAdapter(private var context: Context, private var movies: List<Movie
             val intent = Intent(context, DettaglioFilm::class.java)
             intent.putExtra("titoloFilm", movies[position].title)
             intent.putExtra("poster", movies[position].posterPath)
+
+            for (platform in movies[position].platform) {
+                when (platform.first) {
+                    "Netflix" -> {
+                        intent.putExtra("NetflixPath", platform.second)
+                    };
+                    "Amazon Prime Video" -> {
+                        intent.putExtra("AmazonPath", platform.second)
+                    };
+                    "Disney Plus" -> {
+                        intent.putExtra("DisneyPath", platform.second)
+                    };
+                    //TODO no raiplay, infinity?
+                }
+            }
             context.startActivity(intent)
         }
         return myView

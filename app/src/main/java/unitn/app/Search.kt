@@ -12,14 +12,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.test.R
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import unitn.app.api.MediaDetails
 import unitn.app.api.Movies
 
 class Search : AppCompatActivity() {
-    @OptIn(DelicateCoroutinesApi::class)
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,10 +29,8 @@ class Search : AppCompatActivity() {
             insets
         }
 
-//TODO AsyncTask, questo forza i thread a stare zitti
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-
 
         var films: List<Movies>
         val gridView = findViewById<GridView>(R.id.GridView)
@@ -43,7 +39,11 @@ class Search : AppCompatActivity() {
         val buttonToSearch = findViewById<Button>(R.id.buttonToSearch)
         val apiKey = resources.getString(R.string.api_key_tmdb)
         buttonToSearch.setOnClickListener {
-            CoroutineScope(Dispatchers.IO).launch(Dispatchers.IO) {
+            runOnUiThread {
+                gridView.adapter = CustomAdapter(this@Search, emptyList())
+            }
+
+            CoroutineScope(Dispatchers.IO).launch{
                 films =  MediaDetails().getDetails(searchBar.text.toString(), apiKey)
                 runOnUiThread {
                     gridView.adapter = CustomAdapter(this@Search, films)

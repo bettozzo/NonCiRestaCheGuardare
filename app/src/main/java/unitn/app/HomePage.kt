@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
             Movies(
                 1,
                 "Killo",
-                emptyList<String>(),
+                emptyList(),
                 "https://image.tmdb.org/t/p/w300/z60RmobbwAwl71ueZss4E1OXzNc.jpg"
             )
         )
@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
             Movies(
                 2,
                 "Billo",
-                emptyList<String>(),
+                emptyList(),
                 "https://image.tmdb.org/t/p/w300/1l0Wg9Gw6rHvSLm79tnqIHSKbWY.jpg"
             )
         )
@@ -56,15 +56,15 @@ class MainActivity : AppCompatActivity() {
             Movies(
                 3,
                 "Killo Billo",
-                emptyList<String>(),
+                emptyList(),
                 "https://image.tmdb.org/t/p/w300/nxbv9TPXrIpRKB5xQh6atWXAkPM.jpg"
             )
         )
         movies.add(
             Movies(
                 3,
-                "Altro",
-                emptyList<String>(),
+                "ABCDEFGHJKILMNOPQRSTUVWXYZ",
+                emptyList(),
                 "https://image.tmdb.org/t/p/w300/8F6u12WZJPZkn81litHpCxNu26q.jpg"
             )
         )

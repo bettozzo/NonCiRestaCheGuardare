@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="78dp"
         android:background="#000000"
+        android:gravity="center"
         android:text="TitoloFilm"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
@@ -46,7 +47,7 @@
         tools:layout_editor_absoluteX="16dp" />
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/plaformList"
         android:layout_width="345dp"
         android:layout_height="48dp"
         android:layout_below="@+id/textView3"
@@ -55,51 +56,71 @@
         android:layout_marginTop="15dp"
         android:orientation="horizontal" />
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switch1"
         android:layout_width="187dp"
         android:layout_height="41dp"
-        android:layout_below="@+id/linearLayout"
+        android:layout_below="@+id/plaformList"
         android:layout_alignParentStart="true"
         android:layout_marginStart="14dp"
         android:layout_marginTop="19dp"
         android:checked="false"
-        android:showText="false"
-        android:splitTrack="false"
+        android:showText="true"
         android:text="In Locale"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:thumbTint="#68D11D"
-        android:trackTint="#14A315" />
+        android:theme="@style/SCBSwitch"
+        android:thumbTint="#69D31E" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="89dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="51dp"
-        android:dividerPadding="10dp"
-        android:orientation="horizontal">
+        android:layout_marginBottom="70dp"
+        android:orientation="horizontal"
+        android:showDividers="middle">
 
-        <Button
+        <ImageButton
             android:id="@+id/button2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
             android:layout_weight="1"
-            android:text="Button" />
+            android:adjustViewBounds="true"
+            android:background="#ff0000"
+            android:scaleType="fitCenter"
+            android:src="@drawable/delete_bin" />
 
-        <Button
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:visibility="invisible"/>
+
+        <ImageButton
             android:id="@+id/button3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Button" />
+            android:background="#FFFF00"
+            android:scaleType="fitCenter"
+            android:src="@drawable/seen" />
 
-        <Button
-            android:id="@+id/button4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Button" />
+            android:visibility="invisible"/>
+
+        <ImageButton
+            android:id="@+id/button4"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:background="#00ff00"
+            android:scaleType="fitCenter"
+            android:src="@drawable/checkmark" />
     </LinearLayout>
 
 </RelativeLayout>
