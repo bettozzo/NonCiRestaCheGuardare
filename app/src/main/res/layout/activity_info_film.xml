@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="unitn.app.DettaglioFilm">
+
+    <TextView
+        android:id="@+id/titoloFilm"
+        android:layout_width="match_parent"
+        android:layout_height="78dp"
+        android:background="#000000"
+        android:gravity="center"
+        android:text="TitoloFilm"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:typeface="monospace" />
+
+    <ImageView
+        android:id="@+id/poster"
+        android:layout_width="151dp"
+        android:layout_height="223dp"
+        android:layout_below="@+id/titoloFilm"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@+id/titoloFilm"
+        tools:layout_editor_absoluteX="16dp"
+        tools:srcCompat="@drawable/missing_poster" />
+
+    <Button
+        android:id="@+id/addFilm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="154dp"
+        android:layout_marginBottom="71dp"
+        android:backgroundTint="#008c00"
+        android:text="Aggiungi" />
+
+
+</RelativeLayout>

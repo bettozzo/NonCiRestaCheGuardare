@@ -1,12 +1,17 @@
 [versions]
 agp = "8.3.0"
+androidxRoomCompiler = "2.6.1"
 ankoDesign = "0.10.5"
+compiler = "1.1.1"
+compilerVersion = "1.0.0"
+gradle = "7.0.4"
 kotlin = "1.9.0"
 coreKtx = "1.13.0"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 appcompat = "1.6.1"
+lifecycleRuntimeKtx = "2.7.0"
 material = "1.10.0"
 activity = "1.8.0"
 constraintlayout = "2.1.4"
@@ -14,12 +19,24 @@ picasso = "(insert latest version)"
 picassoVersion = "2.5.2"
 retrofitVersion = "2.9.0"
 gridlayout = "1.0.0"
+roomCompiler = "2.3.0"
+roomKtx = "2.2.1"
 squareupPicasso = "2.8"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-room-compiler-v230 = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidxRoomCompiler" }
+androidx-room-ktx-v221 = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
+androidx-room-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidxRoomCompiler" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidxRoomCompiler" }
+androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "androidxRoomCompiler" }
 anko-design = { module = "org.jetbrains.anko:anko-design", version.ref = "ankoDesign" }
+compiler = { module = "android.arch.persistence.room:compiler", version.ref = "compiler" }
+compiler-v100 = { module = "android.arch.persistence.room:compiler", version.ref = "compilerVersion" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofitVersion" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

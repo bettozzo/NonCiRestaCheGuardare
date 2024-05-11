@@ -2,7 +2,6 @@ package unitn.app
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.StrictMode
 import android.widget.Button
 import android.widget.EditText
 import android.widget.GridView
@@ -29,8 +28,7 @@ class Search : AppCompatActivity() {
             insets
         }
 
-        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)
+
 
         var films: List<Movies>
         val gridView = findViewById<GridView>(R.id.GridView)
@@ -40,13 +38,13 @@ class Search : AppCompatActivity() {
         val apiKey = resources.getString(R.string.api_key_tmdb)
         buttonToSearch.setOnClickListener {
             runOnUiThread {
-                gridView.adapter = CustomAdapter(this@Search, emptyList())
+                gridView.adapter = AdapterHomepage(this@Search, emptyList())
             }
 
-            CoroutineScope(Dispatchers.IO).launch{
-                films =  MediaDetails().getDetails(searchBar.text.toString(), apiKey)
+            CoroutineScope(Dispatchers.IO).launch {
+                films = MediaDetails().getDetails(searchBar.text.toString(), apiKey)
                 runOnUiThread {
-                    gridView.adapter = CustomAdapter(this@Search, films)
+                    gridView.adapter = AdapterSearch(this@Search, films)
                 }
             }
         }

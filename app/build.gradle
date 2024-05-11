@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("kotlin-kapt")
 }
 
 android {
@@ -27,12 +28,22 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
 }
 
 dependencies {
+
+    implementation libs.androidx.room.runtime
+    implementation libs.androidx.room.ktx.v221
+    annotationProcessor libs.androidx.room.room.compiler
+
+    // To use Kotlin annotation processing tool (kapt)
+    kapt "androidx.room:room-compiler:2.6.1"
+
+    implementation libs.androidx.lifecycle.runtime.ktx
 
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat

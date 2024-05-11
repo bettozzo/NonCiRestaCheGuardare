@@ -3,7 +3,6 @@ package unitn.app
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
@@ -14,33 +13,30 @@ import com.example.test.R
 import com.squareup.picasso.Picasso
 import unitn.app.api.Movies
 
-class ViewHolder {
+class ViewHolderHomepage {
     var poster: ImageView? = null
     var title: TextView? = null
 }
 
-class CustomAdapter(private var context: Context, private var movies: List<Movies>) :
+class AdapterHomepage(private var context: Context, private var movies: List<Movies>) :
     BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
-        val itemInGrid: ViewHolder
+        val itemInGrid: ViewHolderHomepage
         var myView = convertView
         if (myView == null) {
             val mInflater = (context as Activity).layoutInflater
             myView = mInflater.inflate(R.layout.grid_item, parent, false)
 
-            itemInGrid = ViewHolder()
+            itemInGrid = ViewHolderHomepage()
             itemInGrid.poster = myView!!.findViewById(R.id.imageView)!!
             itemInGrid.title = myView.findViewById(R.id.textView)!!
 
             myView.tag = itemInGrid
         } else {
-            itemInGrid = myView.tag as ViewHolder
+            itemInGrid = myView.tag as ViewHolderHomepage
         }
 
-        //set poster image
-        Picasso.get().load(movies[position].posterPath).placeholder(R.drawable.missing_poster)
-            .into(itemInGrid.poster);
 
         //set title
         itemInGrid.title!!.text = movies[position].title
@@ -49,9 +45,12 @@ class CustomAdapter(private var context: Context, private var movies: List<Movie
         itemInGrid.title!!.setSingleLine(true);
         itemInGrid.title!!.setSelected(true);
 
-        itemInGrid.poster!!.setBackgroundColor(Color.parseColor("#f0f0f0"))
+        //set poster image
+        Picasso.get().load(movies[position].posterPath).placeholder(R.drawable.missing_poster)
+            .into(itemInGrid.poster);
         itemInGrid.poster!!.setOnClickListener {
             val intent = Intent(context, DettaglioFilm::class.java)
+            intent.putExtra("id", movies[position].id)
             intent.putExtra("titoloFilm", movies[position].title)
             intent.putExtra("poster", movies[position].posterPath)
 
@@ -71,6 +70,7 @@ class CustomAdapter(private var context: Context, private var movies: List<Movie
             }
             context.startActivity(intent)
         }
+
         return myView
     }
 
