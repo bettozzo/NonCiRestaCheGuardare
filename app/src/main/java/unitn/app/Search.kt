@@ -2,6 +2,7 @@ package unitn.app
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.GridView
@@ -15,8 +16,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import unitn.app.api.MediaDetails
 import unitn.app.api.Movies
+import java.io.Serializable
+
 
 class Search : AppCompatActivity() {
+    private var moviesBeingSearched = emptyList<Movies>()
+    private var test = "ciao";
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,25 +35,29 @@ class Search : AppCompatActivity() {
         }
 
 
-
-        var films: List<Movies>
         val gridView = findViewById<GridView>(R.id.GridView)
         val searchBar = findViewById<EditText>(R.id.Base)
 
         val buttonToSearch = findViewById<Button>(R.id.buttonToSearch)
         val apiKey = resources.getString(R.string.api_key_tmdb)
+
+
         buttonToSearch.setOnClickListener {
-            runOnUiThread {
-                gridView.adapter = AdapterHomepage(this@Search, emptyList())
-            }
+            gridView.adapter = AdapterHomepage(this@Search, emptyList())
 
             CoroutineScope(Dispatchers.IO).launch {
-                films = MediaDetails().getDetails(searchBar.text.toString(), apiKey)
+                moviesBeingSearched = MediaDetails().getDetails(searchBar.text.toString(), apiKey);
+
                 runOnUiThread {
-                    gridView.adapter = AdapterSearch(this@Search, films)
+                    gridView.adapter = AdapterSearch(this@Search, moviesBeingSearched)
                 }
             }
         }
+    }
+    override fun onResume() {
+        super.onResume()
+        val gridView = findViewById<GridView>(R.id.GridView)
+        gridView.adapter = AdapterSearch(this@Search, moviesBeingSearched)
     }
 }
 

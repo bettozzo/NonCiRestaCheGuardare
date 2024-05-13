@@ -72,6 +72,7 @@ class DettaglioFilm : AppCompatActivity() {
                 ).addTypeConverter(Converters())
                     .build().movieDao()
                 movieDao.deleteMovie(movieId)
+                finish()//prevents this activity to be opened again
                 startActivity(intent)
             }
         }
@@ -85,6 +86,7 @@ class DettaglioFilm : AppCompatActivity() {
                 ).addTypeConverter(Converters())
                     .build().movieDao()
                 movieDao.deleteMovie(movieId)
+                finish()//prevents this activity to be opened again
                 startActivity(intent)
             }
         }
@@ -118,7 +120,6 @@ class DettaglioFilm : AppCompatActivity() {
         platformList.addView(platformView);
     }
 
-
     private fun setTitleProperties(titoloFilm: TextView, extras: Bundle) {
         titoloFilm.text = extras.getString("titoloFilm")
         titoloFilm.ellipsize = TextUtils.TruncateAt.MARQUEE;
@@ -126,6 +127,7 @@ class DettaglioFilm : AppCompatActivity() {
         titoloFilm.setSingleLine(true);
         titoloFilm.setSelected(true);
     }
-
 }
+
+
 

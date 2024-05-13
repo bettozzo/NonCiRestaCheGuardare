@@ -44,9 +44,7 @@ class InfoFilm : AppCompatActivity() {
 
 
         val titotloFilm = findViewById<TextView>(R.id.titoloFilm);
-        titotloFilm.text = titolo
-        titotloFilm.ellipsize = TextUtils.TruncateAt.MARQUEE;
-        titotloFilm.marqueeRepeatLimit = -1;
+        setTitleProperties(titotloFilm,titolo)
 
         Picasso.get().load(poster).placeholder(R.drawable.missing_poster)
             .into(findViewById<ImageView>(R.id.poster))
@@ -54,7 +52,6 @@ class InfoFilm : AppCompatActivity() {
 
         val buttonAdd = findViewById<Button>(R.id.addFilm)
         buttonAdd.setOnClickListener {
-            val intent = Intent(this@InfoFilm, Search::class.java)
             lifecycleScope.launch {
                 val movieDao = Room.databaseBuilder(
                     applicationContext,
@@ -63,8 +60,15 @@ class InfoFilm : AppCompatActivity() {
                     .build().movieDao()
                 val posterNN = poster ?: "no poster"
                 movieDao.insertMovie(Movies(id, titolo, emptyList(), posterNN))
-                startActivity(intent)
+                finish()
             }
         }
+    }
+    private fun setTitleProperties(titoloFilm: TextView, titolo: String) {
+        titoloFilm.text = titolo
+        titoloFilm.ellipsize = TextUtils.TruncateAt.MARQUEE;
+        titoloFilm.marqueeRepeatLimit = -1;
+        titoloFilm.setSingleLine(true);
+        titoloFilm.setSelected(true);
     }
 }
