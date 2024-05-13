@@ -64,7 +64,6 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="14dp"
         android:layout_marginTop="19dp"
-        android:checked="false"
         android:showText="true"
         android:text="In Locale"
         android:textSize="20sp"
@@ -72,55 +71,32 @@
         android:theme="@style/SCBSwitch"
         android:thumbTint="#69D31E" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
+    <ImageButton
+        android:id="@+id/buttonDelete"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="70dp"
-        android:orientation="horizontal"
-        android:showDividers="middle">
+        android:layout_marginStart="40dp"
+        android:layout_marginBottom="32dp"
+        android:adjustViewBounds="true"
+        android:background="@color/white"
+        android:contentDescription="Button to remove media from DB"
+        android:scaleType="fitCenter"
+        android:src="@drawable/delete_bin" />
 
-        <ImageButton
-            android:id="@+id/buttonDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="10dp"
-            android:layout_weight="1"
-            android:adjustViewBounds="true"
-            android:background="#ff0000"
-            android:scaleType="fitCenter"
-            android:src="@drawable/delete_bin" />
+    <ImageButton
+        android:id="@+id/buttonSeen"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="32dp"
+        android:background="@color/white"
+        android:contentDescription="Button to mark media as seen"
+        android:scaleType="fitCenter"
+        android:src="@drawable/checkmark" />
 
-        <ImageButton
-            android:layout_width="30dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:visibility="invisible"/>
-
-        <ImageButton
-            android:id="@+id/buttonSeen"
-            android:layout_width="40dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#FFFF00"
-            android:scaleType="fitCenter"
-            android:src="@drawable/seen" />
-
-        <ImageButton
-            android:layout_width="30dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:visibility="invisible"/>
-
-        <ImageButton
-            android:id="@+id/buttonOk"
-            android:layout_width="40dp"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="10dp"
-            android:layout_weight="1"
-            android:background="#00ff00"
-            android:scaleType="fitCenter"
-            android:src="@drawable/checkmark" />
-    </LinearLayout>
 
 </RelativeLayout>

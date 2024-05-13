@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.GridView
+import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -29,7 +30,7 @@ class HomePage : AppCompatActivity() {
             insets
         }
 
-        val goToSearchButton = findViewById<Button>(R.id.goToSearchMediaButton)
+        val goToSearchButton = findViewById<ImageButton>(R.id.goToSearchMediaButton)
 
         goToSearchButton.setOnClickListener {
             val intent = Intent(this@HomePage, Search::class.java)

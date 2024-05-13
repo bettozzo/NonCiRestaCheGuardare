@@ -31,22 +31,34 @@
 
     <GridView
         android:id="@+id/GridView"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@+id/MediaSelection"
         android:numColumns="3"
         android:stretchMode="columnWidth" />
 
-    <Button
+    <!--    <Button-->
+    <!--        android:id="@+id/goToSearchMediaButton"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="75dp"-->
+    <!--        android:layout_below="@+id/MediaSelection"-->
+    <!--        android:layout_alignParentEnd="true"-->
+    <!--        android:layout_marginTop="593dp"-->
+    <!--        android:layout_marginEnd="12dp"-->
+    <!--        android:backgroundTint="#008c00"-->
+    <!--        android:text="Aggiungi" />-->
+
+    <ImageButton
         android:id="@+id/goToSearchMediaButton"
-        android:layout_width="wrap_content"
-        android:layout_height="75dp"
-        android:layout_below="@+id/MediaSelection"
+        android:layout_width="92dp"
+        android:layout_height="103dp"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="593dp"
-        android:layout_marginEnd="12dp"
-        android:backgroundTint="#008c00"
-        android:text="Aggiungi" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="29dp"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/white"
+        android:scaleType="fitCenter"
+        android:src="@drawable/lente_dingrandimento" />
 
 
 </RelativeLayout>

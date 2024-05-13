@@ -55,14 +55,12 @@ class DettaglioFilm : AppCompatActivity() {
         //buttons
         val buttonDel = findViewById<ImageButton>(R.id.buttonDelete)
         val buttonSeen = findViewById<ImageButton>(R.id.buttonSeen)
-        val buttonOk = findViewById<ImageButton>(R.id.buttonOk)
-        setButtonProperties(buttonDel, buttonSeen, buttonOk, id)
+        setButtonProperties(buttonDel, buttonSeen, id)
     }
 
     private fun setButtonProperties(
         deleteBtn: ImageButton,
         seenBtn: ImageButton,
-        okBtn: ImageButton,
         movieId: Int
     ) {
         deleteBtn.setOnClickListener {
@@ -89,11 +87,6 @@ class DettaglioFilm : AppCompatActivity() {
                 movieDao.deleteMovie(movieId)
                 startActivity(intent)
             }
-        }
-
-        okBtn.setOnClickListener {
-            val intent = Intent(this@DettaglioFilm, HomePage::class.java)
-            startActivity(intent)
         }
     }
 
