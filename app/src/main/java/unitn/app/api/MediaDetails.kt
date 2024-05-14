@@ -1,9 +1,9 @@
 package unitn.app.api
 
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
@@ -15,55 +15,42 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 
-class MediaDetails {
-    suspend fun getDetails(filmTitle: String, apiKey: String): List<Movies> =
-        withContext(Dispatchers.IO) {
+class MediaDetails : ViewModel() {
 
-            val listMovies = mutableListOf<Movies>()
-            getFullMovie(filmTitle, apiKey, listMovies)
+    private lateinit var listMovies: MutableList<Movies>;
+    private val mutLiveListMovies = MutableLiveData<List<Movies>>();
 
-            return@withContext listMovies
+    private lateinit var currentMovieBeingQueried: String;
+    val liveListMovies: LiveData<List<Movies>>
+        get() = mutLiveListMovies;
+
+    suspend fun getDetails(filmTitle: String, apiKey: String) = withContext(Dispatchers.IO) {
+        currentMovieBeingQueried = filmTitle;
+        listMovies = emptyList<Movies>().toMutableList()
+        val apiCallerMovies = Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/")
+            .addConverterFactory(GsonConverterFactory.create()).build()
+            .create(RetrofitAPI::class.java)
+
+        val movieSearchCall = apiCallerMovies.getMovie(filmTitle, false, "it", 1, apiKey)
+
+        val results = getMoviesDetails(movieSearchCall)
+
+        for (result in results) {
+            val id = result.id
+            val title = result.title
+            val platforms = getMoviesPlatform(id, apiKey)
+            val poster = getMoviePoster(id, apiKey) ?: "No image"
+
+
+            val movie = Movies(id, title, platforms, poster)
+            //blocks concurrency problems. In case user sends a new request before the previous one is finished
+            if(currentMovieBeingQueried == filmTitle) {
+                listMovies.add(movie)
+                mutLiveListMovies.postValue(listMovies);
+            }
         }
-}
-
-fun main() = runBlocking {
-    val listMovies = MediaDetails().getDetails("Kill Bill", "f256ec040f1c2b91ad903cc394728e55")
-    println("Printing movies...")
-    for (movie in listMovies) {
-        println(movie.toString())
-    }
-    println("Printed movies")
-
-
-//    val movie1 = Movies(5, "testing titolo", listOf(Pair("logo", "path")), "posterpath")
-//    val movie2 = Movies(2, "TITOLO", listOf(Pair("LOGAZZO", "path")), "POSTERAZZOpath")
-//    val string = Converter().moviesToString(listOf(movie1, movie2));
-//    println(string)
-//    println(Converter().stringToMovies(string));
-}
-
-suspend fun getFullMovie(query: String, apiKey: String, listMovies: MutableList<Movies>) {
-
-    val apiCallerMovies = Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/")
-        .addConverterFactory(GsonConverterFactory.create()).build().create(RetrofitAPI::class.java)
-
-
-    val movieSearchCall = apiCallerMovies.getMovie(query, false, "it", 1, apiKey)
-
-    val results = getMoviesDetails(movieSearchCall)
-
-    for (result in results) {
-        val id = result.id
-        val title = result.title
-        val platforms = getMoviesPlatform(id, apiKey)
-        val poster = getMoviePoster(id, apiKey) ?: "No image"
-
-
-        val movie = Movies(id, title, platforms, poster)
-        listMovies.add(movie)
     }
 }
-
 
 suspend fun getMoviesDetails(movieSearchCall: Call<MovieResult?>?): List<QueriedMovie> {
 
@@ -95,7 +82,7 @@ suspend fun getMoviesPlatform(id: Int, apiKey: String): MutableList<Pair<String,
         apiCallerPlatforms.getPlatform(apiKey)?.enqueue(object : Callback<StreamingResult?> {
             override fun onResponse(
                 call: Call<StreamingResult?>,
-                response: Response<StreamingResult?>
+                response: Response<StreamingResult?>,
             ) {
 
                 if (!response.isSuccessful) throw IOException("Unexpected code $response")

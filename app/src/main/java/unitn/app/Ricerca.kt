@@ -21,20 +21,20 @@ import unitn.app.api.Movies
 
 
 class Ricerca : AppCompatActivity() {
-    private var moviesBeingSearched = getQueriedMovies()
+    private var mediaDetails = MediaDetails();
+    private var moviesBeingSearched = getQueriedMovies();
     private var sharedPref: SharedPreferences? = null
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_search)
+        setContentView(R.layout.activity_ricerca)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
 
         sharedPref = this.getSharedPreferences("queriedMedia", MODE_PRIVATE)
 
@@ -44,37 +44,30 @@ class Ricerca : AppCompatActivity() {
         val buttonToSearch = findViewById<Button>(R.id.buttonToSearch)
         val apiKey = resources.getString(R.string.api_key_tmdb)
 
+        mediaDetails.liveListMovies.observe(this) { movies ->
+            gridView.adapter = AdapterSearch(this@Ricerca, movies)
+        }
+
 
         buttonToSearch.setOnClickListener {
-            gridView.adapter = AdapterHomepage(this@Ricerca, emptyList())
-
             CoroutineScope(Dispatchers.IO).launch {
-                moviesBeingSearched = MediaDetails().getDetails(searchBar.text.toString(), apiKey);
+                mediaDetails.getDetails(searchBar.text.toString(), apiKey);
                 val editor = sharedPref?.edit()
                 if (editor != null) {
                     editor.putString("movies", Converters().moviesToString(moviesBeingSearched))
                     editor.apply()
                 }
-                runOnUiThread {
-                    gridView.adapter = AdapterSearch(this@Ricerca, moviesBeingSearched)
-                }
             }
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        moviesBeingSearched = getQueriedMovies()
-    }
     private fun getQueriedMovies(): List<Movies> {
         if (sharedPref?.contains("movies") == true) {
-            val movies = Converters().stringToMovies(
+            return Converters().stringToMovies(
                 sharedPref!!.getString(
                     "movies",
                     emptyList<Movies>().toString()
                 )!!
-            )
-            return movies
+            ).toMutableList();
         }
         return emptyList();
     }
