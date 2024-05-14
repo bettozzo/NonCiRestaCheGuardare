@@ -1,7 +1,6 @@
 package unitn.app
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Button
@@ -20,7 +19,7 @@ import unitn.app.api.Movies
 import unitn.app.localdb.Converters
 import unitn.app.localdb.MoviesDatabase
 
-class InfoFilm : AppCompatActivity() {
+class AggiungiFilm : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +31,7 @@ class InfoFilm : AppCompatActivity() {
             insets
         }
 
-        //extras from: ./AdapterSearch.kt
+        //extras from: ./AdapterRicerca.kt
         val extras = intent.extras;
         if (extras == null) {
             System.err.println("Bundle is null")
@@ -46,7 +45,7 @@ class InfoFilm : AppCompatActivity() {
 
 
         val titotloFilm = findViewById<TextView>(R.id.titoloFilm);
-        setTitleProperties(titotloFilm,titolo)
+        setTitleProperties(titotloFilm, titolo)
 
         Picasso.get().load(poster).placeholder(R.drawable.missing_poster)
             .into(findViewById<ImageView>(R.id.poster))
@@ -66,8 +65,9 @@ class InfoFilm : AppCompatActivity() {
             }
         }
     }
+
     private fun setTitleProperties(titoloFilm: TextView, titolo: String) {
-        titoloFilm.text = titolo
+        titoloFilm.text = titolo;
         titoloFilm.ellipsize = TextUtils.TruncateAt.MARQUEE;
         titoloFilm.marqueeRepeatLimit = -1;
         titoloFilm.setSingleLine(true);

@@ -3,7 +3,6 @@ package unitn.app
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.GridView
@@ -21,7 +20,7 @@ import unitn.app.api.MediaDetails
 import unitn.app.api.Movies
 
 
-class Search : AppCompatActivity() {
+class Ricerca : AppCompatActivity() {
     private var moviesBeingSearched = getQueriedMovies()
     private var sharedPref: SharedPreferences? = null
 
@@ -47,7 +46,7 @@ class Search : AppCompatActivity() {
 
 
         buttonToSearch.setOnClickListener {
-            gridView.adapter = AdapterHomepage(this@Search, emptyList())
+            gridView.adapter = AdapterHomepage(this@Ricerca, emptyList())
 
             CoroutineScope(Dispatchers.IO).launch {
                 moviesBeingSearched = MediaDetails().getDetails(searchBar.text.toString(), apiKey);
@@ -57,7 +56,7 @@ class Search : AppCompatActivity() {
                     editor.apply()
                 }
                 runOnUiThread {
-                    gridView.adapter = AdapterSearch(this@Search, moviesBeingSearched)
+                    gridView.adapter = AdapterSearch(this@Ricerca, moviesBeingSearched)
                 }
             }
         }

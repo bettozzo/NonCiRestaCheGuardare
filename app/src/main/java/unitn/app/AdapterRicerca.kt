@@ -54,7 +54,7 @@ class AdapterSearch(private var context: Context, private var movies: List<Movie
             .into(itemInGrid.poster);
 
         itemInGrid.poster!!.setOnClickListener {
-            val intent = Intent(context, InfoFilm::class.java)
+            val intent = Intent(context, AggiungiFilm::class.java)
             prepareExtras(intent, movie);
             context.startActivity(intent)
         }

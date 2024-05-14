@@ -3,7 +3,6 @@ package unitn.app
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import android.widget.GridView
 import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
@@ -33,7 +32,7 @@ class HomePage : AppCompatActivity() {
         val goToSearchButton = findViewById<ImageButton>(R.id.goToSearchMediaButton)
 
         goToSearchButton.setOnClickListener {
-            val intent = Intent(this@HomePage, Search::class.java)
+            val intent = Intent(this@HomePage, Ricerca::class.java)
             startActivity(intent)
         }
 
