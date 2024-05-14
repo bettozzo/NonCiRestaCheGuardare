@@ -10,6 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import com.example.test.R
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -21,7 +22,7 @@ import unitn.app.api.Movies
 
 
 class Ricerca : AppCompatActivity() {
-    private var mediaDetails = MediaDetails();
+    private lateinit var mediaDetails: MediaDetails;
     private var moviesBeingSearched = getQueriedMovies();
     private var sharedPref: SharedPreferences? = null
 
@@ -35,7 +36,7 @@ class Ricerca : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
+        mediaDetails = ViewModelProvider(this)[MediaDetails::class.java];
         sharedPref = this.getSharedPreferences("queriedMedia", MODE_PRIVATE)
 
         val gridView = findViewById<GridView>(R.id.GridView)

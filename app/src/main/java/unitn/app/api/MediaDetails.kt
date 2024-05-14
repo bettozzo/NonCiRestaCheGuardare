@@ -1,8 +1,10 @@
 package unitn.app.api
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Call
@@ -10,16 +12,17 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import unitn.app.localdb.Converters
+import unitn.app.localdb.MoviesDatabase
 import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 
-class MediaDetails : ViewModel() {
+class MediaDetails(application: Application) : AndroidViewModel(application) {
 
     private lateinit var listMovies: MutableList<Movies>;
     private val mutLiveListMovies = MutableLiveData<List<Movies>>();
-
     private lateinit var currentMovieBeingQueried: String;
     val liveListMovies: LiveData<List<Movies>>
         get() = mutLiveListMovies;
@@ -27,28 +30,44 @@ class MediaDetails : ViewModel() {
     suspend fun getDetails(filmTitle: String, apiKey: String) = withContext(Dispatchers.IO) {
         currentMovieBeingQueried = filmTitle;
         listMovies = emptyList<Movies>().toMutableList()
+
+
+        val idFilmInUserList = getUserIdFilms();
+
         val apiCallerMovies = Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/")
             .addConverterFactory(GsonConverterFactory.create()).build()
             .create(RetrofitAPI::class.java)
 
         val movieSearchCall = apiCallerMovies.getMovie(filmTitle, false, "it", 1, apiKey)
 
-        val results = getMoviesDetails(movieSearchCall)
+        val results = getMoviesDetails(movieSearchCall).toMutableList()
 
         for (result in results) {
             val id = result.id
-            val title = result.title
-            val platforms = getMoviesPlatform(id, apiKey)
-            val poster = getMoviePoster(id, apiKey) ?: "No image"
+            if (!idFilmInUserList.contains(id)) {
+                val title = result.title
+                val platforms = getMoviesPlatform(id, apiKey)
+                val poster = getMoviePoster(id, apiKey) ?: "No image"
 
-
-            val movie = Movies(id, title, platforms, poster)
-            //blocks concurrency problems. In case user sends a new request before the previous one is finished
-            if(currentMovieBeingQueried == filmTitle) {
-                listMovies.add(movie)
-                mutLiveListMovies.postValue(listMovies);
+                val movie = Movies(id, title, platforms, poster)
+                //prevents concurrency problems. In case user sends a new request before the previous one is finished
+                if (currentMovieBeingQueried == filmTitle) {
+                    listMovies.add(movie)
+                    mutLiveListMovies.postValue(listMovies);
+                }
             }
         }
+    }
+
+    private suspend fun getUserIdFilms(): List<Int> {
+        val context = getApplication<Application>().applicationContext
+        val movieDao = Room.databaseBuilder(
+            context,
+            MoviesDatabase::class.java, "database-name"
+        ).addTypeConverter(Converters())
+            .build().movieDao()
+
+        return movieDao.getAllId()
     }
 }
 

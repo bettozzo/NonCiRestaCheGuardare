@@ -10,6 +10,8 @@ interface MovieDao {
     @Query("SELECT * FROM Movies")
     suspend fun getAll(): List<Movies>
 
+    @Query("SELECT id FROM Movies")
+    suspend fun getAllId(): List<Int>
     @Query("SELECT * FROM Movies WHERE ID = :id")
     suspend fun getMovieFromId(id: Int): Movies
 
