@@ -32,6 +32,7 @@ class InfoFilm : AppCompatActivity() {
             insets
         }
 
+        //extras from: ./AdapterSearch.kt
         val extras = intent.extras;
         if (extras == null) {
             System.err.println("Bundle is null")
@@ -41,6 +42,7 @@ class InfoFilm : AppCompatActivity() {
         val id = extras.getInt("id")
         val titolo = extras.getString("titoloFilm") ?: "ERRORE";
         val poster = extras.getString("poster");
+        val platforms = Converters().stringToPlatform(extras.getString("platforms"));
 
 
         val titotloFilm = findViewById<TextView>(R.id.titoloFilm);
@@ -59,7 +61,7 @@ class InfoFilm : AppCompatActivity() {
                 ).addTypeConverter(Converters())
                     .build().movieDao()
                 val posterNN = poster ?: "no poster"
-                movieDao.insertMovie(Movies(id, titolo, emptyList(), posterNN))
+                movieDao.insertMovie(Movies(id, titolo, platforms, posterNN))
                 finish()
             }
         }

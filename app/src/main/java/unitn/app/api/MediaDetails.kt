@@ -1,5 +1,7 @@
 package unitn.app.api
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -14,14 +16,14 @@ import kotlin.coroutines.suspendCoroutine
 
 
 class MediaDetails {
-    suspend fun getDetails(filmTitle: String, apiKey: String): List<Movies> = withContext(
-        Dispatchers.IO) {
+    suspend fun getDetails(filmTitle: String, apiKey: String): List<Movies> =
+        withContext(Dispatchers.IO) {
 
-        val listMovies = mutableListOf<Movies>()
-        getFullMovie(filmTitle, apiKey, listMovies)
+            val listMovies = mutableListOf<Movies>()
+            getFullMovie(filmTitle, apiKey, listMovies)
 
-        return@withContext listMovies
-    }
+            return@withContext listMovies
+        }
 }
 
 fun main() = runBlocking {
@@ -31,6 +33,13 @@ fun main() = runBlocking {
         println(movie.toString())
     }
     println("Printed movies")
+
+
+//    val movie1 = Movies(5, "testing titolo", listOf(Pair("logo", "path")), "posterpath")
+//    val movie2 = Movies(2, "TITOLO", listOf(Pair("LOGAZZO", "path")), "POSTERAZZOpath")
+//    val string = Converter().moviesToString(listOf(movie1, movie2));
+//    println(string)
+//    println(Converter().stringToMovies(string));
 }
 
 suspend fun getFullMovie(query: String, apiKey: String, listMovies: MutableList<Movies>) {
@@ -103,7 +112,12 @@ suspend fun getMoviesPlatform(id: Int, apiKey: String): MutableList<Pair<String,
                     return;
                 }
                 for (platform in flatrate) {
-                    platforms.add(Pair(platform.provider_name, "https://image.tmdb.org/t/p/w185/"+platform.logo_path))
+                    platforms.add(
+                        Pair(
+                            platform.provider_name,
+                            "https://image.tmdb.org/t/p/w185/" + platform.logo_path
+                        )
+                    )
                 }
                 continuation.resume(platforms)
             }

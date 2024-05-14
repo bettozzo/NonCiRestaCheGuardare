@@ -1,6 +1,7 @@
 package unitn.app
 
 import android.annotation.SuppressLint
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -11,17 +12,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.test.R
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import unitn.app.api.MediaDetails
 import unitn.app.api.Movies
-import java.io.Serializable
 
 
 class Search : AppCompatActivity() {
-    private var moviesBeingSearched = emptyList<Movies>()
-    private var test = "ciao";
+    private var moviesBeingSearched = getQueriedMovies()
+    private var sharedPref: SharedPreferences? = null
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +37,8 @@ class Search : AppCompatActivity() {
         }
 
 
+        sharedPref = this.getSharedPreferences("queriedMedia", MODE_PRIVATE)
+
         val gridView = findViewById<GridView>(R.id.GridView)
         val searchBar = findViewById<EditText>(R.id.Base)
 
@@ -47,17 +51,46 @@ class Search : AppCompatActivity() {
 
             CoroutineScope(Dispatchers.IO).launch {
                 moviesBeingSearched = MediaDetails().getDetails(searchBar.text.toString(), apiKey);
-
+                val editor = sharedPref?.edit()
+                if (editor != null) {
+                    editor.putString("movies", Converters().moviesToString(moviesBeingSearched))
+                    editor.apply()
+                }
                 runOnUiThread {
                     gridView.adapter = AdapterSearch(this@Search, moviesBeingSearched)
                 }
             }
         }
     }
+
     override fun onResume() {
         super.onResume()
-        val gridView = findViewById<GridView>(R.id.GridView)
-        gridView.adapter = AdapterSearch(this@Search, moviesBeingSearched)
+        moviesBeingSearched = getQueriedMovies()
+    }
+    private fun getQueriedMovies(): List<Movies> {
+        if (sharedPref?.contains("movies") == true) {
+            val movies = Converters().stringToMovies(
+                sharedPref!!.getString(
+                    "movies",
+                    emptyList<Movies>().toString()
+                )!!
+            )
+            return movies
+        }
+        return emptyList();
     }
 }
 
+
+private class Converters {
+    fun moviesToString(movie: List<Movies>): String {
+        val gson = Gson()
+        return gson.toJson(movie)
+    }
+
+    fun stringToMovies(string: String): List<Movies> {
+        val gson = Gson()
+        val listType = object : TypeToken<List<Movies>>() {}.type
+        return gson.fromJson(string, listType)
+    }
+}

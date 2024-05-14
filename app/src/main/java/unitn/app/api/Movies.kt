@@ -12,6 +12,6 @@ data class Movies(
     @ColumnInfo(name = "poster_path") val posterPath: String
 ) {
     override fun toString(): String {
-        return "[%07d] $title\n\tposter_url=$posterPath\n\tplatforms=$platform".format(id)
+        return "[%07d] $title\n\tposter_url=$posterPath\n\tplatforms=$platform\n".format(id)
     }
 }

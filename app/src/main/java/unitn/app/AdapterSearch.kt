@@ -12,6 +12,7 @@ import android.widget.TextView
 import com.example.test.R
 import com.squareup.picasso.Picasso
 import unitn.app.api.Movies
+import unitn.app.localdb.Converters
 
 class ViewHolderSearch {
     var poster: ImageView? = null
@@ -63,6 +64,7 @@ class AdapterSearch(private var context: Context, private var movies: List<Movie
         intent.putExtra("id", movie.id)
         intent.putExtra("titoloFilm", movie.title)
         intent.putExtra("poster", movie.posterPath)
+        intent.putExtra("platforms", Converters().platformToString(movie.platform))
     }
     override fun getItem(p0: Int): Any {
         return movies[p0]
