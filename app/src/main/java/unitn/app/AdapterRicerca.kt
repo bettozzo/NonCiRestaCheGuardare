@@ -42,29 +42,30 @@ class AdapterSearch(private var context: Context, private var media: List<Media>
         setPosterProperties(itemInGrid, media[position])
         return myView
     }
-    private fun setTitleProperties(itemInGrid: ViewHolderSearch, movie: Media) {
-        itemInGrid.title!!.text = movie.title
+    private fun setTitleProperties(itemInGrid: ViewHolderSearch, media: Media) {
+        itemInGrid.title!!.text = media.title
         itemInGrid.title!!.ellipsize = TextUtils.TruncateAt.MARQUEE;
         itemInGrid.title!!.marqueeRepeatLimit = -1;
         itemInGrid.title!!.setSingleLine(true);
         itemInGrid.title!!.setSelected(true);
     }
-    private fun setPosterProperties(itemInGrid: ViewHolderSearch, movie: Media) {
-        Picasso.get().load(movie.posterPath).placeholder(R.drawable.missing_poster)
+    private fun setPosterProperties(itemInGrid: ViewHolderSearch, media: Media) {
+        Picasso.get().load(media.posterPath).placeholder(R.drawable.missing_poster)
             .into(itemInGrid.poster);
 
         itemInGrid.poster!!.setOnClickListener {
             val intent = Intent(context, AggiungiMedia::class.java)
-            prepareExtras(intent, movie);
+            prepareExtras(intent, media);
             context.startActivity(intent)
         }
     }
 
-    private fun prepareExtras(intent: Intent, movie: Media) {
-        intent.putExtra("id", movie.mediaId)
-        intent.putExtra("titoloFilm", movie.title)
-        intent.putExtra("poster", movie.posterPath)
-        intent.putExtra("platforms", Converters().platformToString(movie.platform))
+    private fun prepareExtras(intent: Intent, media: Media) {
+        intent.putExtra("id", media.mediaId)
+        intent.putExtra("titoloFilm", media.title)
+        intent.putExtra("poster", media.posterPath)
+        intent.putExtra("platforms", Converters().platformToString(media.platform))
+        intent.putExtra("isFilm", media.isFilm)
     }
     override fun getItem(p0: Int): Any {
         return media[p0]

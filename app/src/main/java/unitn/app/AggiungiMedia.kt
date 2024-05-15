@@ -41,6 +41,7 @@ class AggiungiMedia : AppCompatActivity() {
         val id = extras.getInt("id")
         val titolo = extras.getString("titoloFilm") ?: "ERRORE";
         val poster = extras.getString("poster");
+        val isFilm = extras.getBoolean("isFilm");
         val platforms = Converters().stringToPlatform(extras.getString("platforms"));
 
 
@@ -60,7 +61,7 @@ class AggiungiMedia : AppCompatActivity() {
                 ).addTypeConverter(Converters())
                     .build().MediaDao()
                 val posterNN = poster ?: "no poster"
-                movieDao.insertMedia(Media(id, true, titolo, platforms, posterNN, false))
+                movieDao.insertMedia(Media(id, isFilm, titolo, platforms, posterNN, false))
                 setResult(id)
                 finish()
             }
