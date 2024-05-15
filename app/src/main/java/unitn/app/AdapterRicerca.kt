@@ -11,7 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.example.test.R
 import com.squareup.picasso.Picasso
-import unitn.app.api.Movies
+import unitn.app.api.Media
 import unitn.app.localdb.Converters
 
 class ViewHolderSearch {
@@ -19,7 +19,7 @@ class ViewHolderSearch {
     var title: TextView? = null
 }
 
-class AdapterSearch(private var context: Context, private var movies: List<Movies>) :
+class AdapterSearch(private var context: Context, private var movies: List<Media>) :
     BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
@@ -42,14 +42,14 @@ class AdapterSearch(private var context: Context, private var movies: List<Movie
         setPosterProperties(itemInGrid, movies[position])
         return myView
     }
-    private fun setTitleProperties(itemInGrid: ViewHolderSearch, movie: Movies) {
+    private fun setTitleProperties(itemInGrid: ViewHolderSearch, movie: Media) {
         itemInGrid.title!!.text = movie.title
         itemInGrid.title!!.ellipsize = TextUtils.TruncateAt.MARQUEE;
         itemInGrid.title!!.marqueeRepeatLimit = -1;
         itemInGrid.title!!.setSingleLine(true);
         itemInGrid.title!!.setSelected(true);
     }
-    private fun setPosterProperties(itemInGrid: ViewHolderSearch, movie: Movies) {
+    private fun setPosterProperties(itemInGrid: ViewHolderSearch, movie: Media) {
         Picasso.get().load(movie.posterPath).placeholder(R.drawable.missing_poster)
             .into(itemInGrid.poster);
 
@@ -60,7 +60,7 @@ class AdapterSearch(private var context: Context, private var movies: List<Movie
         }
     }
 
-    private fun prepareExtras(intent: Intent, movie: Movies) {
+    private fun prepareExtras(intent: Intent, movie: Media) {
         intent.putExtra("id", movie.mediaId)
         intent.putExtra("titoloFilm", movie.title)
         intent.putExtra("poster", movie.posterPath)

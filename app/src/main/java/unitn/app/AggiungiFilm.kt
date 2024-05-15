@@ -15,7 +15,7 @@ import androidx.room.Room
 import com.example.test.R
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
-import unitn.app.api.Movies
+import unitn.app.api.Media
 import unitn.app.localdb.Converters
 import unitn.app.localdb.MoviesDatabase
 
@@ -60,7 +60,7 @@ class AggiungiFilm : AppCompatActivity() {
                 ).addTypeConverter(Converters())
                     .build().movieDao()
                 val posterNN = poster ?: "no poster"
-                movieDao.insertMovie(Movies(id, true, titolo, platforms, posterNN, false))
+                movieDao.insertMovie(Media(id, true, titolo, platforms, posterNN, false))
                 setResult(id)
                 finish()
             }

@@ -3,26 +3,32 @@ package unitn.app.localdb
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import unitn.app.api.Movies
+import unitn.app.api.Media
 
 @Dao
 interface MovieDao {
-    @Query("SELECT * FROM Movies")
-    suspend fun getAll(): List<Movies>
-
-    @Query("SELECT mediaId FROM Movies")
+    @Query("SELECT * FROM Media")
+    suspend fun getAll(): List<Media>
+    @Query("SELECT * FROM Media WHERE isFilm=1")
+    suspend fun getAllMovies(): List<Media>
+    @Query("SELECT * FROM Media WHERE isFilm=0")
+    suspend fun getAllSeries(): List<Media>
+    @Query("SELECT mediaId FROM Media")
     suspend fun getAllId(): List<Int>
 
-    @Query("SELECT * FROM Movies WHERE mediaId = :id")
-    suspend fun getMovieFromId(id: Int): Movies
+    @Query("SELECT * FROM Media WHERE mediaId = :id")
+    suspend fun getMovieFromId(id: Int): Media
 
     @Insert
-    suspend fun insertMovie(movie: Movies)
+    suspend fun insertMovie(movie: Media)
 
-    @Query("DELETE FROM Movies WHERE mediaId = :id")
+    @Query("DELETE FROM Media WHERE mediaId = :id")
     suspend fun deleteMovie(id: Int)
 
 
-    @Query("UPDATE Movies SET isLocal=:isLocal WHERE mediaId = :id")
+
+
+
+    @Query("UPDATE Media SET isLocal=:isLocal WHERE mediaId = :id")
     suspend fun saveInLocal(id: Int, isLocal: Boolean)
 }

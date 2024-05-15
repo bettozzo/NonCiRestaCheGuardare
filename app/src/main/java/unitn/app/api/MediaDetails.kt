@@ -21,15 +21,15 @@ import kotlin.coroutines.suspendCoroutine
 
 class MediaDetails(application: Application) : AndroidViewModel(application) {
 
-    private lateinit var listMovies: MutableList<Movies>;
-    private val mutLiveListMovies = MutableLiveData<List<Movies>>();
+    private lateinit var listMovies: MutableList<Media>;
+    private val mutLiveListMedia = MutableLiveData<List<Media>>();
     private lateinit var currentMovieBeingQueried: String;
-    val liveListMovies: LiveData<List<Movies>>
-        get() = mutLiveListMovies;
+    val liveListMedia: LiveData<List<Media>>
+        get() = mutLiveListMedia;
 
     suspend fun getDetails(filmTitle: String, apiKey: String) = withContext(Dispatchers.IO) {
         currentMovieBeingQueried = filmTitle;
-        listMovies = emptyList<Movies>().toMutableList()
+        listMovies = emptyList<Media>().toMutableList()
 
         var counter = 0;
         val idFilmInUserList = getUserIdFilms();
@@ -50,20 +50,20 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                 val platforms = getMoviesPlatform(id, apiKey)
                 val poster = getMoviePoster(id, apiKey) ?: "No image"
 
-                val movie = Movies(id, true, title, platforms, poster, false)
+                val movie = Media(id, true, title, platforms, poster, false)
 
                 //prevents concurrency problems. In case user sends a new request before the previous one is finished
                 if (currentMovieBeingQueried == filmTitle) {
                     listMovies.add(movie)
                     if (counter % 2 == 0) {
-                        mutLiveListMovies.postValue(listMovies);
+                        mutLiveListMedia.postValue(listMovies);
                     }
                 }
             }
         }
 
         if (currentMovieBeingQueried == filmTitle) {
-            mutLiveListMovies.postValue(listMovies);
+            mutLiveListMedia.postValue(listMovies);
         }
     }
 

@@ -11,14 +11,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.example.test.R
 import com.squareup.picasso.Picasso
-import unitn.app.api.Movies
+import unitn.app.api.Media
 
 class ViewHolderHomepage {
     var poster: ImageView? = null
     var title: TextView? = null
 }
 
-class AdapterHomepage(private var context: Context, private var movies: List<Movies>) :
+class AdapterHomepage(private var context: Context, private var movies: List<Media>) :
     BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val itemInGrid: ViewHolderHomepage
@@ -39,14 +39,14 @@ class AdapterHomepage(private var context: Context, private var movies: List<Mov
         return myView
     }
 
-    private fun setTitleProperties(itemInGrid: ViewHolderHomepage, movie: Movies) {
+    private fun setTitleProperties(itemInGrid: ViewHolderHomepage, movie: Media) {
         itemInGrid.title!!.text = movie.title
         itemInGrid.title!!.ellipsize = TextUtils.TruncateAt.MARQUEE;
         itemInGrid.title!!.marqueeRepeatLimit = -1;
         itemInGrid.title!!.setSingleLine(true);
         itemInGrid.title!!.setSelected(true);
     }
-    private fun setPosterProperties(itemInGrid: ViewHolderHomepage, movie: Movies) {
+    private fun setPosterProperties(itemInGrid: ViewHolderHomepage, movie: Media) {
         Picasso.get().load(movie.posterPath).placeholder(R.drawable.missing_poster)
             .into(itemInGrid.poster);
 
@@ -57,7 +57,7 @@ class AdapterHomepage(private var context: Context, private var movies: List<Mov
         }
     }
 
-    private fun prepareExtras(intent: Intent, movie: Movies) {
+    private fun prepareExtras(intent: Intent, movie: Media) {
         intent.putExtra("id", movie.mediaId)
         intent.putExtra("titoloFilm", movie.title)
         intent.putExtra("poster", movie.posterPath)

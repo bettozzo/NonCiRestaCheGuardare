@@ -19,13 +19,13 @@
             android:id="@+id/filmSelected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Films" />
+            android:text="@string/media_selection_tab_text_films" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/seriesSelected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Serie TV" />
+            android:text="@string/media_selection_tab_text_series" />
 
     </com.google.android.material.tabs.TabLayout>
 

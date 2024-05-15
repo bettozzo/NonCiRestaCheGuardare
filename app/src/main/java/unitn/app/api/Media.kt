@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Movies(
+data class Media(
     @ColumnInfo(name = "mediaId") val mediaId: Int,
     @ColumnInfo(name = "isFilm") val isFilm: Boolean,
     @ColumnInfo(name = "titolo") val title: String,

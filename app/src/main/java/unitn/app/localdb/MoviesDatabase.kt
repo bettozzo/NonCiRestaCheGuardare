@@ -3,9 +3,9 @@ package unitn.app.localdb
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import unitn.app.api.Movies
+import unitn.app.api.Media
 
-@Database(entities = [Movies::class], version = 2)
+@Database(entities = [Media::class], version = 3)
 @TypeConverters(Converters::class)
 abstract class MoviesDatabase : RoomDatabase(){
     abstract fun movieDao(): MovieDao

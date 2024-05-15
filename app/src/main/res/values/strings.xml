@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Non ci resta che guardare</string>
     <string name="api_key_tmdb">f256ec040f1c2b91ad903cc394728e55</string>
+    <string name="media_selection_tab_text_films">Films</string>
+    <string name="media_selection_tab_text_series">Serie TV</string>
 </resources>

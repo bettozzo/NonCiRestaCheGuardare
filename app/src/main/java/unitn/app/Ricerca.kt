@@ -18,7 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import unitn.app.api.MediaDetails
-import unitn.app.api.Movies
+import unitn.app.api.Media
 
 
 class Ricerca : AppCompatActivity() {
@@ -45,7 +45,7 @@ class Ricerca : AppCompatActivity() {
         val buttonToSearch = findViewById<Button>(R.id.buttonToSearch)
         val apiKey = resources.getString(R.string.api_key_tmdb)
 
-        mediaDetails.liveListMovies.observe(this) { movies ->
+        mediaDetails.liveListMedia.observe(this) { movies ->
             gridView.adapter = AdapterSearch(this@Ricerca, movies)
         }
 
@@ -61,12 +61,12 @@ class Ricerca : AppCompatActivity() {
             }
         }
     }
-    private fun getQueriedMovies(): List<Movies> {
+    private fun getQueriedMovies(): List<Media> {
         if (sharedPref?.contains("movies") == true) {
             return Converters().stringToMovies(
                 sharedPref!!.getString(
                     "movies",
-                    emptyList<Movies>().toString()
+                    emptyList<Media>().toString()
                 )!!
             ).toMutableList();
         }
@@ -76,14 +76,14 @@ class Ricerca : AppCompatActivity() {
 
 
 private class Converters {
-    fun moviesToString(movie: List<Movies>): String {
+    fun moviesToString(movie: List<Media>): String {
         val gson = Gson()
         return gson.toJson(movie)
     }
 
-    fun stringToMovies(string: String): List<Movies> {
+    fun stringToMovies(string: String): List<Media> {
         val gson = Gson()
-        val listType = object : TypeToken<List<Movies>>() {}.type
+        val listType = object : TypeToken<List<Media>>() {}.type
         return gson.fromJson(string, listType)
     }
 }
