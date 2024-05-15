@@ -10,14 +10,19 @@ interface MovieDao {
     @Query("SELECT * FROM Movies")
     suspend fun getAll(): List<Movies>
 
-    @Query("SELECT id FROM Movies")
+    @Query("SELECT mediaId FROM Movies")
     suspend fun getAllId(): List<Int>
-    @Query("SELECT * FROM Movies WHERE ID = :id")
+
+    @Query("SELECT * FROM Movies WHERE mediaId = :id")
     suspend fun getMovieFromId(id: Int): Movies
 
     @Insert
     suspend fun insertMovie(movie: Movies)
 
-    @Query("DELETE FROM Movies WHERE ID = :id")
+    @Query("DELETE FROM Movies WHERE mediaId = :id")
     suspend fun deleteMovie(id: Int)
+
+
+    @Query("UPDATE Movies SET isLocal=:isLocal WHERE mediaId = :id")
+    suspend fun saveInLocal(id: Int, isLocal: Boolean)
 }

@@ -58,9 +58,10 @@ class AdapterHomepage(private var context: Context, private var movies: List<Mov
     }
 
     private fun prepareExtras(intent: Intent, movie: Movies) {
-        intent.putExtra("id", movie.id)
+        intent.putExtra("id", movie.mediaId)
         intent.putExtra("titoloFilm", movie.title)
         intent.putExtra("poster", movie.posterPath)
+        intent.putExtra("isInLocal", movie.isLocallySaved)
 
         for (platform in movie.platform) {
             when (platform.first) {

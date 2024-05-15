@@ -57,7 +57,7 @@
         android:orientation="horizontal" />
 
     <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/switch1"
+        android:id="@+id/switchLocal"
         android:layout_width="187dp"
         android:layout_height="41dp"
         android:layout_below="@+id/plaformList"

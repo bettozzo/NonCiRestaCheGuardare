@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -31,6 +32,8 @@ class DettaglioFilm : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        //extras from AdapterHomepage.kt
         val extras = intent.extras;
         if (extras == null) {
             System.err.println("Bundle is null")
@@ -50,7 +53,20 @@ class DettaglioFilm : AppCompatActivity() {
         //platforms
         showAvailablePlatforms(extras)
 
-        // TODO switch
+        //switch
+        val switch = findViewById<SwitchCompat>(R.id.switchLocal)
+        switch.isChecked = extras.getBoolean("isInLocal")
+        switch.setOnCheckedChangeListener { _, isChecked ->
+            val movieDao = Room.databaseBuilder(
+                applicationContext,
+                MoviesDatabase::class.java, "database-name"
+            ).addTypeConverter(Converters())
+                .build().movieDao()
+
+            lifecycleScope.launch {
+                movieDao.saveInLocal(id, isChecked)
+            }
+        }
 
         //buttons
         val buttonDel = findViewById<ImageButton>(R.id.buttonDelete)

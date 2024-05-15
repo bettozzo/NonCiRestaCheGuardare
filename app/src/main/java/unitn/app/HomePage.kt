@@ -43,6 +43,7 @@ class HomePage : AppCompatActivity() {
                 applicationContext,
                 MoviesDatabase::class.java, "database-name"
             ).addTypeConverter(Converters())
+                .fallbackToDestructiveMigration()
                 .build().movieDao()
             val movies = movieDao.getAll()
             gridView.adapter = AdapterHomepage(this@HomePage, movies)
@@ -59,6 +60,7 @@ class HomePage : AppCompatActivity() {
                 applicationContext,
                 MoviesDatabase::class.java, "database-name"
             ).addTypeConverter(Converters())
+                .fallbackToDestructiveMigration()
                 .build().movieDao()
             val movies = movieDao.getAll()
             gridView.adapter = AdapterHomepage(this@HomePage, movies)

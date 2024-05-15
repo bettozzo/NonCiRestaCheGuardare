@@ -60,7 +60,8 @@ class AggiungiFilm : AppCompatActivity() {
                 ).addTypeConverter(Converters())
                     .build().movieDao()
                 val posterNN = poster ?: "no poster"
-                movieDao.insertMovie(Movies(id, titolo, platforms, posterNN))
+                movieDao.insertMovie(Movies(id, true, titolo, platforms, posterNN, false))
+                setResult(id)
                 finish()
             }
         }

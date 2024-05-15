@@ -31,7 +31,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
         currentMovieBeingQueried = filmTitle;
         listMovies = emptyList<Movies>().toMutableList()
 
-
+        var counter = 0;
         val idFilmInUserList = getUserIdFilms();
 
         val apiCallerMovies = Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/")
@@ -45,17 +45,25 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
         for (result in results) {
             val id = result.id
             if (!idFilmInUserList.contains(id)) {
+                counter++;
                 val title = result.title
                 val platforms = getMoviesPlatform(id, apiKey)
                 val poster = getMoviePoster(id, apiKey) ?: "No image"
 
-                val movie = Movies(id, title, platforms, poster)
+                val movie = Movies(id, true, title, platforms, poster, false)
+
                 //prevents concurrency problems. In case user sends a new request before the previous one is finished
                 if (currentMovieBeingQueried == filmTitle) {
                     listMovies.add(movie)
-                    mutLiveListMovies.postValue(listMovies);
+                    if (counter % 2 == 0) {
+                        mutLiveListMovies.postValue(listMovies);
+                    }
                 }
             }
+        }
+
+        if (currentMovieBeingQueried == filmTitle) {
+            mutLiveListMovies.postValue(listMovies);
         }
     }
 
@@ -65,6 +73,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
             context,
             MoviesDatabase::class.java, "database-name"
         ).addTypeConverter(Converters())
+            .fallbackToDestructiveMigration()
             .build().movieDao()
 
         return movieDao.getAllId()

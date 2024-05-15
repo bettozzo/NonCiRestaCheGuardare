@@ -61,7 +61,7 @@ class AdapterSearch(private var context: Context, private var movies: List<Movie
     }
 
     private fun prepareExtras(intent: Intent, movie: Movies) {
-        intent.putExtra("id", movie.id)
+        intent.putExtra("id", movie.mediaId)
         intent.putExtra("titoloFilm", movie.title)
         intent.putExtra("poster", movie.posterPath)
         intent.putExtra("platforms", Converters().platformToString(movie.platform))
