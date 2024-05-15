@@ -17,9 +17,9 @@ import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import unitn.app.api.Media
 import unitn.app.localdb.Converters
-import unitn.app.localdb.MoviesDatabase
+import unitn.app.localdb.MediaDatabase
 
-class AggiungiFilm : AppCompatActivity() {
+class AggiungiMedia : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,11 +56,11 @@ class AggiungiFilm : AppCompatActivity() {
             lifecycleScope.launch {
                 val movieDao = Room.databaseBuilder(
                     applicationContext,
-                    MoviesDatabase::class.java, "database-name"
+                    MediaDatabase::class.java, "database-name"
                 ).addTypeConverter(Converters())
-                    .build().movieDao()
+                    .build().MediaDao()
                 val posterNN = poster ?: "no poster"
-                movieDao.insertMovie(Media(id, true, titolo, platforms, posterNN, false))
+                movieDao.insertMedia(Media(id, true, titolo, platforms, posterNN, false))
                 setResult(id)
                 finish()
             }

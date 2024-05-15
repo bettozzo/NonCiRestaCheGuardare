@@ -15,7 +15,7 @@ import com.example.test.R
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.launch
 import unitn.app.localdb.Converters
-import unitn.app.localdb.MoviesDatabase
+import unitn.app.localdb.MediaDatabase
 
 
 class HomePage : AppCompatActivity() {
@@ -31,10 +31,10 @@ class HomePage : AppCompatActivity() {
         }
         val movieDao = Room.databaseBuilder(
             applicationContext,
-            MoviesDatabase::class.java, "database-name"
+            MediaDatabase::class.java, "database-name"
         ).addTypeConverter(Converters())
             .fallbackToDestructiveMigration()
-            .build().movieDao()
+            .build().MediaDao()
 
         val goToSearchButton = findViewById<ImageButton>(R.id.goToSearchMediaButton)
         goToSearchButton.setOnClickListener {
@@ -81,10 +81,10 @@ class HomePage : AppCompatActivity() {
 
         val movieDao = Room.databaseBuilder(
             applicationContext,
-            MoviesDatabase::class.java, "database-name"
+            MediaDatabase::class.java, "database-name"
         ).addTypeConverter(Converters())
             .fallbackToDestructiveMigration()
-            .build().movieDao()
+            .build().MediaDao()
 
         lifecycleScope.launch {
             if (tabPosition == 0) {

@@ -18,7 +18,7 @@ class ViewHolderHomepage {
     var title: TextView? = null
 }
 
-class AdapterHomepage(private var context: Context, private var movies: List<Media>) :
+class AdapterHomepage(private var context: Context, private var media: List<Media>) :
     BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val itemInGrid: ViewHolderHomepage
@@ -34,36 +34,36 @@ class AdapterHomepage(private var context: Context, private var movies: List<Med
             itemInGrid = myView.tag as ViewHolderHomepage
         }
 
-        setTitleProperties(itemInGrid, movies[position])
-        setPosterProperties(itemInGrid, movies[position])
+        setTitleProperties(itemInGrid, media[position])
+        setPosterProperties(itemInGrid, media[position])
         return myView
     }
 
-    private fun setTitleProperties(itemInGrid: ViewHolderHomepage, movie: Media) {
-        itemInGrid.title!!.text = movie.title
+    private fun setTitleProperties(itemInGrid: ViewHolderHomepage, media: Media) {
+        itemInGrid.title!!.text = media.title
         itemInGrid.title!!.ellipsize = TextUtils.TruncateAt.MARQUEE;
         itemInGrid.title!!.marqueeRepeatLimit = -1;
         itemInGrid.title!!.setSingleLine(true);
         itemInGrid.title!!.setSelected(true);
     }
-    private fun setPosterProperties(itemInGrid: ViewHolderHomepage, movie: Media) {
-        Picasso.get().load(movie.posterPath).placeholder(R.drawable.missing_poster)
+    private fun setPosterProperties(itemInGrid: ViewHolderHomepage, media: Media) {
+        Picasso.get().load(media.posterPath).placeholder(R.drawable.missing_poster)
             .into(itemInGrid.poster);
 
         itemInGrid.poster!!.setOnClickListener {
-            val intent = Intent(context, DettaglioFilm::class.java)
-            prepareExtras(intent, movie);
+            val intent = Intent(context, DettaglioMedia::class.java)
+            prepareExtras(intent, media);
             context.startActivity(intent)
         }
     }
 
-    private fun prepareExtras(intent: Intent, movie: Media) {
-        intent.putExtra("id", movie.mediaId)
-        intent.putExtra("titoloFilm", movie.title)
-        intent.putExtra("poster", movie.posterPath)
-        intent.putExtra("isInLocal", movie.isLocallySaved)
+    private fun prepareExtras(intent: Intent, media: Media) {
+        intent.putExtra("id", media.mediaId)
+        intent.putExtra("titoloFilm", media.title)
+        intent.putExtra("poster", media.posterPath)
+        intent.putExtra("isInLocal", media.isLocallySaved)
 
-        for (platform in movie.platform) {
+        for (platform in media.platform) {
             when (platform.first) {
                 "Netflix" -> {
                     intent.putExtra("NetflixPath", platform.second)
@@ -81,7 +81,7 @@ class AdapterHomepage(private var context: Context, private var movies: List<Med
 
 
     override fun getItem(p0: Int): Any {
-        return movies[p0]
+        return media[p0]
     }
 
     override fun getItemId(p0: Int): Long {
@@ -89,7 +89,7 @@ class AdapterHomepage(private var context: Context, private var movies: List<Med
     }
 
     override fun getCount(): Int {
-        return movies.size
+        return media.size
     }
 }
 

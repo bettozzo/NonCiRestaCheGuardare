@@ -19,9 +19,9 @@ import com.example.test.R
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import unitn.app.localdb.Converters
-import unitn.app.localdb.MoviesDatabase
+import unitn.app.localdb.MediaDatabase
 
-class DettaglioFilm : AppCompatActivity() {
+class DettaglioMedia : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,9 +59,9 @@ class DettaglioFilm : AppCompatActivity() {
         switch.setOnCheckedChangeListener { _, isChecked ->
             val movieDao = Room.databaseBuilder(
                 applicationContext,
-                MoviesDatabase::class.java, "database-name"
+                MediaDatabase::class.java, "database-name"
             ).addTypeConverter(Converters())
-                .build().movieDao()
+                .build().MediaDao()
 
             lifecycleScope.launch {
                 movieDao.saveInLocal(id, isChecked)
@@ -80,28 +80,28 @@ class DettaglioFilm : AppCompatActivity() {
         movieId: Int
     ) {
         deleteBtn.setOnClickListener {
-            val intent = Intent(this@DettaglioFilm, HomePage::class.java)
+            val intent = Intent(this@DettaglioMedia, HomePage::class.java)
             lifecycleScope.launch {
                 val movieDao = Room.databaseBuilder(
                     applicationContext,
-                    MoviesDatabase::class.java, "database-name"
+                    MediaDatabase::class.java, "database-name"
                 ).addTypeConverter(Converters())
-                    .build().movieDao()
-                movieDao.deleteMovie(movieId)
+                    .build().MediaDao()
+                movieDao.deleteMedia(movieId)
                 finish()//prevents this activity to be opened again
                 startActivity(intent)
             }
         }
 
         seenBtn.setOnClickListener {
-            val intent = Intent(this@DettaglioFilm, HomePage::class.java)
+            val intent = Intent(this@DettaglioMedia, HomePage::class.java)
             lifecycleScope.launch {
                 val movieDao = Room.databaseBuilder(
                     applicationContext,
-                    MoviesDatabase::class.java, "database-name"
+                    MediaDatabase::class.java, "database-name"
                 ).addTypeConverter(Converters())
-                    .build().movieDao()
-                movieDao.deleteMovie(movieId)
+                    .build().MediaDao()
+                movieDao.deleteMedia(movieId)
                 finish()//prevents this activity to be opened again
                 startActivity(intent)
             }

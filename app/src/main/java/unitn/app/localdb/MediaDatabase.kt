@@ -7,6 +7,6 @@ import unitn.app.api.Media
 
 @Database(entities = [Media::class], version = 3)
 @TypeConverters(Converters::class)
-abstract class MoviesDatabase : RoomDatabase(){
-    abstract fun movieDao(): MovieDao
+abstract class MediaDatabase : RoomDatabase(){
+    abstract fun MediaDao(): MovieDao
 }

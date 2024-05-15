@@ -13,7 +13,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import unitn.app.localdb.Converters
-import unitn.app.localdb.MoviesDatabase
+import unitn.app.localdb.MediaDatabase
 import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -21,75 +21,95 @@ import kotlin.coroutines.suspendCoroutine
 
 class MediaDetails(application: Application) : AndroidViewModel(application) {
 
-    private lateinit var listMovies: MutableList<Media>;
+    private lateinit var listMedia: MutableList<Media>;
     private val mutLiveListMedia = MutableLiveData<List<Media>>();
-    private lateinit var currentMovieBeingQueried: String;
+    private lateinit var currentMediaBeingQueried: String;
     val liveListMedia: LiveData<List<Media>>
         get() = mutLiveListMedia;
 
-    suspend fun getDetails(filmTitle: String, apiKey: String) = withContext(Dispatchers.IO) {
-        currentMovieBeingQueried = filmTitle;
-        listMovies = emptyList<Media>().toMutableList()
+    suspend fun getDetails(mediaTitle: String, apiKey: String) = withContext(Dispatchers.IO) {
+        currentMediaBeingQueried = mediaTitle;
+        listMedia = emptyList<Media>().toMutableList()
 
         var counter = 0;
-        val idFilmInUserList = getUserIdFilms();
+        val idFilmInUserList = getAllUserMedia();
 
-        val apiCallerMovies = Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/")
+        val apiCallerMedia = Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/")
             .addConverterFactory(GsonConverterFactory.create()).build()
             .create(RetrofitAPI::class.java)
 
-        val movieSearchCall = apiCallerMovies.getMovie(filmTitle, false, "it", 1, apiKey)
+        val movieSearchCall = apiCallerMedia.getMovie(mediaTitle, false, "it", 1, apiKey)
+        val seriesSearchCall = apiCallerMedia.getSerie(mediaTitle, false, "it", 1, apiKey)
 
-        val results = getMoviesDetails(movieSearchCall).toMutableList()
+        val results = getMediaDetails(movieSearchCall).map { Pair(it, true) }.toMutableList()
+        results.addAll(getMediaDetails(seriesSearchCall).map { Pair(it, false) })
+        results.sortBy { it.first.popularity }
+        results.reverse()
 
-        for (result in results) {
-            val id = result.id
+        for ((media, isFilm) in results) {
+            val id = media.id
             if (!idFilmInUserList.contains(id)) {
                 counter++;
-                val title = result.title
-                val platforms = getMoviesPlatform(id, apiKey)
-                val poster = getMoviePoster(id, apiKey) ?: "No image"
-
-                val movie = Media(id, true, title, platforms, poster, false)
+                val title = if (isFilm) {
+                    media.title
+                }else{
+                    media.name
+                }
+                val platforms = getMediaPlatform(id, isFilm, apiKey)
+                val poster = getPosterPath(media.poster_path, media.backdrop_path)
+                val movie = Media(id, isFilm, title, platforms, poster, false)
 
                 //prevents concurrency problems. In case user sends a new request before the previous one is finished
-                if (currentMovieBeingQueried == filmTitle) {
-                    listMovies.add(movie)
+                if (currentMediaBeingQueried == mediaTitle) {
+                    listMedia.add(movie)
                     if (counter % 2 == 0) {
-                        mutLiveListMedia.postValue(listMovies);
+                        mutLiveListMedia.postValue(listMedia);
                     }
                 }
             }
         }
 
-        if (currentMovieBeingQueried == filmTitle) {
-            mutLiveListMedia.postValue(listMovies);
+        if (currentMediaBeingQueried == mediaTitle) {
+            mutLiveListMedia.postValue(listMedia);
         }
     }
 
-    private suspend fun getUserIdFilms(): List<Int> {
+    private suspend fun getAllUserMedia(): List<Int> {
         val context = getApplication<Application>().applicationContext
         val movieDao = Room.databaseBuilder(
             context,
-            MoviesDatabase::class.java, "database-name"
+            MediaDatabase::class.java, "database-name"
         ).addTypeConverter(Converters())
             .fallbackToDestructiveMigration()
-            .build().movieDao()
+            .build().MediaDao()
 
         return movieDao.getAllId()
     }
 }
 
-suspend fun getMoviesDetails(movieSearchCall: Call<MovieResult?>?): List<QueriedMovie> {
+private fun getPosterPath(posterPath: String?, backdropPath: String?): String {
+    if (posterPath != null) {
+        return "https://image.tmdb.org/t/p/w300" + posterPath
+    }
+    if (backdropPath != null) {
+        return "https://image.tmdb.org/t/p/w300" + backdropPath
+    }
+    return "No poster"
+}
+
+suspend fun getMediaDetails(mediaSearchCall: Call<MediaResultsFromAPI?>?): MutableList<UnfilteredMediaDetails> {
 
     return suspendCoroutine { continuation ->
-        movieSearchCall?.enqueue(object : Callback<MovieResult?> {
-            override fun onResponse(call: Call<MovieResult?>, response: Response<MovieResult?>) {
+        mediaSearchCall?.enqueue(object : Callback<MediaResultsFromAPI?> {
+            override fun onResponse(
+                call: Call<MediaResultsFromAPI?>,
+                response: Response<MediaResultsFromAPI?>,
+            ) {
                 if (!response.isSuccessful) throw IOException("Unexpected code $response")
-                continuation.resume(response.body()!!.results)
+                continuation.resume(response.body()!!.results.toMutableList())
             }
 
-            override fun onFailure(call: Call<MovieResult?>, t: Throwable) {
+            override fun onFailure(call: Call<MediaResultsFromAPI?>, t: Throwable) {
                 TODO("Not yet implemented")
             }
         })
@@ -97,11 +117,19 @@ suspend fun getMoviesDetails(movieSearchCall: Call<MovieResult?>?): List<Queried
 }
 
 
-suspend fun getMoviesPlatform(id: Int, apiKey: String): MutableList<Pair<String, String>> {
+suspend fun getMediaPlatform(
+    id: Int,
+    isFilm: Boolean,
+    apiKey: String,
+): MutableList<Pair<String, String>> {
     val platforms = mutableListOf<Pair<String, String>>()
-
+    val mBaseUrl = if (isFilm) {
+        "https://api.themoviedb.org/3/movie/$id/watch/"
+    } else {
+        "https://api.themoviedb.org/3/tv/$id/watch/"
+    }
     val apiCallerPlatforms =
-        Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/movie/$id/watch/")
+        Retrofit.Builder().baseUrl(mBaseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(RetrofitAPI::class.java)
@@ -142,68 +170,4 @@ suspend fun getMoviesPlatform(id: Int, apiKey: String): MutableList<Pair<String,
             }
         })
     }
-}
-
-suspend fun getMoviePoster(id: Int, apiKey: String): String? {
-    val apiCallerPlatforms =
-        Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/movie/$id/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(RetrofitAPI::class.java)
-
-    return suspendCoroutine { continuation ->
-        apiCallerPlatforms.getPoster(apiKey)?.enqueue(object : Callback<MovieResults?> {
-            override fun onResponse(call: Call<MovieResults?>, response: Response<MovieResults?>) {
-                if (!response.isSuccessful) throw IOException("Unexpected co de $response")
-
-                val posters = response.body()!!.posters ?: emptyList();
-                val backdrops = response.body()!!.backdrops ?: emptyList();
-                val logo = response.body()!!.logo ?: emptyList();
-
-                val resolution = "w300"
-
-                if (posters.isNotEmpty()) {
-                    continuation.resume(
-                        "https://image.tmdb.org/t/p/$resolution" + filterImages(
-                            posters
-                        )
-                    )
-                    return;
-                }
-                if (logo.isNotEmpty()) {
-                    continuation.resume("https://image.tmdb.org/t/p/$resolution" + filterImages(logo))
-                    return;
-                }
-                if (backdrops.isNotEmpty()) {
-                    continuation.resume(
-                        "https://image.tmdb.org/t/p/$resolution" + filterImages(
-                            backdrops
-                        )
-                    )
-                    return;
-                }
-                continuation.resume(null)
-                return;
-            }
-
-            override fun onFailure(call: Call<MovieResults?>, t: Throwable) {
-                TODO("Not yet implemented")
-            }
-
-        })
-    }
-}
-
-fun filterImages(listImages: List<MovieImageInfo>): String {
-    var bestFilmSoFar = listImages[0].file_path
-
-    for (image in listImages) {
-        if (image.iso_639_1 == "it") {
-            return image.file_path;
-        }
-        if (image.iso_639_1 == "en" && bestFilmSoFar == listImages[0].file_path) {
-            bestFilmSoFar = image.file_path
-        }
-    }
-    return bestFilmSoFar
 }

@@ -19,7 +19,7 @@ class ViewHolderSearch {
     var title: TextView? = null
 }
 
-class AdapterSearch(private var context: Context, private var movies: List<Media>) :
+class AdapterSearch(private var context: Context, private var media: List<Media>) :
     BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
@@ -38,8 +38,8 @@ class AdapterSearch(private var context: Context, private var movies: List<Media
             itemInGrid = myView.tag as ViewHolderSearch
         }
 
-        setTitleProperties(itemInGrid, movies[position])
-        setPosterProperties(itemInGrid, movies[position])
+        setTitleProperties(itemInGrid, media[position])
+        setPosterProperties(itemInGrid, media[position])
         return myView
     }
     private fun setTitleProperties(itemInGrid: ViewHolderSearch, movie: Media) {
@@ -54,7 +54,7 @@ class AdapterSearch(private var context: Context, private var movies: List<Media
             .into(itemInGrid.poster);
 
         itemInGrid.poster!!.setOnClickListener {
-            val intent = Intent(context, AggiungiFilm::class.java)
+            val intent = Intent(context, AggiungiMedia::class.java)
             prepareExtras(intent, movie);
             context.startActivity(intent)
         }
@@ -67,7 +67,7 @@ class AdapterSearch(private var context: Context, private var movies: List<Media
         intent.putExtra("platforms", Converters().platformToString(movie.platform))
     }
     override fun getItem(p0: Int): Any {
-        return movies[p0]
+        return media[p0]
     }
 
     override fun getItemId(p0: Int): Long {
@@ -75,6 +75,6 @@ class AdapterSearch(private var context: Context, private var movies: List<Media
     }
 
     override fun getCount(): Int {
-        return movies.size
+        return media.size
     }
 }

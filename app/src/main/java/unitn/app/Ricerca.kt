@@ -23,7 +23,7 @@ import unitn.app.api.Media
 
 class Ricerca : AppCompatActivity() {
     private lateinit var mediaDetails: MediaDetails;
-    private var moviesBeingSearched = getQueriedMovies();
+    private var mediaBeingSearched = getQueriedMedia();
     private var sharedPref: SharedPreferences? = null
 
     @SuppressLint("MissingInflatedId")
@@ -45,8 +45,8 @@ class Ricerca : AppCompatActivity() {
         val buttonToSearch = findViewById<Button>(R.id.buttonToSearch)
         val apiKey = resources.getString(R.string.api_key_tmdb)
 
-        mediaDetails.liveListMedia.observe(this) { movies ->
-            gridView.adapter = AdapterSearch(this@Ricerca, movies)
+        mediaDetails.liveListMedia.observe(this) {
+            gridView.adapter = AdapterSearch(this@Ricerca, it)
         }
 
 
@@ -55,17 +55,17 @@ class Ricerca : AppCompatActivity() {
                 mediaDetails.getDetails(searchBar.text.toString(), apiKey);
                 val editor = sharedPref?.edit()
                 if (editor != null) {
-                    editor.putString("movies", Converters().moviesToString(moviesBeingSearched))
+                    editor.putString("media", Converters().mediaToString(mediaBeingSearched))
                     editor.apply()
                 }
             }
         }
     }
-    private fun getQueriedMovies(): List<Media> {
-        if (sharedPref?.contains("movies") == true) {
-            return Converters().stringToMovies(
+    private fun getQueriedMedia(): List<Media> {
+        if (sharedPref?.contains("media") == true) {
+            return Converters().stringToMedia(
                 sharedPref!!.getString(
-                    "movies",
+                    "media",
                     emptyList<Media>().toString()
                 )!!
             ).toMutableList();
@@ -76,12 +76,12 @@ class Ricerca : AppCompatActivity() {
 
 
 private class Converters {
-    fun moviesToString(movie: List<Media>): String {
+    fun mediaToString(movie: List<Media>): String {
         val gson = Gson()
         return gson.toJson(movie)
     }
 
-    fun stringToMovies(string: String): List<Media> {
+    fun stringToMedia(string: String): List<Media> {
         val gson = Gson()
         val listType = object : TypeToken<List<Media>>() {}.type
         return gson.fromJson(string, listType)

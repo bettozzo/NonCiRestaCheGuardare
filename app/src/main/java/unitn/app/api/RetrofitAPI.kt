@@ -13,13 +13,17 @@ interface RetrofitAPI {
         @Query("language") language: String,
         @Query("page") page: Int,
         @Query("api_key") api_key: String,
-    ): Call<MovieResult?>?
+    ): Call<MediaResultsFromAPI?>?
+
+    @GET("search/tv?")
+    fun getSerie(
+        @Query("query") title: String,
+        @Query("include_adult") include_adult: Boolean,
+        @Query("language") language: String,
+        @Query("page") page: Int,
+        @Query("api_key") api_key: String,
+    ): Call<MediaResultsFromAPI?>?
 
     @GET("providers?")
     fun getPlatform(@Query("api_key") api_key: String): Call<StreamingResult?>?
-
-    @GET("images?")
-    fun getPoster(
-        @Query("api_key") apiKey: String
-    ): Call<MovieResults?>?
 }

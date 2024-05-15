@@ -10,7 +10,7 @@ data class MovieImageInfo(
     val width: Int
 );
 
-data class MovieResults(
+data class MediaResults(
     val backdrops: List<MovieImageInfo>?,
     val id: Int,
     val logo: List<MovieImageInfo>?,
