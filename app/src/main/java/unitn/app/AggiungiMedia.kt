@@ -67,9 +67,8 @@ class AggiungiMedia : AppCompatActivity() {
                     MediaDatabase::class.java, "database-name"
                 ).addTypeConverter(Converters())
                     .build().MediaDao()
-                val posterNN = poster ?: "no poster"
                 sinossi = limitSizeSinossi(sinossi, 260)
-                movieDao.insertMedia(Media(id, isFilm, titolo, platforms, posterNN, false, sinossi))
+                movieDao.insertMedia(Media(id, isFilm, titolo, platforms, poster, false, sinossi))
                 setResult(id)
                 finish()
             }

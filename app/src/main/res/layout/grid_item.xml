@@ -1,14 +1,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingStart="2dp"
-    android:paddingEnd="2dp">
+    android:layout_height="200dp"
+    android:paddingHorizontal="2dp"
+    android:paddingVertical="3dp">
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
         android:adjustViewBounds="true"
         android:background="@color/black"
         android:contentDescription="Copertina Film"
@@ -16,17 +16,13 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView"
-        android:layout_alignStart="@+id/imageView"
-        android:layout_alignEnd="@+id/imageView"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="-20sp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:alpha="0.9"
-        android:background="@color/black"
         android:gravity="center"
-        android:paddingHorizontal="8dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@color/black"
         android:textColor="@android:color/white"
-        android:textSize="20sp" />
+        android:textSize="32sp" />
 </RelativeLayout>

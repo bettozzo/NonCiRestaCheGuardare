@@ -3,7 +3,6 @@ package unitn.app
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -14,8 +13,8 @@ import com.squareup.picasso.Picasso
 import unitn.app.api.Media
 
 class ViewHolderHomepage {
-    var poster: ImageView? = null
-    var title: TextView? = null
+    lateinit var poster: ImageView
+    lateinit var title: TextView
 }
 
 class AdapterHomepage(private var context: Context, private var media: List<Media>) :
@@ -34,27 +33,28 @@ class AdapterHomepage(private var context: Context, private var media: List<Medi
             itemInGrid = myView.tag as ViewHolderHomepage
         }
 
-        setTitleProperties(itemInGrid, media[position])
-        setPosterProperties(itemInGrid, media[position])
+        if (media[position].posterPath != null) {
+            showPoster(itemInGrid, media[position])
+        }else {
+            showTitle(itemInGrid, media[position])
+        }
+
+        myView.setOnClickListener{
+            val intent = Intent(context, DettaglioMedia::class.java)
+            prepareExtras(intent, media[position]);
+            context.startActivity(intent)
+        }
         return myView
     }
 
-    private fun setTitleProperties(itemInGrid: ViewHolderHomepage, media: Media) {
-        itemInGrid.title!!.text = media.title
-        itemInGrid.title!!.ellipsize = TextUtils.TruncateAt.MARQUEE;
-        itemInGrid.title!!.marqueeRepeatLimit = -1;
-        itemInGrid.title!!.setSingleLine(true);
-        itemInGrid.title!!.setSelected(true);
+    private fun showTitle(itemInGrid: ViewHolderHomepage, media: Media) {
+        itemInGrid.poster.visibility = View.GONE
+        itemInGrid.title.text = media.title
     }
-    private fun setPosterProperties(itemInGrid: ViewHolderHomepage, media: Media) {
-        Picasso.get().load(media.posterPath).placeholder(R.drawable.missing_poster)
+    private fun showPoster(itemInGrid: ViewHolderHomepage, media: Media) {
+        itemInGrid.title.visibility = View.GONE
+        Picasso.get().load(media.posterPath)
             .into(itemInGrid.poster);
-
-        itemInGrid.poster!!.setOnClickListener {
-            val intent = Intent(context, DettaglioMedia::class.java)
-            prepareExtras(intent, media);
-            context.startActivity(intent)
-        }
     }
 
     private fun prepareExtras(intent: Intent, media: Media) {

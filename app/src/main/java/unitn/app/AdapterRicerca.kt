@@ -15,8 +15,8 @@ import unitn.app.api.Media
 import unitn.app.localdb.Converters
 
 class ViewHolderSearch {
-    var poster: ImageView? = null
-    var title: TextView? = null
+    lateinit var poster: ImageView
+    lateinit var title: TextView
 }
 
 class AdapterSearch(private var context: Context, private var media: List<Media>) :
@@ -38,28 +38,29 @@ class AdapterSearch(private var context: Context, private var media: List<Media>
             itemInGrid = myView.tag as ViewHolderSearch
         }
 
-        setTitleProperties(itemInGrid, media[position])
-        setPosterProperties(itemInGrid, media[position])
-        return myView
-    }
-    private fun setTitleProperties(itemInGrid: ViewHolderSearch, media: Media) {
-        itemInGrid.title!!.text = media.title
-        itemInGrid.title!!.ellipsize = TextUtils.TruncateAt.MARQUEE;
-        itemInGrid.title!!.marqueeRepeatLimit = -1;
-        itemInGrid.title!!.setSingleLine(true);
-        itemInGrid.title!!.setSelected(true);
-    }
-    private fun setPosterProperties(itemInGrid: ViewHolderSearch, media: Media) {
-        Picasso.get().load(media.posterPath).placeholder(R.drawable.missing_poster)
-            .into(itemInGrid.poster);
+        if (media[position].posterPath != null) {
+            showPoster(itemInGrid, media[position])
+        }else {
+            showTitle(itemInGrid, media[position])
+        }
 
-        itemInGrid.poster!!.setOnClickListener {
+        myView.setOnClickListener{
             val intent = Intent(context, AggiungiMedia::class.java)
-            prepareExtras(intent, media);
+            prepareExtras(intent, media[position]);
             context.startActivity(intent)
         }
+        return myView
     }
 
+    private fun showTitle(itemInGrid: ViewHolderSearch, media: Media) {
+        itemInGrid.poster.visibility = View.GONE
+        itemInGrid.title.text = media.title
+    }
+    private fun showPoster(itemInGrid: ViewHolderSearch, media: Media) {
+        itemInGrid.title.visibility = View.GONE
+        Picasso.get().load(media.posterPath)
+            .into(itemInGrid.poster);
+    }
     private fun prepareExtras(intent: Intent, media: Media) {
         intent.putExtra("id", media.mediaId)
         intent.putExtra("titoloMedia", media.title)
@@ -68,6 +69,7 @@ class AdapterSearch(private var context: Context, private var media: List<Media>
         intent.putExtra("isFilm", media.isFilm)
         intent.putExtra("sinossi", media.sinossi)
     }
+
     override fun getItem(p0: Int): Any {
         return media[p0]
     }

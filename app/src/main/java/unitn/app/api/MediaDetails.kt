@@ -88,14 +88,14 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
     }
 }
 
-private fun getPosterPath(posterPath: String?, backdropPath: String?): String {
+private fun getPosterPath(posterPath: String?, backdropPath: String?): String? {
     if (posterPath != null) {
-        return "https://image.tmdb.org/t/p/w300" + posterPath
+        return "https://image.tmdb.org/t/p/w300$posterPath"
     }
     if (backdropPath != null) {
-        return "https://image.tmdb.org/t/p/w300" + backdropPath
+        return "https://image.tmdb.org/t/p/w300$backdropPath"
     }
-    return "No poster"
+    return null
 }
 
 suspend fun getMediaDetails(mediaSearchCall: Call<MediaResultsFromAPI?>?): MutableList<UnfilteredMediaDetails> {

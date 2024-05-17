@@ -16,6 +16,7 @@ import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.launch
 import unitn.app.localdb.Converters
 import unitn.app.localdb.MediaDatabase
+import unitn.app.localdb.MovieDao
 
 
 class HomePage : AppCompatActivity() {
@@ -49,27 +50,8 @@ class HomePage : AppCompatActivity() {
             val movies = movieDao.getAllMovies()
             gridView.adapter = AdapterHomepage(this@HomePage, movies)
         }
-        mediaSelected.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(p0: TabLayout.Tab?) {
-                if (p0 != null) {
-                    if (p0.text == resources.getString(R.string.media_selection_tab_text_films)) {
-                        lifecycleScope.launch {
-                            gridView.adapter =
-                                AdapterHomepage(this@HomePage, movieDao.getAllMovies())
-                        }
-                    } else if (p0.text == resources.getString(R.string.media_selection_tab_text_series)) {
-                        lifecycleScope.launch {
-                            gridView.adapter =
-                                AdapterHomepage(this@HomePage, movieDao.getAllSeries())
-                        }
-                    }
-                }
-            }
 
-            override fun onTabUnselected(p0: TabLayout.Tab?) {}
-
-            override fun onTabReselected(p0: TabLayout.Tab?) {}
-        })
+        listenToChangeTab(mediaSelected, gridView, movieDao)
     }
 
     override fun onResume() {
@@ -79,13 +61,13 @@ class HomePage : AppCompatActivity() {
         val mediaSelected = findViewById<TabLayout>(R.id.MediaSelection);
         val tabPosition = mediaSelected.selectedTabPosition;
 
+
         val movieDao = Room.databaseBuilder(
             applicationContext,
             MediaDatabase::class.java, "database-name"
         ).addTypeConverter(Converters())
             .fallbackToDestructiveMigration()
             .build().MediaDao()
-
         lifecycleScope.launch {
             if (tabPosition == 0) {
                 gridView.adapter = AdapterHomepage(this@HomePage, movieDao.getAllMovies())
@@ -93,6 +75,10 @@ class HomePage : AppCompatActivity() {
                 gridView.adapter = AdapterHomepage(this@HomePage, movieDao.getAllSeries())
             }
         }
+        listenToChangeTab(mediaSelected, gridView, movieDao)
+    }
+    private fun listenToChangeTab(mediaSelected: TabLayout, gridView: GridView, movieDao: MovieDao){
+
         mediaSelected.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(p0: TabLayout.Tab?) {
                 if (p0 != null) {

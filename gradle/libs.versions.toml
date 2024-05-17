@@ -1,5 +1,6 @@
 [versions]
 agp = "8.3.0"
+androidCompiler = "3.5.1"
 androidimagepopup = "1.2.2"
 androidxRoomCompiler = "2.6.1"
 ankoDesign = "0.10.5"
@@ -38,6 +39,7 @@ anko-design = { module = "org.jetbrains.anko:anko-design", version.ref = "ankoDe
 compiler = { module = "android.arch.persistence.room:compiler", version.ref = "compiler" }
 compiler-v100 = { module = "android.arch.persistence.room:compiler", version.ref = "compilerVersion" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofitVersion" }
+databinding-compiler = { module = "com.android.databinding:compiler", version.ref = "androidCompiler" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
