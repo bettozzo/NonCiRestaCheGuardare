@@ -1,6 +1,7 @@
 package unitn.app.api
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -27,7 +28,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
     val liveListMedia: LiveData<List<Media>>
         get() = mutLiveListMedia;
 
-    suspend fun getDetails(mediaTitle: String, apiKey: String) = withContext(Dispatchers.IO) {
+    suspend fun getDetails(mediaTitle: String, apiKey: String): Boolean = withContext(Dispatchers.IO){
         currentMediaBeingQueried = mediaTitle;
         listMedia = emptyList<Media>().toMutableList()
 
@@ -45,6 +46,12 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
         results.addAll(getMediaDetails(seriesSearchCall).map { Pair(it, false) })
         results.sortBy { it.first.popularity }
         results.reverse()
+        if (results.isEmpty()) {
+            if (currentMediaBeingQueried == mediaTitle) {
+                mutLiveListMedia.postValue(listMedia);
+            }
+            return@withContext false;
+        }
 
         for ((media, isFilm) in results) {
             val id = media.id
@@ -52,7 +59,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                 counter++;
                 val title = if (isFilm) {
                     media.title
-                }else{
+                } else {
                     media.name
                 }
                 val sinossi = media.overview
@@ -73,6 +80,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
         if (currentMediaBeingQueried == mediaTitle) {
             mutLiveListMedia.postValue(listMedia);
         }
+        return@withContext true;
     }
 
     private suspend fun getAllUserMedia(): List<Int> {

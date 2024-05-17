@@ -57,8 +57,6 @@ class AggiungiMedia : AppCompatActivity() {
             val posterView = findViewById<ImageView>(R.id.poster);
             posterView.layoutParams.height = 350;
             Picasso.get().load(R.drawable.missing_poster).into(posterView);
-
-
         }
 
         //sinossi
