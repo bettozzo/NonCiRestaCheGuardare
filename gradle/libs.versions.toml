@@ -24,6 +24,7 @@ gridlayout = "1.0.0"
 roomCompiler = "2.3.0"
 roomKtx = "2.2.1"
 squareupPicasso = "2.8"
+sspAndroid = "1.0.6"
 
 [libraries]
 android_image_popup = { module = "com.github.chathuralakmal:AndroidImagePopup", version.ref = "androidimagepopup" }
@@ -53,6 +54,7 @@ picasso-v252 = { module = "com.squareup.picasso:picasso", version.ref = "picasso
 picasso-v28 = { module = "com.squareup.picasso:picasso", version.ref = "squareupPicasso" }
 retrofit2-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofitVersion" }
 androidx-gridlayout = { group = "androidx.gridlayout", name = "gridlayout", version.ref = "gridlayout" }
+ssp-android = { module = "com.intuit.ssp:ssp-android", version.ref = "sspAndroid" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

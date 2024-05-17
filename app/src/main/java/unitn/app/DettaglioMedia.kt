@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.text.method.ScrollingMovementMethod
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -52,9 +53,11 @@ class DettaglioMedia : AppCompatActivity() {
             .into(findViewById<ImageView>(R.id.poster))
 
         //sinossi
-        val sinossiText = findViewById<TextView>(R.id.sinossiText)
+        val sinossiView = findViewById<TextView>(R.id.sinossiText)
         val sinossi = extras.getString("sinossi", "no sinossi");
-        sinossiText.text = sinossi;
+        sinossiView.text = sinossi;
+        sinossiView.movementMethod = ScrollingMovementMethod();
+        
         //platforms
         showAvailablePlatforms(extras)
 

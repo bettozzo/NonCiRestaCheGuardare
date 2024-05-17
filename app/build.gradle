@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.test"
-        minSdk 24
+        minSdk 26
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -34,7 +34,6 @@ android {
 }
 
 dependencies {
-
     implementation libs.androidx.room.runtime
     implementation libs.androidx.room.ktx.v221
     annotationProcessor libs.androidx.room.room.compiler

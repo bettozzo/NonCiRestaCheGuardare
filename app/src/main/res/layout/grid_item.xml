@@ -18,11 +18,17 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.9"
-        android:gravity="center"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:alpha="0.9"
+        android:autoSizeMaxTextSize="50sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeStepGranularity="2sp"
+        android:autoSizeTextType="uniform"
         android:background="@color/black"
-        android:textColor="@android:color/white"
-        android:textSize="32sp" />
+        android:breakStrategy="simple"
+        android:gravity="center"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="10dp"
+        android:textColor="@android:color/white" />
 </RelativeLayout>

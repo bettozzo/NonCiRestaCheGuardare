@@ -3,6 +3,7 @@ package unitn.app
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.TextUtils
+import android.text.method.ScrollingMovementMethod
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -43,19 +44,26 @@ class AggiungiMedia : AppCompatActivity() {
         val poster = extras.getString("poster");
         val isFilm = extras.getBoolean("isFilm");
         val platforms = Converters().stringToPlatform(extras.getString("platforms"));
-        var sinossi = extras.getString("sinossi", "NO Sinossi");
+        val sinossi = extras.getString("sinossi", "NO Sinossi");
 
         //titolo
         val titoloMedia = findViewById<TextView>(R.id.titoloFilm);
         setTitleProperties(titoloMedia, titolo)
 
         //poster
-        Picasso.get().load(poster).placeholder(R.drawable.missing_poster)
-            .into(findViewById<ImageView>(R.id.poster))
+        if (poster != null) {
+            Picasso.get().load(poster).into(findViewById<ImageView>(R.id.poster))
+        }else{
+            val posterView = findViewById<ImageView>(R.id.poster);
+            posterView.layoutParams.height = 350;
+            Picasso.get().load(R.drawable.missing_poster).into(posterView);
+
+
+        }
 
         //sinossi
         val sinossiView = findViewById<TextView>(R.id.sinossiText);
-        sinossi = limitSizeSinossi(sinossi, 470)
+        sinossiView.movementMethod = ScrollingMovementMethod();
         sinossiView.text = sinossi
 
         //bottone aggiungi
@@ -67,7 +75,6 @@ class AggiungiMedia : AppCompatActivity() {
                     MediaDatabase::class.java, "database-name"
                 ).addTypeConverter(Converters())
                     .build().MediaDao()
-                sinossi = limitSizeSinossi(sinossi, 260)
                 movieDao.insertMedia(Media(id, isFilm, titolo, platforms, poster, false, sinossi))
                 setResult(id)
                 finish()
@@ -81,18 +88,5 @@ class AggiungiMedia : AppCompatActivity() {
         titoloFilm.marqueeRepeatLimit = -1;
         titoloFilm.setSingleLine(true);
         titoloFilm.setSelected(true);
-    }
-    private fun limitSizeSinossi(fSinossi: String, size: Int): String{
-        var sinossi = fSinossi
-        if (sinossi.length > size) {
-            sinossi = sinossi.substring(0, size-3)
-            sinossi = sinossi.substring(0, sinossi.lastIndexOf(" "))
-            while(".,()".contains(sinossi[sinossi.length-1])){
-                sinossi = sinossi.dropLast(1);
-            }
-            sinossi = sinossi.substring(0, sinossi.lastIndexOf(" ")) + " ..."
-        }
-
-        return sinossi;
     }
 }

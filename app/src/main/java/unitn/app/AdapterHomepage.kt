@@ -53,8 +53,7 @@ class AdapterHomepage(private var context: Context, private var media: List<Medi
     }
     private fun showPoster(itemInGrid: ViewHolderHomepage, media: Media) {
         itemInGrid.title.visibility = View.GONE
-        Picasso.get().load(media.posterPath)
-            .into(itemInGrid.poster);
+        Picasso.get().load(media.posterPath).into(itemInGrid.poster)
     }
 
     private fun prepareExtras(intent: Intent, media: Media) {
