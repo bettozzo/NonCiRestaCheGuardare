@@ -1,5 +1,6 @@
 [versions]
 agp = "8.3.0"
+androidimagepopup = "1.2.2"
 androidxRoomCompiler = "2.6.1"
 ankoDesign = "0.10.5"
 compiler = "1.1.1"
@@ -24,6 +25,7 @@ roomKtx = "2.2.1"
 squareupPicasso = "2.8"
 
 [libraries]
+android_image_popup = { module = "com.github.chathuralakmal:AndroidImagePopup", version.ref = "androidimagepopup" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-room-compiler-v230 = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }

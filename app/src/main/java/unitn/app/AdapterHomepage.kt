@@ -62,6 +62,7 @@ class AdapterHomepage(private var context: Context, private var media: List<Medi
         intent.putExtra("titoloFilm", media.title)
         intent.putExtra("poster", media.posterPath)
         intent.putExtra("isInLocal", media.isLocallySaved)
+        intent.putExtra("sinossi", media.sinossi)
 
         for (platform in media.platform) {
             when (platform.first) {

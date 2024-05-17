@@ -12,9 +12,6 @@ data class Media(
     @ColumnInfo(name = "platformsAndLogo") val platform: List<Pair<String, String>>,
     @ColumnInfo(name = "poster_path") val posterPath: String,
     @ColumnInfo(name = "isLocal") val isLocallySaved: Boolean,
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-) {
-    override fun toString(): String {
-        return "[%07d] $title\n\tposter_url=$posterPath\n\tplatforms=$platform\n".format(mediaId)
-    }
-}
+    @ColumnInfo(name = "sinossi") val sinossi: String?,
+    @PrimaryKey(autoGenerate = true) val databaseID: Int = 0,
+)

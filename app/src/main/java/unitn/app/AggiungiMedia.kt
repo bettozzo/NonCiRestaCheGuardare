@@ -39,19 +39,26 @@ class AggiungiMedia : AppCompatActivity() {
         }
 
         val id = extras.getInt("id")
-        val titolo = extras.getString("titoloFilm") ?: "ERRORE";
+        val titolo = extras.getString("titoloMedia") ?: "ERRORE";
         val poster = extras.getString("poster");
         val isFilm = extras.getBoolean("isFilm");
         val platforms = Converters().stringToPlatform(extras.getString("platforms"));
+        var sinossi = extras.getString("sinossi", "NO Sinossi");
 
+        //titolo
+        val titoloMedia = findViewById<TextView>(R.id.titoloFilm);
+        setTitleProperties(titoloMedia, titolo)
 
-        val titotloFilm = findViewById<TextView>(R.id.titoloFilm);
-        setTitleProperties(titotloFilm, titolo)
-
+        //poster
         Picasso.get().load(poster).placeholder(R.drawable.missing_poster)
             .into(findViewById<ImageView>(R.id.poster))
 
+        //sinossi
+        val sinossiView = findViewById<TextView>(R.id.sinossiText);
+        sinossi = limitSizeSinossi(sinossi, 470)
+        sinossiView.text = sinossi
 
+        //bottone aggiungi
         val buttonAdd = findViewById<Button>(R.id.addFilm)
         buttonAdd.setOnClickListener {
             lifecycleScope.launch {
@@ -61,7 +68,8 @@ class AggiungiMedia : AppCompatActivity() {
                 ).addTypeConverter(Converters())
                     .build().MediaDao()
                 val posterNN = poster ?: "no poster"
-                movieDao.insertMedia(Media(id, isFilm, titolo, platforms, posterNN, false))
+                sinossi = limitSizeSinossi(sinossi, 260)
+                movieDao.insertMedia(Media(id, isFilm, titolo, platforms, posterNN, false, sinossi))
                 setResult(id)
                 finish()
             }
@@ -74,5 +82,18 @@ class AggiungiMedia : AppCompatActivity() {
         titoloFilm.marqueeRepeatLimit = -1;
         titoloFilm.setSingleLine(true);
         titoloFilm.setSelected(true);
+    }
+    private fun limitSizeSinossi(fSinossi: String, size: Int): String{
+        var sinossi = fSinossi
+        if (sinossi.length > size) {
+            sinossi = sinossi.substring(0, size-3)
+            sinossi = sinossi.substring(0, sinossi.lastIndexOf(" "))
+            while(".,()".contains(sinossi[sinossi.length-1])){
+                sinossi = sinossi.dropLast(1);
+            }
+            sinossi = sinossi.substring(0, sinossi.lastIndexOf(" ")) + " ..."
+        }
+
+        return sinossi;
     }
 }

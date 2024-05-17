@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import unitn.app.localdb.Converters
 import unitn.app.localdb.MediaDatabase
 
+
 class DettaglioMedia : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +51,10 @@ class DettaglioMedia : AppCompatActivity() {
         Picasso.get().load(extras.getString("poster")).placeholder(R.drawable.missing_poster)
             .into(findViewById<ImageView>(R.id.poster))
 
+        //sinossi
+        val sinossiText = findViewById<TextView>(R.id.sinossiText)
+        val sinossi = extras.getString("sinossi", "no sinossi");
+        sinossiText.text = sinossi;
         //platforms
         showAvailablePlatforms(extras)
 
@@ -57,14 +62,14 @@ class DettaglioMedia : AppCompatActivity() {
         val switch = findViewById<SwitchCompat>(R.id.switchLocal)
         switch.isChecked = extras.getBoolean("isInLocal")
         switch.setOnCheckedChangeListener { _, isChecked ->
-            val movieDao = Room.databaseBuilder(
+            val mediaDao = Room.databaseBuilder(
                 applicationContext,
                 MediaDatabase::class.java, "database-name"
             ).addTypeConverter(Converters())
                 .build().MediaDao()
 
             lifecycleScope.launch {
-                movieDao.saveInLocal(id, isChecked)
+                mediaDao.saveInLocal(id, isChecked)
             }
         }
 
@@ -77,7 +82,7 @@ class DettaglioMedia : AppCompatActivity() {
     private fun setButtonProperties(
         deleteBtn: ImageButton,
         seenBtn: ImageButton,
-        movieId: Int
+        movieId: Int,
     ) {
         deleteBtn.setOnClickListener {
             val intent = Intent(this@DettaglioMedia, HomePage::class.java)

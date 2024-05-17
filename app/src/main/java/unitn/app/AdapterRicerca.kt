@@ -62,10 +62,11 @@ class AdapterSearch(private var context: Context, private var media: List<Media>
 
     private fun prepareExtras(intent: Intent, media: Media) {
         intent.putExtra("id", media.mediaId)
-        intent.putExtra("titoloFilm", media.title)
+        intent.putExtra("titoloMedia", media.title)
         intent.putExtra("poster", media.posterPath)
         intent.putExtra("platforms", Converters().platformToString(media.platform))
         intent.putExtra("isFilm", media.isFilm)
+        intent.putExtra("sinossi", media.sinossi)
     }
     override fun getItem(p0: Int): Any {
         return media[p0]

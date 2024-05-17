@@ -55,9 +55,10 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                 }else{
                     media.name
                 }
+                val sinossi = media.overview
                 val platforms = getMediaPlatform(id, isFilm, apiKey)
                 val poster = getPosterPath(media.poster_path, media.backdrop_path)
-                val movie = Media(id, isFilm, title, platforms, poster, false)
+                val movie = Media(id, isFilm, title, platforms, poster, false, sinossi)
 
                 //prevents concurrency problems. In case user sends a new request before the previous one is finished
                 if (currentMediaBeingQueried == mediaTitle) {
