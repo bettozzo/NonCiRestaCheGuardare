@@ -3,6 +3,7 @@ package unitn.app
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -11,6 +12,7 @@ import android.widget.EditText
 import android.widget.GridView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -19,6 +21,7 @@ import com.example.test.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import unitn.app.api.MediaDetails
 
 
@@ -68,21 +71,27 @@ class Ricerca : AppCompatActivity() {
         }
     }
 
+    override fun onResume() = runBlocking {
+        super.onResume()
+        mediaDetails.updateMediaList();
+    }
     private fun callAPI(title: String, lastQuery: String?) {
         val searchBar = findViewById<EditText>(R.id.searchBar)
         val apiKey = resources.getString(R.string.api_key_tmdb)
-        var foundSomething = true;
         //prevents concurrency problems
         if (lastQuery != title) {
             CoroutineScope(Dispatchers.IO).launch {
-                foundSomething = mediaDetails.getDetails(title, apiKey);
-                runOnUiThread{
+                val foundSomething = mediaDetails.getDetails(title, apiKey);
+                runOnUiThread {
                     if (!foundSomething) {
-                        Toast.makeText(this@Ricerca, "Nessun Risultato", Toast.LENGTH_LONG).show()
+                        val alert = AlertDialog.Builder(this@Ricerca).setMessage("Nessun risultato.")
+                        alert.setPositiveButton(android.R.string.ok) { _, _ ->
+                            searchBar.requestFocus();
+                            searchBar.showKeyboard();
+                        }.show()
                     }
                 }
             }
-
             searchBar.hideKeyboard()
         } else {
             Toast.makeText(this, "Ricerca appena effettuata", Toast.LENGTH_SHORT).show();
@@ -93,4 +102,9 @@ class Ricerca : AppCompatActivity() {
 fun View.hideKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(windowToken, 0)
+}
+
+fun View.showKeyboard() {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.showSoftInput(this, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
 }

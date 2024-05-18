@@ -1,7 +1,6 @@
 package unitn.app.api
 
 import android.app.Application
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -22,65 +21,79 @@ import kotlin.coroutines.suspendCoroutine
 
 class MediaDetails(application: Application) : AndroidViewModel(application) {
 
-    private lateinit var listMedia: MutableList<Media>;
+    private var listMedia = emptyList<Media>().toMutableList()
     private val mutLiveListMedia = MutableLiveData<List<Media>>();
     private lateinit var currentMediaBeingQueried: String;
     val liveListMedia: LiveData<List<Media>>
         get() = mutLiveListMedia;
 
-    suspend fun getDetails(mediaTitle: String, apiKey: String): Boolean = withContext(Dispatchers.IO){
-        currentMediaBeingQueried = mediaTitle;
-        listMedia = emptyList<Media>().toMutableList()
+    suspend fun getDetails(mediaTitle: String, apiKey: String): Boolean =
+        withContext(Dispatchers.IO) {
+            currentMediaBeingQueried = mediaTitle;
+            listMedia = emptyList<Media>().toMutableList()
 
-        var counter = 0;
-        val idFilmInUserList = getAllUserMedia();
+            var counter = 0;
+            val idFilmInUserList = getAllUserMedia();
 
-        val apiCallerMedia = Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/")
-            .addConverterFactory(GsonConverterFactory.create()).build()
-            .create(RetrofitAPI::class.java)
+            val apiCallerMedia = Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/")
+                .addConverterFactory(GsonConverterFactory.create()).build()
+                .create(RetrofitAPI::class.java)
 
-        val movieSearchCall = apiCallerMedia.getMovie(mediaTitle, false, "it", 1, apiKey)
-        val seriesSearchCall = apiCallerMedia.getSerie(mediaTitle, false, "it", 1, apiKey)
+            val movieSearchCall = apiCallerMedia.getMovie(mediaTitle, false, "it", 1, apiKey)
+            val seriesSearchCall = apiCallerMedia.getSerie(mediaTitle, false, "it", 1, apiKey)
 
-        val results = getMediaDetails(movieSearchCall).map { Pair(it, true) }.toMutableList()
-        results.addAll(getMediaDetails(seriesSearchCall).map { Pair(it, false) })
-        results.sortBy { it.first.popularity }
-        results.reverse()
-        if (results.isEmpty()) {
-            if (currentMediaBeingQueried == mediaTitle) {
-                mutLiveListMedia.postValue(listMedia);
-            }
-            return@withContext false;
-        }
+            val results = getMediaDetails(movieSearchCall).map { Pair(it, true) }.toMutableList()
+            results.addAll(getMediaDetails(seriesSearchCall).map { Pair(it, false) })
+            results.sortBy { it.first.popularity }
+            results.reverse()
 
-        for ((media, isFilm) in results) {
-            val id = media.id
-            if (!idFilmInUserList.contains(id)) {
-                counter++;
-                val title = if (isFilm) {
-                    media.title
-                } else {
-                    media.name
-                }
-                val sinossi = media.overview
-                val platforms = getMediaPlatform(id, isFilm, apiKey)
-                val poster = getPosterPath(media.poster_path, media.backdrop_path)
-                val movie = Media(id, isFilm, title, platforms, poster, false, sinossi)
-
-                //prevents concurrency problems. In case user sends a new request before the previous one is finished
+            if (results.isEmpty()) {
                 if (currentMediaBeingQueried == mediaTitle) {
-                    listMedia.add(movie)
-                    if (counter % 2 == 0) {
-                        mutLiveListMedia.postValue(listMedia);
+                    mutLiveListMedia.postValue(listMedia);
+                }
+                return@withContext false;
+            }
+
+            for ((media, isFilm) in results) {
+                val id = media.id
+                if (!idFilmInUserList.contains(id)) {
+                    counter++;
+                    val title = if (isFilm) {
+                        media.title
+                    } else {
+                        media.name
+                    }
+                    val sinossi = media.overview
+                    val platforms = getMediaPlatform(id, isFilm, apiKey)
+                    val poster = getPosterPath(media.poster_path, media.backdrop_path)
+                    val movie = Media(id, isFilm, title, platforms, poster, false, sinossi)
+
+                    //prevents concurrency problems. In case user sends a new request before the previous one is finished
+                    if (currentMediaBeingQueried == mediaTitle) {
+                        listMedia.add(movie)
+                        if (counter % 2 == 0) {
+                            mutLiveListMedia.postValue(listMedia);
+                        }
                     }
                 }
             }
+
+            if (currentMediaBeingQueried == mediaTitle) {
+                mutLiveListMedia.postValue(listMedia);
+            }
+            return@withContext true;
         }
 
-        if (currentMediaBeingQueried == mediaTitle) {
-            mutLiveListMedia.postValue(listMedia);
+    suspend fun updateMediaList() {
+        if (listMedia.isEmpty()) {
+            return
         }
-        return@withContext true;
+
+        val idFilmInUserList = getAllUserMedia();
+        for (id in idFilmInUserList) {
+            listMedia.removeIf { it.mediaId == id }
+        }
+        mutLiveListMedia.postValue(listMedia);
     }
 
     private suspend fun getAllUserMedia(): List<Int> {

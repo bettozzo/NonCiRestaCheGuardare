@@ -74,7 +74,6 @@ class AggiungiMedia : AppCompatActivity() {
                 ).addTypeConverter(Converters())
                     .build().MediaDao()
                 movieDao.insertMedia(Media(id, isFilm, titolo, platforms, poster, false, sinossi))
-                setResult(id)
                 finish()
             }
         }
