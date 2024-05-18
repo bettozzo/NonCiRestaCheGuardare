@@ -3,12 +3,11 @@ package unitn.app
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.example.test.R
 import com.squareup.picasso.Picasso
@@ -33,19 +32,18 @@ class AdapterSearch(private var context: Context, private var media: List<Media>
             itemInGrid = ViewHolderSearch()
             itemInGrid.poster = myView!!.findViewById(R.id.imageView)!!
             itemInGrid.title = myView.findViewById(R.id.textView)!!
-
             myView.tag = itemInGrid
         } else {
             itemInGrid = myView.tag as ViewHolderSearch
         }
 
         if (media[position].posterPath != null) {
-            showPoster(itemInGrid, media[position])
-        }else {
-            showTitle(itemInGrid, media[position])
+            showPoster(itemInGrid, media[position]);
+        } else {
+            showTitle(itemInGrid, media[position]);
         }
 
-        myView.setOnClickListener{
+        myView.setOnClickListener {
             val intent = Intent(context, AggiungiMedia::class.java)
             prepareExtras(intent, media[position]);
             context.startActivity(intent)
@@ -57,11 +55,13 @@ class AdapterSearch(private var context: Context, private var media: List<Media>
         itemInGrid.poster.visibility = View.GONE
         itemInGrid.title.text = media.title
     }
+
     private fun showPoster(itemInGrid: ViewHolderSearch, media: Media) {
         itemInGrid.title.visibility = View.GONE
-        Picasso.get().load(media.posterPath)
-            .into(itemInGrid.poster);
+        Picasso.get().load(media.posterPath).into(itemInGrid.poster);
     }
+
+
     private fun prepareExtras(intent: Intent, media: Media) {
         intent.putExtra("id", media.mediaId)
         intent.putExtra("titoloMedia", media.title)

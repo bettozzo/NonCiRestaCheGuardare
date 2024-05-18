@@ -66,6 +66,7 @@
                 android:text="@string/lorem_ipsum_1"
                 android:textColor="@color/black"
                 android:scrollbars = "vertical"
+                android:scrollbarFadeDuration="@integer/material_motion_duration_medium_2"
                 android:textSize="16sp" />
         </LinearLayout>
     </LinearLayout>

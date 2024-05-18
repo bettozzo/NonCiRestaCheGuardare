@@ -1,8 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:paddingHorizontal="2dp"
     android:paddingVertical="3dp">
+
 
     <ImageView
         android:id="@+id/imageView"
@@ -31,4 +33,5 @@
         android:paddingHorizontal="10dp"
         android:paddingVertical="10dp"
         android:textColor="@android:color/white" />
+
 </RelativeLayout>

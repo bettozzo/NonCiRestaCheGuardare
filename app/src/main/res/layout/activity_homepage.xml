@@ -5,27 +5,34 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="unitn.app.HomePage"
-    android:background="#B5F1F1F1">
+    android:background="#B5F1F1F1"
+    tools:context="unitn.app.HomePage">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/MediaSelection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#008c00"
-        app:tabSelectedTextAppearance="@color/black"
-        app:tabTextColor="@color/white">
+        app:tabIndicatorColor="#DCA8FF2F"
+        app:tabIndicatorFullWidth="true"
+        app:tabIndicatorHeight="4dp"
+        app:tabIconTint="#D6000A00"
+        app:tabInlineLabel="true"
+        app:tabTextColor="#CDFFFFFF">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/filmSelected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:icon="@drawable/film_icon"
             android:text="@string/media_selection_tab_text_films" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/seriesSelected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:icon="@drawable/series_icon"
+
             android:text="@string/media_selection_tab_text_series" />
 
     </com.google.android.material.tabs.TabLayout>
@@ -36,8 +43,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/MediaSelection"
         android:numColumns="3"
-        android:stretchMode="columnWidth"
-        />
+        android:stretchMode="columnWidth" />
 
 
     <ImageButton
@@ -52,7 +58,8 @@
         android:paddingHorizontal="15dp"
         android:paddingVertical="15dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/lente_dingrandimento" />
+        android:src="@drawable/lente_dingrandimento"
+        android:contentDescription="Aggiungi un nuovo media" />
 
 
 </RelativeLayout>
