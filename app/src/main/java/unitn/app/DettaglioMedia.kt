@@ -121,9 +121,10 @@ class DettaglioMedia : AppCompatActivity() {
         val netflixLogo = extras.getString("NetflixPath")
         val primevideoLogo = extras.getString("AmazonPath")
         val disneyplusLogo = extras.getString("DisneyPath")
+        val raiplayLogo = extras.getString("RaiPath")
 
 
-        if (netflixLogo == null && primevideoLogo == null && disneyplusLogo == null) {
+        if (netflixLogo == null && primevideoLogo == null && disneyplusLogo == null && raiplayLogo == null) {
             addPlatform(null, platformList)
         } else {
             if (netflixLogo != null) {
@@ -134,6 +135,9 @@ class DettaglioMedia : AppCompatActivity() {
             }
             if (disneyplusLogo != null) {
                 addPlatform(disneyplusLogo, platformList)
+            }
+            if (raiplayLogo != null) {
+                addPlatform(raiplayLogo, platformList)
             }
         }
     }

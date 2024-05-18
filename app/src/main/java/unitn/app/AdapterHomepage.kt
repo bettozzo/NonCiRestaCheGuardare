@@ -74,6 +74,9 @@ class AdapterHomepage(private var context: Context, private var media: List<Medi
                 "Disney Plus" -> {
                     intent.putExtra("DisneyPath", platform.second)
                 };
+                "Rai Play" -> {
+                    intent.putExtra("RaiPath", platform.second)
+                };
                 //TODO no raiplay, infinity?
             }
         }
