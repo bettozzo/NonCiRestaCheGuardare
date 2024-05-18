@@ -24,6 +24,12 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
     private var listMedia = emptyList<Media>().toMutableList()
     private val mutLiveListMedia = MutableLiveData<List<Media>>();
     private lateinit var currentMediaBeingQueried: String;
+
+    private var mutNoInternet:MutableLiveData<Boolean> = MutableLiveData(false)
+
+    val liveNoInternet: LiveData<Boolean>
+        get() = mutNoInternet;
+
     val liveListMedia: LiveData<List<Media>>
         get() = mutLiveListMedia;
 
@@ -31,7 +37,6 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
         withContext(Dispatchers.IO) {
             currentMediaBeingQueried = mediaTitle;
             listMedia = emptyList<Media>().toMutableList()
-
             var counter = 0;
             val idFilmInUserList = getAllUserMedia();
 
@@ -107,7 +112,88 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
 
         return movieDao.getAllId()
     }
+
+    private suspend fun getMediaDetails(mediaSearchCall: Call<MediaResultsFromAPI?>?): MutableList<UnfilteredMediaDetails> {
+
+        return suspendCoroutine { continuation ->
+            mediaSearchCall?.enqueue(object : Callback<MediaResultsFromAPI?> {
+                override fun onResponse(
+                    call: Call<MediaResultsFromAPI?>,
+                    response: Response<MediaResultsFromAPI?>,
+                ) {
+                    if (!response.isSuccessful) throw IOException("Unexpected code $response")
+                    continuation.resume(response.body()!!.results.toMutableList())
+                }
+
+                override fun onFailure(call: Call<MediaResultsFromAPI?>, t: Throwable) {
+                    failureNoInternet();
+                }
+            })
+        }
+    }
+
+
+    private suspend fun getMediaPlatform(
+        id: Int,
+        isFilm: Boolean,
+        apiKey: String,
+    ): MutableList<Pair<String, String>> {
+        val platforms = mutableListOf<Pair<String, String>>()
+        val mBaseUrl = if (isFilm) {
+            "https://api.themoviedb.org/3/movie/$id/watch/"
+        } else {
+            "https://api.themoviedb.org/3/tv/$id/watch/"
+        }
+        val apiCallerPlatforms =
+            Retrofit.Builder().baseUrl(mBaseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(RetrofitAPI::class.java)
+
+        return suspendCoroutine { continuation ->
+            apiCallerPlatforms.getPlatform(apiKey)?.enqueue(object : Callback<StreamingResult?> {
+                override fun onResponse(
+                    call: Call<StreamingResult?>,
+                    response: Response<StreamingResult?>,
+                ) {
+
+                    if (!response.isSuccessful) throw IOException("Unexpected code $response")
+
+                    val optionsInItaly = response.body()!!.results.IT
+                    if (optionsInItaly == null) {
+                        continuation.resume(emptyList<Pair<String, String>>().toMutableList())
+                        return;
+                    }
+
+                    val flatrate = optionsInItaly.flatrate
+                    if (flatrate == null) {
+                        continuation.resume(emptyList<Pair<String, String>>().toMutableList())
+                        return;
+                    }
+                    for (platform in flatrate) {
+                        platforms.add(
+                            Pair(
+                                platform.provider_name,
+                                "https://image.tmdb.org/t/p/w185/" + platform.logo_path
+                            )
+                        )
+                    }
+                    continuation.resume(platforms)
+                }
+
+                override fun onFailure(call: Call<StreamingResult?>, t: Throwable) {
+                    failureNoInternet();
+                }
+            })
+        }
+    }
+
+    private fun failureNoInternet() {
+        mutNoInternet.value = true
+    }
 }
+
+
 
 private fun getPosterPath(posterPath: String?, backdropPath: String?): String? {
     if (posterPath != null) {
@@ -119,77 +205,3 @@ private fun getPosterPath(posterPath: String?, backdropPath: String?): String? {
     return null
 }
 
-suspend fun getMediaDetails(mediaSearchCall: Call<MediaResultsFromAPI?>?): MutableList<UnfilteredMediaDetails> {
-
-    return suspendCoroutine { continuation ->
-        mediaSearchCall?.enqueue(object : Callback<MediaResultsFromAPI?> {
-            override fun onResponse(
-                call: Call<MediaResultsFromAPI?>,
-                response: Response<MediaResultsFromAPI?>,
-            ) {
-                if (!response.isSuccessful) throw IOException("Unexpected code $response")
-                continuation.resume(response.body()!!.results.toMutableList())
-            }
-
-            override fun onFailure(call: Call<MediaResultsFromAPI?>, t: Throwable) {
-                TODO("Not yet implemented")
-            }
-        })
-    }
-}
-
-
-suspend fun getMediaPlatform(
-    id: Int,
-    isFilm: Boolean,
-    apiKey: String,
-): MutableList<Pair<String, String>> {
-    val platforms = mutableListOf<Pair<String, String>>()
-    val mBaseUrl = if (isFilm) {
-        "https://api.themoviedb.org/3/movie/$id/watch/"
-    } else {
-        "https://api.themoviedb.org/3/tv/$id/watch/"
-    }
-    val apiCallerPlatforms =
-        Retrofit.Builder().baseUrl(mBaseUrl)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(RetrofitAPI::class.java)
-
-    return suspendCoroutine { continuation ->
-        apiCallerPlatforms.getPlatform(apiKey)?.enqueue(object : Callback<StreamingResult?> {
-            override fun onResponse(
-                call: Call<StreamingResult?>,
-                response: Response<StreamingResult?>,
-            ) {
-
-                if (!response.isSuccessful) throw IOException("Unexpected code $response")
-
-                val optionsInItaly = response.body()!!.results.IT
-                if (optionsInItaly == null) {
-                    continuation.resume(emptyList<Pair<String, String>>().toMutableList())
-                    return;
-                }
-
-                val flatrate = optionsInItaly.flatrate
-                if (flatrate == null) {
-                    continuation.resume(emptyList<Pair<String, String>>().toMutableList())
-                    return;
-                }
-                for (platform in flatrate) {
-                    platforms.add(
-                        Pair(
-                            platform.provider_name,
-                            "https://image.tmdb.org/t/p/w185/" + platform.logo_path
-                        )
-                    )
-                }
-                continuation.resume(platforms)
-            }
-
-            override fun onFailure(call: Call<StreamingResult?>, t: Throwable) {
-                TODO("Not yet implemented")
-            }
-        })
-    }
-}

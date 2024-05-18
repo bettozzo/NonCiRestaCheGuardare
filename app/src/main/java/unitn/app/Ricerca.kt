@@ -2,8 +2,8 @@ package unitn.app
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -50,6 +50,15 @@ class Ricerca : AppCompatActivity() {
         mediaDetails.liveListMedia.observe(this) {
             gridView.adapter = AdapterSearch(this@Ricerca, it)
         }
+        mediaDetails.liveNoInternet.observe(this) {
+            if (it) {
+                android.app.AlertDialog.Builder(this@Ricerca).setTitle("NO INTERNET")
+                    .setMessage("Per usare questa funzionalità è richiesta la connessiona ad internet")
+                    .setPositiveButton(android.R.string.ok) { _, _ ->
+                        finish()
+                    }.show()
+            }
+        }
 
         buttonToSearch.setOnClickListener {
             val title = searchBar.text.toString();
@@ -75,6 +84,7 @@ class Ricerca : AppCompatActivity() {
         super.onResume()
         mediaDetails.updateMediaList();
     }
+
     private fun callAPI(title: String, lastQuery: String?) {
         val searchBar = findViewById<EditText>(R.id.searchBar)
         val apiKey = resources.getString(R.string.api_key_tmdb)
@@ -84,11 +94,13 @@ class Ricerca : AppCompatActivity() {
                 val foundSomething = mediaDetails.getDetails(title, apiKey);
                 runOnUiThread {
                     if (!foundSomething) {
-                        val alert = AlertDialog.Builder(this@Ricerca).setMessage("Nessun risultato.")
-                        alert.setPositiveButton(android.R.string.ok) { _, _ ->
-                            searchBar.requestFocus();
-                            searchBar.showKeyboard();
-                        }.show()
+                        AlertDialog.Builder(this@Ricerca)
+                            .setTitle("Nessun risultato.")
+                            .setMessage("Cerca un'altro titolo!")
+                            .setPositiveButton(android.R.string.ok) { _, _ ->
+                                searchBar.requestFocus();
+                                searchBar.showKeyboard();
+                            }.show()
                     }
                 }
             }
@@ -106,5 +118,5 @@ fun View.hideKeyboard() {
 
 fun View.showKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    imm.showSoftInput(this, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT)
+    imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
 }
