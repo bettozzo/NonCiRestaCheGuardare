@@ -57,7 +57,7 @@ class DettaglioMedia : AppCompatActivity() {
         val sinossi = extras.getString("sinossi", "no sinossi");
         sinossiView.text = sinossi;
         sinossiView.movementMethod = ScrollingMovementMethod();
-        
+
         //platforms
         showAvailablePlatforms(extras)
 
@@ -122,9 +122,10 @@ class DettaglioMedia : AppCompatActivity() {
         val primevideoLogo = extras.getString("AmazonPath")
         val disneyplusLogo = extras.getString("DisneyPath")
         val raiplayLogo = extras.getString("RaiPath")
+        val crunchyrollLogo = extras.getString("CrunchyrollPath")
 
 
-        if (netflixLogo == null && primevideoLogo == null && disneyplusLogo == null && raiplayLogo == null) {
+        if (netflixLogo == null && primevideoLogo == null && disneyplusLogo == null && raiplayLogo == null && crunchyrollLogo == null) {
             addPlatform(null, platformList)
         } else {
             if (netflixLogo != null) {
@@ -138,6 +139,9 @@ class DettaglioMedia : AppCompatActivity() {
             }
             if (raiplayLogo != null) {
                 addPlatform(raiplayLogo, platformList)
+            }
+            if (crunchyrollLogo != null) {
+                addPlatform(crunchyrollLogo, platformList)
             }
         }
     }

@@ -63,6 +63,7 @@ class AdapterHomepage(private var context: Context, private var media: List<Medi
         intent.putExtra("isInLocal", media.isLocallySaved)
         intent.putExtra("sinossi", media.sinossi)
 
+        //also update in ./DettaglioMedia.kt
         for (platform in media.platform) {
             when (platform.first) {
                 "Netflix" -> {
@@ -77,7 +78,10 @@ class AdapterHomepage(private var context: Context, private var media: List<Medi
                 "Rai Play" -> {
                     intent.putExtra("RaiPath", platform.second)
                 };
-                //TODO no raiplay, infinity?
+                "Crunchyroll" -> {
+                    intent.putExtra("CrunchyrollPath", platform.second)
+                };
+                //TODO no , infinity?
             }
         }
     }
