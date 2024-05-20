@@ -1,10 +1,13 @@
 package unitn.app
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.method.ScrollingMovementMethod
+import android.view.ViewGroup
+import android.view.Window
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -49,8 +52,25 @@ class DettaglioMedia : AppCompatActivity() {
         setTitleProperties(titoloFilm, extras)
 
         //poster
-        Picasso.get().load(extras.getString("poster")).placeholder(R.drawable.missing_poster)
-            .into(findViewById<ImageView>(R.id.poster))
+        val poster = findViewById<ImageView>(R.id.poster);
+        val posterPath = extras.getString("poster");
+        Picasso.get().load(posterPath).placeholder(R.drawable.missing_poster)
+            .into(poster)
+
+        if (posterPath != null) {
+            poster.setOnClickListener {
+                val imageView = ImageView(this)
+                Picasso.get().load(posterPath).placeholder(R.drawable.missing_poster)
+                    .into(imageView)
+                imageView.scaleType = ImageView.ScaleType.FIT_XY
+                val settingsDialog = Dialog(this)
+                settingsDialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+                settingsDialog.addContentView(
+                    imageView, ViewGroup.LayoutParams(900, 1500)
+                )
+                settingsDialog.show()
+            }
+        }
 
         //sinossi
         val sinossiView = findViewById<TextView>(R.id.sinossiText)
