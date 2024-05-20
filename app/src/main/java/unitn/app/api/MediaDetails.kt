@@ -197,10 +197,10 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
 
 private fun getPosterPath(posterPath: String?, backdropPath: String?): String? {
     if (posterPath != null) {
-        return "https://image.tmdb.org/t/p/w300$posterPath"
+        return "https://image.tmdb.org/t/p/w780$posterPath"
     }
     if (backdropPath != null) {
-        return "https://image.tmdb.org/t/p/w300$backdropPath"
+        return "https://image.tmdb.org/t/p/w780$backdropPath"
     }
     return null
 }
