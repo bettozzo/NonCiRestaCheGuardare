@@ -18,32 +18,14 @@
         app:tabIndicatorHeight="4dp"
         app:tabIconTint="#D6000A00"
         app:tabInlineLabel="true"
-        app:tabTextColor="#CDFFFFFF">
+        app:tabTextColor="#CDFFFFFF"/>
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/filmSelected"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:icon="@drawable/film_icon"
-            android:text="@string/media_selection_tab_text_films" />
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/seriesSelected"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:icon="@drawable/series_icon"
-
-            android:text="@string/media_selection_tab_text_series" />
-
-    </com.google.android.material.tabs.TabLayout>
-
-    <GridView
-        android:id="@+id/GridView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/pager"
         android:layout_below="@+id/MediaSelection"
-        android:numColumns="3"
-        android:stretchMode="columnWidth" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 
     <ImageButton

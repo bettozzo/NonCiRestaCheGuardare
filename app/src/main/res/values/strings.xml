@@ -4,4 +4,6 @@
     <string name="media_selection_tab_text_films">Films</string>
     <string name="media_selection_tab_text_series">Serie TV</string>
     <string name="lorem_ipsum_1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut velit libero, pulvinar a tellus vel, tincidunt ultrices urna. Nulla sodales ex odio, ac molestie augue rutrum eget. Sed quis aliquam metus, eget blandit arcu</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

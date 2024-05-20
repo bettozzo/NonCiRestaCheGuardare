@@ -4,7 +4,6 @@ import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import unitn.app.api.MediaDetails
 
 @ProvidedTypeConverter
 class Converters {
