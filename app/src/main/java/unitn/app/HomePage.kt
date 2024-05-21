@@ -3,17 +3,24 @@ package unitn.app
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.widget.GridView
 import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
 import androidx.viewpager2.widget.ViewPager2
 import com.example.test.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.launch
+import unitn.app.localdb.UserDatabase
+import unitn.app.remotedb.Converters
+import unitn.app.remotedb.CustomColors
+import unitn.app.remotedb.RemoteUsersDao
+import unitn.app.remotedb.Users
 
 
 class HomePage : AppCompatActivity() {
@@ -27,6 +34,16 @@ class HomePage : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+//        lifecycleScope.launch {
+//            val usersDao = Room.databaseBuilder(
+//                applicationContext,
+//                UserDatabase::class.java, "user-db"
+//            ).addTypeConverter(Converters())
+//                .fallbackToDestructiveMigration()
+//                .build().userDao()
+//            usersDao.inserUserId(Users("40e6215d-b5c6-4896-987c-f30f3678f608", CustomColors("Verde", "#008c00")));
+//        }
     }
 
     override fun onResume() {
@@ -38,11 +55,11 @@ class HomePage : AppCompatActivity() {
         val goToSearchButton = findViewById<ImageButton>(R.id.goToSearchMediaButton)
 
         viewPager.adapter = viewFragAdapter;
-        TabLayoutMediator(mediaSelected, viewPager) {tab, position ->
-            if(position == 0) {
+        TabLayoutMediator(mediaSelected, viewPager) { tab, position ->
+            if (position == 0) {
                 tab.text = "Films";
                 tab.icon = ContextCompat.getDrawable(applicationContext, R.drawable.film_icon);
-            }else{
+            } else {
                 tab.text = "Serie TV";
                 tab.icon = ContextCompat.getDrawable(applicationContext, R.drawable.series_icon);
             }
@@ -52,6 +69,16 @@ class HomePage : AppCompatActivity() {
             val intent = Intent(this@HomePage, Ricerca::class.java)
             startActivity(intent)
         }
+        changeColor();
+    }
+
+    private fun changeColor() {
+        val mediaSelected = findViewById<TabLayout>(R.id.MediaSelection);
+
+        lifecycleScope.launch {
+            mediaSelected.setBackgroundColor(RemoteUsersDao(applicationContext).getMainColor());
+        }
     }
 }
+
 

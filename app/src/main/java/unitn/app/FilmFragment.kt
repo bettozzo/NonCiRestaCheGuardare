@@ -27,8 +27,8 @@ class FilmFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val movieDao =
-            Room.databaseBuilder(view.context, MediaDatabase::class.java, "database-name")
+        val mediaDao =
+            Room.databaseBuilder(view.context, MediaDatabase::class.java, "media-DB")
                 .addTypeConverter(Converters())
                 .fallbackToDestructiveMigration()
                 .build()
@@ -36,7 +36,7 @@ class FilmFragment : Fragment() {
         val gridViewFilm = view.findViewById<GridView>(R.id.GridViewFilm)
 
         lifecycleScope.launch {
-            gridViewFilm.adapter = AdapterHomepage(view.context, movieDao.getAllMovies())
+            gridViewFilm.adapter = AdapterHomepage(view.context, mediaDao.getAllMovies())
         }
 
     }

@@ -87,7 +87,7 @@ class DettaglioMedia : AppCompatActivity() {
         switch.setOnCheckedChangeListener { _, isChecked ->
             val mediaDao = Room.databaseBuilder(
                 applicationContext,
-                MediaDatabase::class.java, "database-name"
+                MediaDatabase::class.java, "media-DB"
             ).addTypeConverter(Converters())
                 .build().MediaDao()
 
@@ -110,12 +110,12 @@ class DettaglioMedia : AppCompatActivity() {
         deleteBtn.setOnClickListener {
             val intent = Intent(this@DettaglioMedia, HomePage::class.java)
             lifecycleScope.launch {
-                val movieDao = Room.databaseBuilder(
+                val mediaDao = Room.databaseBuilder(
                     applicationContext,
-                    MediaDatabase::class.java, "database-name"
+                    MediaDatabase::class.java, "media-DB"
                 ).addTypeConverter(Converters())
                     .build().MediaDao()
-                movieDao.deleteMedia(movieId)
+                mediaDao.deleteMedia(movieId)
                 finish()//prevents this activity to be opened again
                 startActivity(intent)
             }
@@ -124,12 +124,12 @@ class DettaglioMedia : AppCompatActivity() {
         seenBtn.setOnClickListener {
             val intent = Intent(this@DettaglioMedia, HomePage::class.java)
             lifecycleScope.launch {
-                val movieDao = Room.databaseBuilder(
+                val mediaDao = Room.databaseBuilder(
                     applicationContext,
-                    MediaDatabase::class.java, "database-name"
+                    MediaDatabase::class.java, "media-DB"
                 ).addTypeConverter(Converters())
                     .build().MediaDao()
-                movieDao.deleteMedia(movieId)
+                mediaDao.deleteMedia(movieId)
                 finish()//prevents this activity to be opened again
                 startActivity(intent)
             }

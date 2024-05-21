@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("kotlin-kapt")
+    id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 android {
@@ -34,6 +35,13 @@ android {
 }
 
 dependencies {
+
+    //supabase
+    implementation(platform("io.github.jan-tennert.supabase:bom:2.4.2"))
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    implementation("io.ktor:ktor-client-android:2.3.10")
+
+    //room
     implementation libs.androidx.room.runtime
     implementation libs.androidx.room.ktx.v221
     annotationProcessor libs.androidx.room.room.compiler

@@ -103,14 +103,14 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
 
     private suspend fun getAllUserMedia(): List<Int> {
         val context = getApplication<Application>().applicationContext
-        val movieDao = Room.databaseBuilder(
+        val mediaDao = Room.databaseBuilder(
             context,
-            MediaDatabase::class.java, "database-name"
+            MediaDatabase::class.java, "media-DB"
         ).addTypeConverter(Converters())
             .fallbackToDestructiveMigration()
             .build().MediaDao()
 
-        return movieDao.getAllId()
+        return mediaDao.getAllId()
     }
 
     private suspend fun getMediaDetails(mediaSearchCall: Call<MediaResultsFromAPI?>?): MutableList<UnfilteredMediaDetails> {

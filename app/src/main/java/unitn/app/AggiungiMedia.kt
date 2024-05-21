@@ -68,12 +68,12 @@ class AggiungiMedia : AppCompatActivity() {
         val buttonAdd = findViewById<Button>(R.id.addFilm)
         buttonAdd.setOnClickListener {
             lifecycleScope.launch {
-                val movieDao = Room.databaseBuilder(
+                val mediaDao = Room.databaseBuilder(
                     applicationContext,
-                    MediaDatabase::class.java, "database-name"
+                    MediaDatabase::class.java, "media-DB"
                 ).addTypeConverter(Converters())
                     .build().MediaDao()
-                movieDao.insertMedia(Media(id, isFilm, titolo, platforms, poster, false, sinossi))
+                mediaDao.insertMedia(Media(id, isFilm, titolo, platforms, poster, false, sinossi))
                 finish()
             }
         }
