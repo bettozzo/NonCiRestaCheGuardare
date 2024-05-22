@@ -9,17 +9,17 @@ import com.google.gson.reflect.TypeToken
 class Converters {
 
     @TypeConverter
-    fun stringToColors(data: String?): CustomColors {
+    fun stringToColors(data: String?): Colori {
         val gson = Gson()
         if (data == null) {
-            return CustomColors("Verde", "#008c00")
+            return Colori("Verde", "#008c00")
         }
-        val type = object : TypeToken<CustomColors>() {}.type
-        return gson.fromJson<CustomColors>(data, type)
+        val type = object : TypeToken<Colori>() {}.type
+        return gson.fromJson<Colori>(data, type)
     }
 
     @TypeConverter
-    fun colorsToString(myObjects: CustomColors?): String {
+    fun colorsToString(myObjects: Colori?): String {
         val gson = Gson()
         return gson.toJson(myObjects)
     }

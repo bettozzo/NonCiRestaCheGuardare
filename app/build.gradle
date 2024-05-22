@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("kotlin-kapt")
     id 'org.jetbrains.kotlin.plugin.serialization'
+    id ("kotlinx-serialization")
 }
 
 android {
@@ -35,6 +36,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.kotlinx.serialization.json)
 
     //supabase
     implementation(platform("io.github.jan-tennert.supabase:bom:2.4.2"))
@@ -55,9 +57,12 @@ dependencies {
     implementation libs.androidx.activity
     implementation libs.androidx.constraintlayout
 
+    //api call
     implementation libs.retrofit2.retrofit
     implementation libs.converter.gson
     implementation libs.androidx.gridlayout
+
+    //carica immagine con picasso
     implementation libs.picasso.v28
 
     testImplementation libs.junit

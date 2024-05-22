@@ -3,11 +3,10 @@ package unitn.app.localdb
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import unitn.app.remotedb.CustomColors
 import unitn.app.remotedb.Users
 
 @Dao
-interface UserDao {
+interface UserDAO {
     @Query("SELECT userId FROM Users")
     suspend fun getUserId(): String
 

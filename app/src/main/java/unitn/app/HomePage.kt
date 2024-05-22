@@ -16,11 +16,10 @@ import com.example.test.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
-import unitn.app.localdb.UserDatabase
-import unitn.app.remotedb.Converters
-import unitn.app.remotedb.CustomColors
-import unitn.app.remotedb.RemoteUsersDao
-import unitn.app.remotedb.Users
+import unitn.app.localdb.Converters
+import unitn.app.localdb.MediaDatabase
+import unitn.app.remotedb.Media
+import unitn.app.remotedb.RemoteDAO
 
 
 class HomePage : AppCompatActivity() {
@@ -70,13 +69,34 @@ class HomePage : AppCompatActivity() {
             startActivity(intent)
         }
         changeColor();
+
+        lifecycleScope.launch {
+            val movies =
+                Room.databaseBuilder(applicationContext, MediaDatabase::class.java, "media-DB")
+                    .addTypeConverter(Converters())
+                    .fallbackToDestructiveMigration()
+                    .build()
+                    .MediaDao().getAllMovies()
+
+            val localMedia = movies[0];
+            val remoteMedia = Media(localMedia.mediaId, localMedia.isFilm, localMedia.title, localMedia.posterPath!!, localMedia.isLocallySaved, localMedia.sinossi!!);
+            RemoteDAO(
+                applicationContext,
+                coroutineContext
+            ).addMediaToWatchList(remoteMedia)
+        }
     }
 
     private fun changeColor() {
         val mediaSelected = findViewById<TabLayout>(R.id.MediaSelection);
 
         lifecycleScope.launch {
-            mediaSelected.setBackgroundColor(RemoteUsersDao(applicationContext).getMainColor());
+            mediaSelected.setBackgroundColor(
+                RemoteDAO(
+                    applicationContext,
+                    coroutineContext
+                ).getMainColor()
+            );
         }
     }
 }

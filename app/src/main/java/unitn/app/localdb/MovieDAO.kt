@@ -6,7 +6,7 @@ import androidx.room.Query
 import unitn.app.api.Media
 
 @Dao
-interface MovieDao {
+interface MovieDAO {
     @Query("SELECT * FROM Media")
     suspend fun getAll(): List<Media>
 
