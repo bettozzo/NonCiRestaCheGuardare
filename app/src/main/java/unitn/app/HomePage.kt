@@ -3,8 +3,6 @@ package unitn.app
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.GridView
 import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -21,8 +19,8 @@ import kotlinx.coroutines.launch
 import unitn.app.api.ConverterMediaToMedia
 import unitn.app.localdb.Converters
 import unitn.app.localdb.MediaDatabase
-import unitn.app.remotedb.Media
 import unitn.app.remotedb.RemoteDAO
+import kotlin.coroutines.coroutineContext
 
 
 class HomePage : AppCompatActivity() {
@@ -71,31 +69,10 @@ class HomePage : AppCompatActivity() {
             val intent = Intent(this@HomePage, Ricerca::class.java)
             startActivity(intent)
         }
-        changeColor();
 
         lifecycleScope.launch {
-            val moviesDao = Room.databaseBuilder(applicationContext, MediaDatabase::class.java, "media-DB")
-                .addTypeConverter(Converters())
-                .fallbackToDestructiveMigration()
-                .build()
-                .MediaDao();
-            val remoteDao = RemoteDAO(
-                applicationContext,
-                coroutineContext
-            );
-
-            val watchlist = remoteDao.getWatchList().map { ConverterMediaToMedia().toLocal(it)}
-            for(movie in watchlist){
-                moviesDao.insertMedia(movie)
-            }
-
-//            val gridViewFilm = findViewById<GridView>(R.id.GridViewFilm)
-//            gridViewFilm.adapter = AdapterHomepage(this@HomePage, watchlist)
-
-            val movies = moviesDao.getAllMovies().map{ConverterMediaToMedia().toRemote(it)}
-            for (movie in movies) {
-                remoteDao.addMediaToWatchList(movie)
-            }
+            syncDataDB()
+            changeColor();
         }
     }
 
@@ -110,6 +87,33 @@ class HomePage : AppCompatActivity() {
                 ).getMainColor()
             );
         }
+    }
+
+    private suspend fun syncDataDB(){
+        val localDao = Room.databaseBuilder(applicationContext, MediaDatabase::class.java, "media-DB")
+            .addTypeConverter(Converters())
+            .fallbackToDestructiveMigration()
+            .build()
+            .MediaDao();
+
+        val remoteDao = RemoteDAO(
+            applicationContext,
+            coroutineContext
+        );
+
+        //add local to remote
+        val lMedias = localDao.getAllMovies().map{ConverterMediaToMedia().toRemote(it)}
+        for (media in lMedias) {
+            remoteDao.insertToWatchlist(media)
+        }
+
+        //add remote to local
+        val rMedias = remoteDao.getWatchList().map { ConverterMediaToMedia().toLocal(it) }
+        for(media in rMedias){
+            localDao.insertMedia(media)
+        }
+
+        //todo remove sync?
     }
 }
 

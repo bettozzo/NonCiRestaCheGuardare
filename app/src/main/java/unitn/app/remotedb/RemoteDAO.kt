@@ -2,19 +2,13 @@ package unitn.app.remotedb
 
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import androidx.room.Room
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
-import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
-import io.github.jan.supabase.postgrest.rpc
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.Serializable
 import unitn.app.localdb.UserDatabase
 import kotlin.coroutines.CoroutineContext
 
@@ -53,14 +47,6 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         supabase.from("Media").insert(media)
     }
 
-    suspend fun addMediaToWatchList(media: Media) {
-        if (getMedia(media.mediaID) == null) {
-            supabase.from("Media").insert(media)
-        }
-//        supabase.postgrest.rpc("Insert_watchlist", InsertWatchListParams(user.userId, media.mediaID))
-        supabase.from("watchlist").insert(InsertWatchListParams(user.userId, media.mediaID))
-    }
-
     private suspend fun getMedia(id: Int): Media? {
         return supabase.from("Media").select {
             filter {
@@ -69,6 +55,34 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         }.decodeSingleOrNull<Media>();
     }
 
+    private suspend fun alreadyInWatchList(id: Int): Boolean {
+        val mediaInString = supabase.from("watchlist").select {
+            filter {
+                eq("mediaid", id)
+                eq("userid", user.userId)
+            }
+        }.component1();
+        return mediaInString != "[]"
+    }
+
+    suspend fun insertToWatchlist(media: Media) {
+        if (getMedia(media.mediaID) == null) {
+            insertMedia(media)
+        }
+
+        if(!alreadyInWatchList(media.mediaID)) {
+            supabase.from("watchlist").insert(InsertWatchListParams(user.userId, media.mediaID))
+        }
+    }
+
+    suspend fun deleteFromWatchList(mediaID: Int){
+        supabase.from("watchlist").delete {
+            filter{
+                eq("mediaid", mediaID)
+                eq("userid", user.userId)
+            }
+        }
+    }
     suspend fun getWatchList(): List<Media> {
         val columns = Columns.list(WatchList.getStructure())
         val result = supabase.from("watchlist").select(columns = columns) {
@@ -76,7 +90,6 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                 eq("userid", user.userId)
             }
         }
-        Log.d("Results", result.component1().toString())
         val list = result.decodeList<WatchList>()
         return list.map { it.mediaid }
     }

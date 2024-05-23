@@ -23,6 +23,6 @@ data class WatchList(
 
 @Serializable
 class InsertWatchListParams(
-    val useridarg: String,
-    val mediaidarg: Int,
+    val userid: String,
+    val mediaid: Int,
 )

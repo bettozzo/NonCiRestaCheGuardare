@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.ImageButton
@@ -25,6 +24,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import unitn.app.localdb.Converters
 import unitn.app.localdb.MediaDatabase
+import unitn.app.remotedb.RemoteDAO
 
 
 class DettaglioMedia : AppCompatActivity() {
@@ -106,7 +106,7 @@ class DettaglioMedia : AppCompatActivity() {
     private fun setButtonProperties(
         deleteBtn: ImageButton,
         seenBtn: ImageButton,
-        movieId: Int,
+        mediaID: Int,
     ) {
         deleteBtn.setOnClickListener {
             val intent = Intent(this@DettaglioMedia, HomePage::class.java)
@@ -116,7 +116,12 @@ class DettaglioMedia : AppCompatActivity() {
                     MediaDatabase::class.java, "media-DB"
                 ).addTypeConverter(Converters())
                     .build().MediaDao()
-                mediaDao.deleteMedia(movieId)
+                val remoteDao = RemoteDAO(
+                    applicationContext,
+                    coroutineContext
+                );
+                remoteDao.deleteFromWatchList(mediaID)
+                mediaDao.deleteMedia(mediaID)
                 finish()//prevents this activity to be opened again
                 startActivity(intent)
             }
@@ -130,7 +135,7 @@ class DettaglioMedia : AppCompatActivity() {
                     MediaDatabase::class.java, "media-DB"
                 ).addTypeConverter(Converters())
                     .build().MediaDao()
-                mediaDao.deleteMedia(movieId)
+                mediaDao.deleteMedia(mediaID)
                 finish()//prevents this activity to be opened again
                 startActivity(intent)
             }
