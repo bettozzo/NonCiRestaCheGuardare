@@ -38,6 +38,7 @@ class FilmFragment : Fragment() {
         lifecycleScope.launch {
             gridViewFilm.adapter = AdapterHomepage(view.context, mediaDao.getAllMovies())
         }
-
     }
+
+
 }

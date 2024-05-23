@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import unitn.app.api.LocalDbMedia
 import unitn.app.localdb.Converters
 import unitn.app.localdb.MediaDatabase
+import unitn.app.remotedb.RemoteDAO
 
 class AggiungiMedia : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
@@ -73,7 +74,13 @@ class AggiungiMedia : AppCompatActivity() {
                     MediaDatabase::class.java, "media-DB"
                 ).addTypeConverter(Converters())
                     .build().MediaDao()
-                mediaDao.insertMedia(LocalDbMedia(id, isFilm, titolo, platforms, poster, false, sinossi))
+
+                val remoteDao = RemoteDAO(
+                    applicationContext,
+                    coroutineContext
+                );
+                remoteDao.insertToWatchlist(LocalDbMedia(id, isFilm, titolo, platforms, poster, false, sinossi))
+//                mediaDao.insertMedia(LocalDbMedia(id, isFilm, titolo, platforms, poster, false, sinossi))
                 finish()
             }
         }

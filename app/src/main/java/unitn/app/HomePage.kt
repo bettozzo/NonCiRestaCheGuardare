@@ -88,12 +88,13 @@ class HomePage : AppCompatActivity() {
         }
     }
 
-    private suspend fun syncDataDB(){
-        val localDao = Room.databaseBuilder(applicationContext, MediaDatabase::class.java, "media-DB")
-            .addTypeConverter(Converters())
-            .fallbackToDestructiveMigration()
-            .build()
-            .MediaDao();
+    private suspend fun syncDataDB() {
+        val localDao =
+            Room.databaseBuilder(applicationContext, MediaDatabase::class.java, "media-DB")
+                .addTypeConverter(Converters())
+                .fallbackToDestructiveMigration()
+                .build()
+                .MediaDao();
 
         val remoteDao = RemoteDAO(
             applicationContext,
@@ -104,12 +105,17 @@ class HomePage : AppCompatActivity() {
         localDao.deleteEveryMedia();
 
         //add remote to local
-        val rMedias = remoteDao.getWatchList().map { ConverterMedia.toLocal(applicationContext,it) }
-        for(media in rMedias){
+        val rMedias =
+            remoteDao.getWatchList().map { ConverterMedia.toLocal(applicationContext, it) }
+        for (media in rMedias) {
             localDao.insertMedia(media)
         }
 
         //todo remove sync?
+
+
+        //update content in app
+        findViewById<ViewPager2>(R.id.pager).adapter = ViewPagerFragmentAdapter(this);
     }
 }
 
