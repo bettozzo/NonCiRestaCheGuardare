@@ -3,6 +3,8 @@ package unitn.app
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.GridView
 import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +18,7 @@ import com.example.test.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
+import unitn.app.api.ConverterMediaToMedia
 import unitn.app.localdb.Converters
 import unitn.app.localdb.MediaDatabase
 import unitn.app.remotedb.Media
@@ -71,19 +74,28 @@ class HomePage : AppCompatActivity() {
         changeColor();
 
         lifecycleScope.launch {
-            val movies =
-                Room.databaseBuilder(applicationContext, MediaDatabase::class.java, "media-DB")
-                    .addTypeConverter(Converters())
-                    .fallbackToDestructiveMigration()
-                    .build()
-                    .MediaDao().getAllMovies()
-
-            val localMedia = movies[0];
-            val remoteMedia = Media(localMedia.mediaId, localMedia.isFilm, localMedia.title, localMedia.posterPath!!, localMedia.isLocallySaved, localMedia.sinossi!!);
-            RemoteDAO(
+            val moviesDao = Room.databaseBuilder(applicationContext, MediaDatabase::class.java, "media-DB")
+                .addTypeConverter(Converters())
+                .fallbackToDestructiveMigration()
+                .build()
+                .MediaDao();
+            val remoteDao = RemoteDAO(
                 applicationContext,
                 coroutineContext
-            ).addMediaToWatchList(remoteMedia)
+            );
+
+            val watchlist = remoteDao.getWatchList().map { ConverterMediaToMedia().toLocal(it)}
+            for(movie in watchlist){
+                moviesDao.insertMedia(movie)
+            }
+
+//            val gridViewFilm = findViewById<GridView>(R.id.GridViewFilm)
+//            gridViewFilm.adapter = AdapterHomepage(this@HomePage, watchlist)
+
+            val movies = moviesDao.getAllMovies().map{ConverterMediaToMedia().toRemote(it)}
+            for (movie in movies) {
+                remoteDao.addMediaToWatchList(movie)
+            }
         }
     }
 

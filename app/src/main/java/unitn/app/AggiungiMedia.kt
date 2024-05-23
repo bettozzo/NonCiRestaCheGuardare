@@ -16,7 +16,7 @@ import androidx.room.Room
 import com.example.test.R
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
-import unitn.app.api.Media
+import unitn.app.api.LocalDbMedia
 import unitn.app.localdb.Converters
 import unitn.app.localdb.MediaDatabase
 
@@ -73,7 +73,7 @@ class AggiungiMedia : AppCompatActivity() {
                     MediaDatabase::class.java, "media-DB"
                 ).addTypeConverter(Converters())
                     .build().MediaDao()
-                mediaDao.insertMedia(Media(id, isFilm, titolo, platforms, poster, false, sinossi))
+                mediaDao.insertMedia(LocalDbMedia(id, isFilm, titolo, platforms, poster, false, sinossi))
                 finish()
             }
         }

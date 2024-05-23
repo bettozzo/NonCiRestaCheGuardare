@@ -21,8 +21,8 @@ import kotlin.coroutines.suspendCoroutine
 
 class MediaDetails(application: Application) : AndroidViewModel(application) {
 
-    private var listMedia = emptyList<Media>().toMutableList()
-    private val mutLiveListMedia = MutableLiveData<List<Media>>();
+    private var listMedia = emptyList<LocalDbMedia>().toMutableList()
+    private val mutLiveListMedia = MutableLiveData<List<LocalDbMedia>>();
     private lateinit var currentMediaBeingQueried: String;
 
     private var mutNoInternet:MutableLiveData<Boolean> = MutableLiveData(false)
@@ -30,13 +30,13 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
     val liveNoInternet: LiveData<Boolean>
         get() = mutNoInternet;
 
-    val liveListMedia: LiveData<List<Media>>
+    val liveListMedia: LiveData<List<LocalDbMedia>>
         get() = mutLiveListMedia;
 
     suspend fun getDetails(mediaTitle: String, apiKey: String): Boolean =
         withContext(Dispatchers.IO) {
             currentMediaBeingQueried = mediaTitle;
-            listMedia = emptyList<Media>().toMutableList()
+            listMedia = emptyList<LocalDbMedia>().toMutableList()
             var counter = 0;
             val idFilmInUserList = getAllUserMedia();
 
@@ -71,7 +71,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                     val sinossi = media.overview
                     val platforms = getMediaPlatform(id, isFilm, apiKey)
                     val poster = getPosterPath(media.poster_path, media.backdrop_path)
-                    val movie = Media(id, isFilm, title, platforms, poster, false, sinossi)
+                    val movie = LocalDbMedia(id, isFilm, title, platforms, poster, false, sinossi)
 
                     //prevents concurrency problems. In case user sends a new request before the previous one is finished
                     if (currentMediaBeingQueried == mediaTitle) {

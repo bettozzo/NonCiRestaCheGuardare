@@ -11,18 +11,16 @@ data class Media(
     val is_local: Boolean,
     val sinossi: String,
 ) {
-
-//    @Serializable
-//    companion object {
-//        fun getStructure(): String {
-//            return """
-//                mediaID,
-//                is_film,
-//                titolo,
-//                poster_path,
-//                is_local,
-//                sinossi,
-//            """.trimIndent()
-//        }
-//    }
+    companion object {
+        fun getStructure(): String {
+            return """
+                mediaID,
+                is_film,
+                titolo,
+                poster_path,
+                is_local,
+                sinossi
+            """.trimIndent().replace("\n", "")
+        }
+    }
 }

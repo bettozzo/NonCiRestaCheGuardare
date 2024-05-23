@@ -11,12 +11,13 @@ data class Users(
     @PrimaryKey var userId: String,
     @ColumnInfo(name = "colours") var coloreTemaPrincipale: Colori,
 ) {
+    companion object{
+        fun getStructure(): String {
+            return "userId, " +
+                    "coloreTemaPrincipale ( " +
+                    coloriGetStructure() +
+                    ")".trimIndent();
+        }
 
-}
-
-fun getStructure(): String {
-    return "userId, " +
-            "coloreTemaPrincipale ( " +
-            coloriGetStructure() +
-            ")".trimIndent();
+    }
 }

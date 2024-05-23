@@ -10,14 +10,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.example.test.R
 import com.squareup.picasso.Picasso
-import unitn.app.api.Media
+import unitn.app.api.LocalDbMedia
 
 class ViewHolderHomepage {
     lateinit var poster: ImageView
     lateinit var title: TextView
 }
 
-class AdapterHomepage(private var context: Context, private var media: List<Media>) :
+class AdapterHomepage(private var context: Context, private var localDbMedia: List<LocalDbMedia>) :
     BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val itemInGrid: ViewHolderHomepage
@@ -33,38 +33,38 @@ class AdapterHomepage(private var context: Context, private var media: List<Medi
             itemInGrid = myView.tag as ViewHolderHomepage
         }
 
-        if (media[position].posterPath != null) {
-            showPoster(itemInGrid, media[position])
+        if (localDbMedia[position].posterPath != null) {
+            showPoster(itemInGrid, localDbMedia[position])
         }else {
-            showTitle(itemInGrid, media[position])
+            showTitle(itemInGrid, localDbMedia[position])
         }
 
         myView.setOnClickListener{
             val intent = Intent(context, DettaglioMedia::class.java)
-            prepareExtras(intent, media[position]);
+            prepareExtras(intent, localDbMedia[position]);
             context.startActivity(intent)
         }
         return myView
     }
 
-    private fun showTitle(itemInGrid: ViewHolderHomepage, media: Media) {
+    private fun showTitle(itemInGrid: ViewHolderHomepage, localDbMedia: LocalDbMedia) {
         itemInGrid.poster.visibility = View.GONE
-        itemInGrid.title.text = media.title
+        itemInGrid.title.text = localDbMedia.title
     }
-    private fun showPoster(itemInGrid: ViewHolderHomepage, media: Media) {
+    private fun showPoster(itemInGrid: ViewHolderHomepage, localDbMedia: LocalDbMedia) {
         itemInGrid.title.visibility = View.GONE
-        Picasso.get().load(media.posterPath).into(itemInGrid.poster)
+        Picasso.get().load(localDbMedia.posterPath).into(itemInGrid.poster)
     }
 
-    private fun prepareExtras(intent: Intent, media: Media) {
-        intent.putExtra("id", media.mediaId)
-        intent.putExtra("titoloFilm", media.title)
-        intent.putExtra("poster", media.posterPath)
-        intent.putExtra("isInLocal", media.isLocallySaved)
-        intent.putExtra("sinossi", media.sinossi)
+    private fun prepareExtras(intent: Intent, localDbMedia: LocalDbMedia) {
+        intent.putExtra("id", localDbMedia.mediaId)
+        intent.putExtra("titoloFilm", localDbMedia.title)
+        intent.putExtra("poster", localDbMedia.posterPath)
+        intent.putExtra("isInLocal", localDbMedia.isLocallySaved)
+        intent.putExtra("sinossi", localDbMedia.sinossi)
 
         //also update in ./DettaglioMedia.kt
-        for (platform in media.platform) {
+        for (platform in localDbMedia.platform) {
             when (platform.first) {
                 "Netflix" -> {
                     intent.putExtra("NetflixPath", platform.second)
@@ -88,7 +88,7 @@ class AdapterHomepage(private var context: Context, private var media: List<Medi
 
 
     override fun getItem(p0: Int): Any {
-        return media[p0]
+        return localDbMedia[p0]
     }
 
     override fun getItemId(p0: Int): Long {
@@ -96,7 +96,7 @@ class AdapterHomepage(private var context: Context, private var media: List<Medi
     }
 
     override fun getCount(): Int {
-        return media.size
+        return localDbMedia.size
     }
 }
 

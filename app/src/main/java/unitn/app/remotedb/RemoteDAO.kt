@@ -2,7 +2,10 @@ package unitn.app.remotedb
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import androidx.room.Room
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
@@ -37,7 +40,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         runBlocking {
             val userId = userDao.getUserId();
 
-            val columns = Columns.raw(getStructure())
+            val columns = Columns.raw(Users.getStructure())
             user = supabase.from("Users").select(columns = columns) {
                 filter {
                     eq("userId", userId)
@@ -51,12 +54,28 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
     }
 
     suspend fun addMediaToWatchList(media: Media) {
-        supabase.from("Media").insert(media)
+        if (getMedia(media.mediaID) == null) {
+            supabase.from("Media").insert(media)
+        }
         supabase.postgrest.rpc("Insert_watchlist", watcherlist(user.userId, media.mediaID))
     }
 
-    private suspend fun getMedia(): Media {
-        return supabase.from("Media").select().decodeSingle<Media>()
+    private suspend fun getMedia(id: Int): Media? {
+        return supabase.from("Media").select() {
+            filter {
+                eq("mediaID", id)
+            }
+        }.decodeSingleOrNull<Media>();
+    }
+
+    suspend fun getWatchList(): List<Media> {
+        val columns = Columns.list("mediaid("+Media.getStructure()+")")
+        val result = supabase.from("watchlist").select(columns = columns) {
+            filter {
+                eq("userid", user.userId)
+            }
+        }.component1().replace("{\"mediaid\":", "").replace("}}", "}")
+        return stringToWatcherList(result)
     }
 
     fun getMainColor(): Int {
@@ -69,7 +88,32 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
 @Serializable
 private class watcherlist(
     val useridarg: String,
-    val mediaidarg: Int
-)
+    val mediaidarg: Int,
+) {
+    companion object {
+        fun getStructure(): String {
+            return "id," +
+                    "userid(" +
+                    Users.getStructure() +
+                    ")," +
+                    "mediaid(" +
+                    Media.getStructure() +
+                    ")"
+                        .trimIndent()
+        }
+    }
+
+    override fun toString(): String {
+        return "(userid= $useridarg\tmediaIdArg= $mediaidarg)"
+    }
+}
 
 
+private fun stringToWatcherList(data: String?): List<Media> {
+    val gson = Gson()
+    if (data == null) {
+        return emptyList();
+    }
+    val type = object : TypeToken<List<Media>>() {}.type
+    return gson.fromJson<List<Media>>(data, type)
+}
