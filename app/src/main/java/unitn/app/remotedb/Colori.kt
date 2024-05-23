@@ -15,6 +15,6 @@ fun coloriGetStructure(): String {
     return """
               colorName,
               colorCode
-            """.trimIndent()
+            """.trimIndent().replace("\n", "")
 }
 

@@ -57,11 +57,12 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         if (getMedia(media.mediaID) == null) {
             supabase.from("Media").insert(media)
         }
-        supabase.postgrest.rpc("Insert_watchlist", watcherlist(user.userId, media.mediaID))
+//        supabase.postgrest.rpc("Insert_watchlist", InsertWatchListParams(user.userId, media.mediaID))
+        supabase.from("watchlist").insert(InsertWatchListParams(user.userId, media.mediaID))
     }
 
     private suspend fun getMedia(id: Int): Media? {
-        return supabase.from("Media").select() {
+        return supabase.from("Media").select {
             filter {
                 eq("mediaID", id)
             }
@@ -69,13 +70,15 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
     }
 
     suspend fun getWatchList(): List<Media> {
-        val columns = Columns.list("mediaid("+Media.getStructure()+")")
+        val columns = Columns.list(WatchList.getStructure())
         val result = supabase.from("watchlist").select(columns = columns) {
             filter {
                 eq("userid", user.userId)
             }
-        }.component1().replace("{\"mediaid\":", "").replace("}}", "}")
-        return stringToWatcherList(result)
+        }
+        Log.d("Results", result.component1().toString())
+        val list = result.decodeList<WatchList>()
+        return list.map { it.mediaid }
     }
 
     fun getMainColor(): Int {
@@ -85,35 +88,6 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
 }
 
 
-@Serializable
-private class watcherlist(
-    val useridarg: String,
-    val mediaidarg: Int,
-) {
-    companion object {
-        fun getStructure(): String {
-            return "id," +
-                    "userid(" +
-                    Users.getStructure() +
-                    ")," +
-                    "mediaid(" +
-                    Media.getStructure() +
-                    ")"
-                        .trimIndent()
-        }
-    }
-
-    override fun toString(): String {
-        return "(userid= $useridarg\tmediaIdArg= $mediaidarg)"
-    }
-}
 
 
-private fun stringToWatcherList(data: String?): List<Media> {
-    val gson = Gson()
-    if (data == null) {
-        return emptyList();
-    }
-    val type = object : TypeToken<List<Media>>() {}.type
-    return gson.fromJson<List<Media>>(data, type)
-}
+

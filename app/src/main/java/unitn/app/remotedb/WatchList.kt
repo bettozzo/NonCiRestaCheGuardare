@@ -5,16 +5,24 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class WatchList(
     val id: Int,
-    val userID: String,
-    val mediaID: String,
+    val userid: Users,
+    val mediaid: Media,
 ) {
 
-//    companion object {
-//        fun getStructure(): String {
-//            return "id," +
-//                    Users.getStructure() + "," +
-//                    Media.getStructure()
-//                        .trimIndent()
-//        }
-//    }
+    companion object {
+        fun getStructure(): String {
+            return "id," +
+                    "userid(" +
+                    Users.getStructure() + ")," +
+                    "mediaid(" +
+                    Media.getStructure() + ")"
+                .trimIndent()
+        }
+    }
 }
+
+@Serializable
+class InsertWatchListParams(
+    val useridarg: String,
+    val mediaidarg: Int,
+)
