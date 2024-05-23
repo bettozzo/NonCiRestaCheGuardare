@@ -8,7 +8,6 @@ data class WatchList(
     val userid: Users,
     val mediaid: Media,
 ) {
-
     companion object {
         fun getStructure(): String {
             return "id," +

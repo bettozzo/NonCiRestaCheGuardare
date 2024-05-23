@@ -1,7 +1,6 @@
 package unitn.app.localdb
 
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Upsert
 import unitn.app.api.LocalDbMedia
@@ -28,6 +27,10 @@ interface MovieDAO {
 
     @Query("DELETE FROM LocalDbMedia WHERE mediaId = :id")
     suspend fun deleteMedia(id: Int)
+
+
+    @Query("DELETE FROM LocalDbMedia")
+    suspend fun deleteEveryMedia()
 
     @Query("UPDATE LocalDbMedia SET isLocal=:isLocal WHERE mediaId = :id")
     suspend fun saveInLocal(id: Int, isLocal: Boolean)

@@ -16,7 +16,6 @@ import com.example.test.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
-import unitn.app.api.ConverterMediaToMedia
 import unitn.app.localdb.Converters
 import unitn.app.localdb.MediaDatabase
 import unitn.app.remotedb.RemoteDAO
@@ -101,14 +100,11 @@ class HomePage : AppCompatActivity() {
             coroutineContext
         );
 
-        //add local to remote
-        val lMedias = localDao.getAllMovies().map{ConverterMediaToMedia().toRemote(it)}
-        for (media in lMedias) {
-            remoteDao.insertToWatchlist(media)
-        }
+        //todo se ha internet
+        localDao.deleteEveryMedia();
 
         //add remote to local
-        val rMedias = remoteDao.getWatchList().map { ConverterMediaToMedia().toLocal(it) }
+        val rMedias = remoteDao.getWatchList().map { ConverterMedia.toLocal(applicationContext,it) }
         for(media in rMedias){
             localDao.insertMedia(media)
         }

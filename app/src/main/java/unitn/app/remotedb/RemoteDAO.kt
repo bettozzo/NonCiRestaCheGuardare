@@ -9,6 +9,8 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
+import unitn.app.ConverterMedia
+import unitn.app.api.LocalDbMedia
 import unitn.app.localdb.UserDatabase
 import kotlin.coroutines.CoroutineContext
 
@@ -45,6 +47,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
 
     private suspend fun insertMedia(media: Media) {
         supabase.from("Media").insert(media)
+
     }
 
     private suspend fun getMedia(id: Int): Media? {
@@ -55,7 +58,10 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         }.decodeSingleOrNull<Media>();
     }
 
-    private suspend fun alreadyInWatchList(id: Int): Boolean {
+    private suspend fun isMediaPresent(id:Int): Boolean{
+        return getMedia(id) != null;
+    }
+    private suspend fun isInWatchList(id: Int): Boolean {
         val mediaInString = supabase.from("watchlist").select {
             filter {
                 eq("mediaid", id)
@@ -65,24 +71,37 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         return mediaInString != "[]"
     }
 
-    suspend fun insertToWatchlist(media: Media) {
-        if (getMedia(media.mediaID) == null) {
-            insertMedia(media)
+    private suspend fun insertPiattaforma(nome: String, mediaId: Int){
+        val piattaformaInfo = supabase.from("Piattaforme").select { filter{
+            eq("nome", nome)
+        } }.decodeSingleOrNull<Piattaforme>() ?: return;
+
+
+        supabase.from("DoveVedereMedia").insert(InsertDoveVedereMediaParams(mediaId, piattaformaInfo!!.nome))
+    }
+    suspend fun insertToWatchlist(media: LocalDbMedia) {
+        if (!isMediaPresent(media.mediaId)) {
+            insertMedia(ConverterMedia.toRemote(media))
+            val piattaforme = media.platform;
+            for(piattaforma in piattaforme){
+                insertPiattaforma(piattaforma.first, media.mediaId)
+            }
         }
 
-        if(!alreadyInWatchList(media.mediaID)) {
-            supabase.from("watchlist").insert(InsertWatchListParams(user.userId, media.mediaID))
+        if (!isInWatchList(media.mediaId)) {
+            supabase.from("watchlist").insert(InsertWatchListParams(user.userId, media.mediaId))
         }
     }
 
-    suspend fun deleteFromWatchList(mediaID: Int){
-        supabase.from("watchlist").delete {
-            filter{
+    suspend fun deleteFromWatchList(mediaID: Int) {
+        val debug = supabase.from("watchlist").delete {
+            filter {
                 eq("mediaid", mediaID)
                 eq("userid", user.userId)
             }
         }
     }
+
     suspend fun getWatchList(): List<Media> {
         val columns = Columns.list(WatchList.getStructure())
         val result = supabase.from("watchlist").select(columns = columns) {
@@ -92,6 +111,19 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         }
         val list = result.decodeList<WatchList>()
         return list.map { it.mediaid }
+    }
+
+    suspend fun getDoveVedereMedia(mediaID: Int): List<Piattaforme> {
+
+        val columns = Columns.raw(DoveVedereMedia.getStructure())
+        val doveVedereMedia = supabase.from("DoveVedereMedia").select(columns = columns) {
+            filter {
+                eq("mediaID", mediaID)
+            }
+        }.decodeList<DoveVedereMedia>()
+
+        val piattaforme = doveVedereMedia.map{it.piattaforma};
+        return piattaforme
     }
 
     fun getMainColor(): Int {

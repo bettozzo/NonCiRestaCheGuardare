@@ -116,6 +116,7 @@ class DettaglioMedia : AppCompatActivity() {
                     MediaDatabase::class.java, "media-DB"
                 ).addTypeConverter(Converters())
                     .build().MediaDao()
+
                 val remoteDao = RemoteDAO(
                     applicationContext,
                     coroutineContext
@@ -134,7 +135,14 @@ class DettaglioMedia : AppCompatActivity() {
                     applicationContext,
                     MediaDatabase::class.java, "media-DB"
                 ).addTypeConverter(Converters())
-                    .build().MediaDao()
+                    .build().MediaDao();
+
+                val remoteDao = RemoteDAO(
+                    applicationContext,
+                    coroutineContext
+                );
+
+                remoteDao.deleteFromWatchList(mediaID)
                 mediaDao.deleteMedia(mediaID)
                 finish()//prevents this activity to be opened again
                 startActivity(intent)

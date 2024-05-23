@@ -7,7 +7,7 @@ data class Media(
     val mediaID: Int,
     val is_film: Boolean,
     val titolo: String,
-    val poster_path: String,
+    val poster_path: String?,
     val is_local: Boolean,
     val sinossi: String,
 ) {

@@ -5,18 +5,23 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class DoveVedereMedia(
     val id: Int,
-    val mediaID: Int,
-    val piattaforma: String,
+    val mediaID: Media,
+    val piattaforma: Piattaforme,
 ) {
-
-//    @Serializable
-//    companion object {
-//        fun getStructure(): String {
-//            return "id," +
-//                    Media.getStructure() + "," +
-//                    Piattaforme.getStructure()
-//                        .trimIndent()
-//        }
-//    }
+    companion object {
+        fun getStructure(): String {
+            return "id," +
+                    "mediaID(" +
+                    Media.getStructure() + ")," +
+                    "piattaforma(" +
+                    Piattaforme.getStructure()+ ")"
+        }
+    }
 }
 
+
+@Serializable
+class InsertDoveVedereMediaParams(
+    val mediaID: Int,
+    val piattaforma: String,
+)
