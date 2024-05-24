@@ -9,10 +9,10 @@ interface UserDAO {
     suspend fun getUserId(): String
 
     @Query("INSERT INTO Users VALUES(:userid, 'Verde')")
-    suspend fun insertUserId(userid: String)
+    suspend fun insertUser(userid: String)
 
     @Query("DELETE FROM Users WHERE userId = :id")
-    suspend fun deleteUserId(id: Int)
+    suspend fun deleteUser(id: Int)
 
     @Query("DELETE FROM Users")
     suspend fun deleteEvertyhing()

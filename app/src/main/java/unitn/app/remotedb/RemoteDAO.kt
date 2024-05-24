@@ -55,11 +55,13 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                 }
             }.decodeSingleOrNull<Users>()
         }
+        suspend fun insertUser(userid: String){
+            supabase.from("Users").insert(InsertUsersParams(userid))
+        }
     }
 
     private suspend fun insertMedia(media: Media) {
         supabase.from("Media").insert(media)
-
     }
 
     private suspend fun getMedia(id: Int): Media? {

@@ -16,20 +16,21 @@ import kotlinx.coroutines.runBlocking
 import unitn.app.localdb.UserDatabase
 import unitn.app.remotedb.RemoteDAO
 
-class Auth : AppCompatActivity() {
+class Login : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_auth)
+        setContentView(R.layout.activity_login)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
         val username = findViewById<EditText>(R.id.username)
-        val button = findViewById<Button>(R.id.loginButton)
+        val loginButton = findViewById<Button>(R.id.loginButton)
+        val signInButton = findViewById<Button>(R.id.signInButton)
 
 
         val userDao = Room.databaseBuilder(
@@ -38,18 +39,25 @@ class Auth : AppCompatActivity() {
         ).fallbackToDestructiveMigration()
             .build().userDao()
 
-        button.setOnClickListener {
+        loginButton.setOnClickListener {
             runBlocking {
-                val isValid = RemoteDAO.getUser(username.text.toString()) != null;
+                val userid = username.text.toString();
+                val isValid = RemoteDAO.getUser(userid) != null;
                 if(isValid) {
                     userDao.deleteEvertyhing();
-                    userDao.insertUserId(username.text.toString());
-                    val intent = Intent(this@Auth, HomePage::class.java)
+                    userDao.insertUser(userid);
+                    val intent = Intent(this@Login, HomePage::class.java)
                     startActivity(intent)
                 }else{
                     Toast.makeText(applicationContext, "Username non valido!!", Toast.LENGTH_LONG).show()
                 }
             }
+        }
+        signInButton.setOnClickListener {
+            val userid = username.text.toString();
+            val intent = Intent(this@Login, SignIn::class.java)
+            intent.putExtra("userid", userid)
+            startActivity(intent)
         }
     }
 }

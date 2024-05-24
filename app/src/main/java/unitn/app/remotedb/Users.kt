@@ -21,3 +21,9 @@ data class Users(
 
     }
 }
+
+
+@Serializable
+data class InsertUsersParams(
+    var userId: String,
+)
