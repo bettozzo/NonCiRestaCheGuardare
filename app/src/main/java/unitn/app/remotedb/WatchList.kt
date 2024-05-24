@@ -7,6 +7,7 @@ data class WatchList(
     val id: Int,
     val userid: Users,
     val mediaid: Media,
+    val is_local: Boolean,
 ) {
     companion object {
         fun getStructure(): String {
@@ -14,7 +15,8 @@ data class WatchList(
                     "userid(" +
                     Users.getStructure() + ")," +
                     "mediaid(" +
-                    Media.getStructure() + ")"
+                    Media.getStructure() + (")," +
+                    "is_local")
                 .trimIndent()
         }
     }

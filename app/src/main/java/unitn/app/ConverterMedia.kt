@@ -9,16 +9,16 @@ import unitn.app.remotedb.RemoteDAO
 
 object ConverterMedia {
     fun toRemote(media: LocalDbMedia): Media {
-        return Media(media.mediaId, media.isFilm, media.title, media.posterPath, media.isLocallySaved, media.sinossi!!)
+        return Media(media.mediaId, media.isFilm, media.title, media.posterPath, media.sinossi!!)
     }
-    fun toLocal(context: Context, media: Media): LocalDbMedia = runBlocking {
+    fun toLocal(context: Context, media: Media, isLocal: Boolean): LocalDbMedia = runBlocking {
         val remoteDao = RemoteDAO(
             context,
             coroutineContext
         );
 
         val piattaforme = ConverterPiattaforme.toLocal(remoteDao.getDoveVedereMedia(media.mediaID))
-        return@runBlocking LocalDbMedia(media.mediaID, media.is_film, media.titolo, piattaforme, media.poster_path, media.is_local, media.sinossi)
+        return@runBlocking LocalDbMedia(media.mediaID, media.is_film, media.titolo, piattaforme, media.poster_path, isLocal, media.sinossi)
     }
 }
 

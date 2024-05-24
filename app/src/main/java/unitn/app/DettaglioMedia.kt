@@ -93,6 +93,12 @@ class DettaglioMedia : AppCompatActivity() {
                 .build().MediaDao()
 
             lifecycleScope.launch {
+
+                val remoteDao = RemoteDAO(
+                    applicationContext,
+                    coroutineContext
+                );
+                remoteDao.changeIsLocal(id, isChecked)
                 mediaDao.saveInLocal(id, isChecked)
             }
         }

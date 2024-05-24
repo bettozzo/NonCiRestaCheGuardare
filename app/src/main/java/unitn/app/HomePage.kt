@@ -106,7 +106,7 @@ class HomePage : AppCompatActivity() {
 
         //add remote to local
         val rMedias =
-            remoteDao.getWatchList().map { ConverterMedia.toLocal(applicationContext, it) }
+            remoteDao.getWatchList().map { ConverterMedia.toLocal(applicationContext, it.first, it.second) }
         for (media in rMedias) {
             localDao.insertMedia(media)
         }

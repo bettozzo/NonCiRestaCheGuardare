@@ -102,7 +102,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         }
     }
 
-    suspend fun getWatchList(): List<Media> {
+    suspend fun getWatchList(): List<Pair<Media, Boolean>> {
         val columns = Columns.list(WatchList.getStructure())
         val result = supabase.from("watchlist").select(columns = columns) {
             filter {
@@ -110,7 +110,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
             }
         }
         val list = result.decodeList<WatchList>()
-        return list.map { it.mediaid }
+        return list.map { Pair(it.mediaid, it.is_local)}
     }
 
     suspend fun getDoveVedereMedia(mediaID: Int): List<Piattaforme> {
@@ -128,6 +128,17 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
 
     fun getMainColor(): Int {
         return Color.parseColor(user.coloreTemaPrincipale.colorCode)
+    }
+
+    suspend fun changeIsLocal(mediaId: Int, newState:Boolean){
+        supabase.from("watchlist").update ({
+            set("is_local", newState)
+        }){
+            filter {
+                eq("userid", user.userId)
+                eq("mediaid", mediaId)
+            }
+        }
     }
 
 }

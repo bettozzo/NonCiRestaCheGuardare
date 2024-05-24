@@ -7,6 +7,7 @@ import android.text.method.ScrollingMovementMethod
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -80,6 +81,7 @@ class AggiungiMedia : AppCompatActivity() {
                     coroutineContext
                 );
                 remoteDao.insertToWatchlist(LocalDbMedia(id, isFilm, titolo, platforms, poster, false, sinossi))
+                Toast.makeText(this@AggiungiMedia, "Media aggiunto a Watchlist", Toast.LENGTH_SHORT).show()
 //                mediaDao.insertMedia(LocalDbMedia(id, isFilm, titolo, platforms, poster, false, sinossi))
                 finish()
             }
