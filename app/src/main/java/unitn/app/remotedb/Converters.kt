@@ -7,7 +7,6 @@ import com.google.gson.reflect.TypeToken
 
 @ProvidedTypeConverter
 class Converters {
-
     @TypeConverter
     fun stringToColors(data: String?): Colori {
         val gson = Gson()

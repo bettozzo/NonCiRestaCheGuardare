@@ -30,18 +30,30 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         val userDao = Room.databaseBuilder(
             mContext,
             UserDatabase::class.java, "user-db"
-        ).addTypeConverter(Converters())
-            .build().userDao()
+        ).build().userDao()
 
         runBlocking {
             val userId = userDao.getUserId();
 
+            user = getUser(userId)!!
+        }
+    }
+
+    companion object {
+        private val supabase = createSupabaseClient(
+            supabaseUrl = "https://gxyzupxvwiuhyjtbbwmb.supabase.co",
+            supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4eXp1cHh2d2l1aHlqdGJid21iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTYyOTkzMTMsImV4cCI6MjAzMTg3NTMxM30.4r45EIXsyGCFnsmyx9IcZPFF0NpxFuOrDvf4ghdgdEs"
+        ) {
+            install(Postgrest)
+        }
+
+        suspend fun getUser(userid: String): Users? {
             val columns = Columns.raw(Users.getStructure())
-            user = supabase.from("Users").select(columns = columns) {
+            return supabase.from("Users").select(columns = columns) {
                 filter {
-                    eq("userId", userId)
+                    eq("userId", userid)
                 }
-            }.decodeSingle<Users>()
+            }.decodeSingleOrNull<Users>()
         }
     }
 
@@ -58,9 +70,10 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         }.decodeSingleOrNull<Media>();
     }
 
-    private suspend fun isMediaPresent(id:Int): Boolean{
+    private suspend fun isMediaPresent(id: Int): Boolean {
         return getMedia(id) != null;
     }
+
     private suspend fun isInWatchList(id: Int): Boolean {
         val mediaInString = supabase.from("watchlist").select {
             filter {
@@ -71,19 +84,23 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         return mediaInString != "[]"
     }
 
-    private suspend fun insertPiattaforma(nome: String, mediaId: Int){
-        val piattaformaInfo = supabase.from("Piattaforme").select { filter{
-            eq("nome", nome)
-        } }.decodeSingleOrNull<Piattaforme>() ?: return;
+    private suspend fun insertPiattaforma(nome: String, mediaId: Int) {
+        val piattaformaInfo = supabase.from("Piattaforme").select {
+            filter {
+                eq("nome", nome)
+            }
+        }.decodeSingleOrNull<Piattaforme>() ?: return;
 
 
-        supabase.from("DoveVedereMedia").insert(InsertDoveVedereMediaParams(mediaId, piattaformaInfo!!.nome))
+        supabase.from("DoveVedereMedia")
+            .insert(InsertDoveVedereMediaParams(mediaId, piattaformaInfo!!.nome))
     }
+
     suspend fun insertToWatchlist(media: LocalDbMedia) {
         if (!isMediaPresent(media.mediaId)) {
             insertMedia(ConverterMedia.toRemote(media))
             val piattaforme = media.platform;
-            for(piattaforma in piattaforme){
+            for (piattaforma in piattaforme) {
                 insertPiattaforma(piattaforma.first, media.mediaId)
             }
         }
@@ -110,7 +127,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
             }
         }
         val list = result.decodeList<WatchList>()
-        return list.map { Pair(it.mediaid, it.is_local)}
+        return list.map { Pair(it.mediaid, it.is_local) }
     }
 
     suspend fun getDoveVedereMedia(mediaID: Int): List<Piattaforme> {
@@ -122,7 +139,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
             }
         }.decodeList<DoveVedereMedia>()
 
-        val piattaforme = doveVedereMedia.map{it.piattaforma};
+        val piattaforme = doveVedereMedia.map { it.piattaforma };
         return piattaforme
     }
 
@@ -130,10 +147,10 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         return Color.parseColor(user.coloreTemaPrincipale.colorCode)
     }
 
-    suspend fun changeIsLocal(mediaId: Int, newState:Boolean){
-        supabase.from("watchlist").update ({
+    suspend fun changeIsLocal(mediaId: Int, newState: Boolean) {
+        supabase.from("watchlist").update({
             set("is_local", newState)
-        }){
+        }) {
             filter {
                 eq("userid", user.userId)
                 eq("mediaid", mediaId)

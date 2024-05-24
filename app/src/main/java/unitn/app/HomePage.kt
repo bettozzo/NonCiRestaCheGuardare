@@ -33,16 +33,6 @@ class HomePage : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-//        lifecycleScope.launch {
-//            val usersDao = Room.databaseBuilder(
-//                applicationContext,
-//                UserDatabase::class.java, "user-db"
-//            ).addTypeConverter(Converters())
-//                .fallbackToDestructiveMigration()
-//                .build().userDao()
-//            usersDao.inserUserId(Users("40e6215d-b5c6-4896-987c-f30f3678f608", CustomColors("Verde", "#008c00")));
-//        }
     }
 
     override fun onResume() {
