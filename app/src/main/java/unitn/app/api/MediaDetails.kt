@@ -25,7 +25,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
     private val mutLiveListMedia = MutableLiveData<List<LocalDbMedia>>();
     private lateinit var currentMediaBeingQueried: String;
 
-    private var mutNoInternet:MutableLiveData<Boolean> = MutableLiveData(false)
+    private var mutNoInternet: MutableLiveData<Boolean> = MutableLiveData(false)
 
     val liveNoInternet: LiveData<Boolean>
         get() = mutNoInternet;
@@ -44,11 +44,10 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                 .addConverterFactory(GsonConverterFactory.create()).build()
                 .create(RetrofitAPI::class.java)
 
-            val movieSearchCall = apiCallerMedia.getMovie(mediaTitle, false, "it", 1, apiKey)
-            val seriesSearchCall = apiCallerMedia.getSerie(mediaTitle, false, "it", 1, apiKey)
+            val multiCall = apiCallerMedia.getMovieAndSeries(mediaTitle, false, "it", 1, apiKey)
 
-            val results = getMediaDetails(movieSearchCall).map { Pair(it, true) }.toMutableList()
-            results.addAll(getMediaDetails(seriesSearchCall).map { Pair(it, false) })
+            val results = getMediaDetails(multiCall)
+
             results.sortBy { it.first.popularity }
             results.reverse()
 
@@ -69,9 +68,10 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                         media.name
                     }
                     val sinossi = media.overview
+
                     val platforms = getMediaPlatform(id, isFilm, apiKey)
                     val poster = getPosterPath(media.poster_path, media.backdrop_path)
-                    val movie = LocalDbMedia(id, isFilm, title, platforms, poster, false, sinossi)
+                    val movie = LocalDbMedia(id, isFilm, title!!, platforms, poster, false, sinossi)
 
                     //prevents concurrency problems. In case user sends a new request before the previous one is finished
                     if (currentMediaBeingQueried == mediaTitle) {
@@ -113,7 +113,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
         return mediaDao.getAllId()
     }
 
-    private suspend fun getMediaDetails(mediaSearchCall: Call<MediaResultsFromAPI?>?): MutableList<UnfilteredMediaDetails> {
+    private suspend fun getMediaDetails(mediaSearchCall: Call<MediaResultsFromAPI?>?): MutableList<Pair<UnfilteredMediaDetails, Boolean>> {
 
         return suspendCoroutine { continuation ->
             mediaSearchCall?.enqueue(object : Callback<MediaResultsFromAPI?> {
@@ -122,7 +122,8 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                     response: Response<MediaResultsFromAPI?>,
                 ) {
                     if (!response.isSuccessful) throw IOException("Unexpected code $response")
-                    continuation.resume(response.body()!!.results.toMutableList())
+                    continuation.resume(response.body()!!.results.filter { it.media_type != "person" && it.media_type != "collection" }
+                        .map { Pair(it, it.media_type == "movie") }.toMutableList())
                 }
 
                 override fun onFailure(call: Call<MediaResultsFromAPI?>, t: Throwable) {
@@ -156,7 +157,6 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                     call: Call<StreamingResult?>,
                     response: Response<StreamingResult?>,
                 ) {
-
                     if (!response.isSuccessful) throw IOException("Unexpected code $response")
 
                     val optionsInItaly = response.body()!!.results.IT
@@ -192,7 +192,6 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
         mutNoInternet.value = true
     }
 }
-
 
 
 private fun getPosterPath(posterPath: String?, backdropPath: String?): String? {

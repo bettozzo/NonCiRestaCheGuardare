@@ -6,17 +6,8 @@ import retrofit2.http.Query
 
 interface RetrofitAPI {
 
-    @GET("search/movie?")
-    fun getMovie(
-        @Query("query") title: String,
-        @Query("include_adult") include_adult: Boolean,
-        @Query("language") language: String,
-        @Query("page") page: Int,
-        @Query("api_key") api_key: String,
-    ): Call<MediaResultsFromAPI?>?
-
-    @GET("search/tv?")
-    fun getSerie(
+    @GET("search/multi?")
+    fun getMovieAndSeries(
         @Query("query") title: String,
         @Query("include_adult") include_adult: Boolean,
         @Query("language") language: String,
