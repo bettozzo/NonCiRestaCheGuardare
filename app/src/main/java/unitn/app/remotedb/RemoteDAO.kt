@@ -35,7 +35,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         runBlocking {
             val userId = userDao.getUserId()!!;
 
-            user = getUser(userId)!!
+            user = initUser(userId)!!
         }
     }
 
@@ -47,7 +47,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
             install(Postgrest)
         }
 
-        suspend fun getUser(userid: String): Users? {
+        suspend fun initUser(userid: String): Users? {
             val columns = Columns.raw(Users.getStructure())
             return supabase.from("Users").select(columns = columns) {
                 filter {
@@ -58,6 +58,15 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
 
         suspend fun insertUser(userid: String) {
             supabase.from("Users").insert(InsertUsersParams(userid))
+        }
+
+
+        suspend fun deleteUser(userid: String) {
+            supabase.from("Users").delete {
+                filter {
+                    eq("userId", userid)
+                }
+            }
         }
     }
 
@@ -149,8 +158,11 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
     fun getMainColor(): Int {
         return Color.parseColor(user.coloreTemaPrincipale.colorCode)
     }
+    fun getMainColorAsString(): String {
+        return user.coloreTemaPrincipale.colorCode
+    }
 
-    suspend fun insertColor(color: String){
+    suspend fun insertColor(color: String) {
         supabase.from("Users").update({
             set("coloreTemaPrincipale", color)
         }) {
@@ -170,6 +182,18 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
             }
         }
     }
+
+    suspend fun getAllSeenMedia(): List<Media> {
+        return supabase.from("CronologiaMedia").select(Columns.raw(CronologiaMedia.getStructure())) {
+            filter {
+                eq("userid", user.userId)
+            }
+        }.decodeList<CronologiaMedia>().map { it.mediaId }
+    }
+    suspend fun insertToSeen(mediaId: Int) {
+        supabase.from("CronologiaMedia").insert(InsertCronologiaMediaParams(user.userId, mediaId))
+    }
+
 
 }
 

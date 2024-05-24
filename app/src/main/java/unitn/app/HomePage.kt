@@ -61,7 +61,7 @@ class HomePage : AppCompatActivity() {
         }
 
         goToProfileButton.setOnClickListener {
-            val intent = Intent(this@HomePage, Profile::class.java)
+            val intent = Intent(this@HomePage, Profilo::class.java)
             startActivity(intent)
         }
 

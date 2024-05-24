@@ -4,7 +4,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="unitn.app.Profile">
+    tools:context="unitn.app.Profilo">
 
     <TextView
         android:id="@+id/titolo"
@@ -56,12 +56,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/completamentoLista"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="10dp"
         android:layout_marginTop="50dp"
         android:backgroundTint="#008c00"
-        android:contentDescription="vai a film già visti"
-        android:scaleType="fitCenter"
-        android:text="Vai a cronologia film visti" />
+        android:contentDescription="Vai a media già visti"
+        android:text="Visualizza la cronologia" />
 
 
     <LinearLayout
@@ -78,18 +76,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Vuoi vedere la tua lista dal computer?\nVisita questo sito:"
+            android:text="Vuoi vedere la tua lista dal computer?\nVisita questo sito!"
             android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/URLsito"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:gravity="center"
-            android:text="SITOWEB.COM/Che bello"
+            android:text="@string/link_to_the_website"
             android:textAlignment="center"
             android:textSize="18sp" />
+
+
     </LinearLayout>
 
     <LinearLayout
@@ -116,9 +117,31 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/infoSito"
             android:spinnerMode="dropdown" />
-
     </LinearLayout>
 
+    <Button
+        android:id="@+id/buttonLogOff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/scegliColore"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:backgroundTint="#008c00"
+        android:contentDescription="Esci dall'account"
+        android:text="Esci dall'account" />
+
+    <Button
+        android:id="@+id/buttonDeleteAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="40dp"
+        android:layout_marginBottom="43dp"
+        android:alpha="0.9"
+        android:backgroundTint="#FF0E0E"
+        android:contentDescription="Cancella l'account"
+        android:text="Cancella l'account" />
 
 
     <ImageButton

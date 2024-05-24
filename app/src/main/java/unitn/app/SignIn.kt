@@ -45,7 +45,7 @@ class SignIn : AppCompatActivity() {
 
             runBlocking {
                 val userId = username.text.toString();
-                val isValid = RemoteDAO.getUser(userId) == null;
+                val isValid = RemoteDAO.initUser(userId) == null;
                 if(isValid) {
                     RemoteDAO.insertUser(userId)
                     userDao.insertUser(userId);
