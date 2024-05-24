@@ -42,6 +42,7 @@ class HomePage : AppCompatActivity() {
         val mediaSelected = findViewById<TabLayout>(R.id.MediaSelection);
         val viewFragAdapter = ViewPagerFragmentAdapter(this);
         val goToSearchButton = findViewById<ImageButton>(R.id.goToSearchMediaButton)
+        val goToProfileButton = findViewById<ImageButton>(R.id.goToProfile)
 
         viewPager.adapter = viewFragAdapter;
         TabLayoutMediator(mediaSelected, viewPager) { tab, position ->
@@ -56,6 +57,11 @@ class HomePage : AppCompatActivity() {
 
         goToSearchButton.setOnClickListener {
             val intent = Intent(this@HomePage, Ricerca::class.java)
+            startActivity(intent)
+        }
+
+        goToProfileButton.setOnClickListener {
+            val intent = Intent(this@HomePage, Profile::class.java)
             startActivity(intent)
         }
 

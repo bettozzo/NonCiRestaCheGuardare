@@ -39,6 +39,14 @@ class Login : AppCompatActivity() {
         ).fallbackToDestructiveMigration()
             .build().userDao()
 
+        runBlocking {
+            val isAlreadyAuth = userDao.getUserId() != null
+            if(isAlreadyAuth) {
+                val intent = Intent(this@Login, HomePage::class.java)
+                startActivity(intent)
+            }
+        }
+
         loginButton.setOnClickListener {
             runBlocking {
                 val userid = username.text.toString();
@@ -49,10 +57,11 @@ class Login : AppCompatActivity() {
                     val intent = Intent(this@Login, HomePage::class.java)
                     startActivity(intent)
                 }else{
-                    Toast.makeText(applicationContext, "Username non valido!!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, "Username non valido", Toast.LENGTH_LONG).show()
                 }
             }
         }
+
         signInButton.setOnClickListener {
             val userid = username.text.toString();
             val intent = Intent(this@Login, SignIn::class.java)

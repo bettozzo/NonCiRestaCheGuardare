@@ -33,7 +33,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         ).build().userDao()
 
         runBlocking {
-            val userId = userDao.getUserId();
+            val userId = userDao.getUserId()!!;
 
             user = getUser(userId)!!
         }
@@ -55,7 +55,8 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                 }
             }.decodeSingleOrNull<Users>()
         }
-        suspend fun insertUser(userid: String){
+
+        suspend fun insertUser(userid: String) {
             supabase.from("Users").insert(InsertUsersParams(userid))
         }
     }
@@ -113,7 +114,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
     }
 
     suspend fun deleteFromWatchList(mediaID: Int) {
-        val debug = supabase.from("watchlist").delete {
+        supabase.from("watchlist").delete {
             filter {
                 eq("mediaid", mediaID)
                 eq("userid", user.userId)
@@ -147,6 +148,16 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
 
     fun getMainColor(): Int {
         return Color.parseColor(user.coloreTemaPrincipale.colorCode)
+    }
+
+    suspend fun insertColor(color: String){
+        supabase.from("Users").update({
+            set("coloreTemaPrincipale", color)
+        }) {
+            filter {
+                eq("userId", user.userId)
+            }
+        }
     }
 
     suspend fun changeIsLocal(mediaId: Int, newState: Boolean) {

@@ -10,13 +10,14 @@
         android:id="@+id/titoloPagina"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:textSize="50sp"
-        android:textStyle="bold"
+        android:breakStrategy="simple"
         android:fontFamily="serif"
-        android:text="Registrazione" />
+        android:gravity="center"
+        android:text="Registrazione"
+        android:textSize="35sp"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/username"
@@ -25,8 +26,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="50dp"
         android:layout_marginTop="250dp"
-        android:inputType="text"
         android:hint="Username"
+        android:inputType="text"
         android:singleLine="true"
         android:textSize="20sp" />
 
@@ -37,18 +38,19 @@
         android:layout_below="@+id/username"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:textSize="16sp"
+        android:text="Non è richiesta una password!"
         android:textColor="#B3818181"
-        android:text="Non è richiesta una password!" />
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/signInButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:height="40dp"
         android:layout_below="@+id/username"
         android:layout_marginHorizontal="100dp"
         android:layout_marginVertical="130dp"
-        android:text="Registrati"
         android:backgroundTint="#008c00"
+        android:text="Registrati"
         android:textSize="20sp" />
 </RelativeLayout>
