@@ -95,5 +95,8 @@ object LiveDatas {
         mutLiveListMedia.value = lista;
     }
 
+    fun emptyMedia() {
+        mutLiveListMedia.value = emptyList();
+    }
 
 }

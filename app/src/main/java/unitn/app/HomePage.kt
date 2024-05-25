@@ -1,6 +1,7 @@
 package unitn.app
 
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -90,7 +91,7 @@ class HomePage : AppCompatActivity() {
 
         goToProfileButton.setOnClickListener {
             val intent = Intent(this@HomePage, Profilo::class.java)
-            startActivity(intent)
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
         }
 
     }

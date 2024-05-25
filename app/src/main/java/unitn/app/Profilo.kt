@@ -31,6 +31,7 @@ import unitn.app.remotedb.RemoteDAO
 
 
 class Profilo : AppCompatActivity() {
+    private var startingStateTheme: Boolean = false;
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,15 +100,13 @@ class Profilo : AppCompatActivity() {
         }
 
         switchTema.isChecked = LiveDatas.liveIsDarkTheme.value!!
+        startingStateTheme = switchTema.isChecked
         switchTema.setOnCheckedChangeListener { _, isChecked ->
             LiveDatas.setIsDarkTheme(isChecked)
-            lifecycleScope.launch {
-                RemoteDAO(applicationContext, coroutineContext).updateDarkTheme(isChecked)
-                if (isChecked) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                }
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
 
@@ -125,7 +124,30 @@ class Profilo : AppCompatActivity() {
                     RemoteDAO(this@Profilo, coroutineContext).insertColor(nuovoColore!!.colorName)
                     LiveDatas.setColore(nuovoColore!!.colorCode)
                 }
-                finish();
+
+                val currentStateTheme = switchTema.isChecked;
+                if (currentStateTheme != startingStateTheme) {
+                    LiveDatas.setIsDarkTheme(currentStateTheme)
+                    lifecycleScope.launch {
+                        RemoteDAO(applicationContext, coroutineContext)
+                            .updateDarkTheme(currentStateTheme)
+                    }
+                }
+            }
+            finish();
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        val switchTema = findViewById<SwitchCompat>(R.id.switchTema)
+        val currentStateTheme = switchTema.isChecked;
+        if (currentStateTheme == startingStateTheme) {
+            LiveDatas.setIsDarkTheme(!startingStateTheme)
+            if (!startingStateTheme) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
     }
