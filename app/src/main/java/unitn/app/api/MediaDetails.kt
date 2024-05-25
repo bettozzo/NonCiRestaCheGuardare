@@ -49,6 +49,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
             results.sortBy { it.first.popularity }
             results.reverse()
 
+            LiveDatas.emptyRicercaMedia()
             if (results.isEmpty()) {
                 if (currentMediaBeingQueried == mediaTitle) {
                     mutLiveListMedia.postValue(listMedia);
@@ -70,7 +71,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                     val platforms = getMediaPlatform(id, isFilm, apiKey)
                     val poster = getPosterPath(media.poster_path, media.backdrop_path)
                     val movie = LocalMedia(id, isFilm, title!!, platforms, poster, false, sinossi)
-
+                    LiveDatas.addRicercaMedia(movie);
                     //prevents concurrency problems. In case user sends a new request before the previous one is finished
                     if (currentMediaBeingQueried == mediaTitle) {
                         listMedia.add(movie)
@@ -87,7 +88,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
             return@withContext true;
         }
 
-    suspend fun updateMediaList() {
+    fun updateMediaList() {
         if (listMedia.isEmpty()) {
             return
         }

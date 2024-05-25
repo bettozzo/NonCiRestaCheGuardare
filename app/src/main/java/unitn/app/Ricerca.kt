@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -46,9 +47,14 @@ class Ricerca : AppCompatActivity() {
         val gridView = findViewById<GridView>(R.id.GridView)
         val searchBar = findViewById<EditText>(R.id.searchBar)
         searchBar.requestFocus()
+        searchBar.text = SpannableStringBuilder(LiveDatas.mediaRicercato)
+        searchBar.setSelection(searchBar.length())
         val buttonToSearch = findViewById<Button>(R.id.buttonToSearch)
 
         mediaDetails.liveListMedia.observe(this) {
+            gridView.adapter = AdapterSearch(this@Ricerca, it)
+        }
+        LiveDatas.liveRicercaMedia.observe(this) {
             gridView.adapter = AdapterSearch(this@Ricerca, it)
         }
         mediaDetails.liveNoInternet.observe(this) {
@@ -102,6 +108,7 @@ class Ricerca : AppCompatActivity() {
     }
 
     private fun callAPI(title: String, lastQuery: String?) {
+        LiveDatas.mediaRicercato = title
         val searchBar = findViewById<EditText>(R.id.searchBar)
         val apiKey = resources.getString(R.string.api_key_tmdb)
         //prevents concurrency problems

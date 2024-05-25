@@ -74,6 +74,7 @@ class AggiungiMedia : AppCompatActivity() {
                 val localMedia = LocalMedia(id, isFilm, titolo, platforms, poster, false, sinossi);
                 remoteDao.insertToWatchlist(localMedia)
                 LiveDatas.addMedia(localMedia)
+                LiveDatas.removeRicercaMedia(localMedia)
                 finish()
             }
         }

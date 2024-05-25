@@ -16,6 +16,7 @@ object LiveDatas {
     private var mutLiveIsDarkTHeme: MutableLiveData<Boolean> = MutableLiveData(false)
     val liveIsDarkTheme: LiveData<Boolean>
         get() = mutLiveIsDarkTHeme;
+
     fun setIsDarkTheme(isDark: Boolean) {
         mutLiveIsDarkTHeme.value = isDark
     }
@@ -76,7 +77,7 @@ object LiveDatas {
 
 
     /*--------------------------*/
-    /*----------MEDIA-----------*/
+    /*--------LocalMedia--------*/
     /*--------------------------*/
     private val mutLiveListMedia = MutableLiveData<List<LocalMedia>>(emptyList());
     val liveListMedia: LiveData<List<LocalMedia>>
@@ -86,7 +87,6 @@ object LiveDatas {
         val lista = (mutLiveListMedia.value ?: emptyList()).toMutableList();
         lista.add(media);
         mutLiveListMedia.value = lista;
-
     }
 
     fun removeMedia(mediaId: Int) {
@@ -99,4 +99,27 @@ object LiveDatas {
         mutLiveListMedia.value = emptyList();
     }
 
+
+    /*--------------------------*/
+    /*---------Ricerca----------*/
+    /*--------------------------*/
+    private val mutLiveRicercaMedia = MutableLiveData<List<LocalMedia>>(emptyList());
+    val liveRicercaMedia: LiveData<List<LocalMedia>>
+        get() = mutLiveRicercaMedia;
+
+    var mediaRicercato:String = "Kill Bill"
+    fun addRicercaMedia(media: LocalMedia) {
+        val lista = (mutLiveRicercaMedia.value ?: emptyList()).toMutableList();
+        lista.add(media);
+        mutLiveRicercaMedia.postValue(lista);
+    }
+    fun removeRicercaMedia(media: LocalMedia) {
+        val lista = (mutLiveRicercaMedia.value ?: emptyList()).toMutableList();
+        lista.remove(media);
+        mutLiveRicercaMedia.postValue(lista);
+    }
+
+    fun emptyRicercaMedia() {
+        mutLiveRicercaMedia.postValue(emptyList());
+    }
 }
