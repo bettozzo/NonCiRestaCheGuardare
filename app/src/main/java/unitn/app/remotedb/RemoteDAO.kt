@@ -1,7 +1,6 @@
 package unitn.app.remotedb
 
 import android.content.Context
-import android.graphics.Color
 import androidx.room.Room
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
@@ -10,7 +9,7 @@ import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import unitn.app.ConverterMedia
-import unitn.app.api.LocalDbMedia
+import unitn.app.api.LocalMedia
 import unitn.app.localdb.UserDatabase
 import kotlin.coroutines.CoroutineContext
 
@@ -108,7 +107,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
             .insert(InsertDoveVedereMediaParams(mediaId, piattaformaInfo!!.nome))
     }
 
-    suspend fun insertToWatchlist(media: LocalDbMedia) {
+    suspend fun insertToWatchlist(media: LocalMedia) {
         if (!isMediaPresent(media.mediaId)) {
             insertMedia(ConverterMedia.toRemote(media))
             val piattaforme = media.platform;
@@ -155,10 +154,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         return piattaforme
     }
 
-    fun getMainColor(): Int {
-        return Color.parseColor(user.coloreTemaPrincipale.colorCode)
-    }
-    fun getMainColorAsString(): String {
+    fun getMainColor(): String {
         return user.coloreTemaPrincipale.colorCode
     }
 

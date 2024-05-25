@@ -10,7 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.example.test.R
 import com.squareup.picasso.Picasso
-import unitn.app.api.LocalDbMedia
+import unitn.app.api.LocalMedia
 import unitn.app.localdb.Converters
 
 class ViewHolderSearch {
@@ -18,7 +18,7 @@ class ViewHolderSearch {
     lateinit var title: TextView
 }
 
-class AdapterSearch(private var context: Context, private var localDbMedia: List<LocalDbMedia>) :
+class AdapterSearch(private var context: Context, private var localMedia: List<LocalMedia>) :
     BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
@@ -36,42 +36,42 @@ class AdapterSearch(private var context: Context, private var localDbMedia: List
             itemInGrid = myView.tag as ViewHolderSearch
         }
 
-        if (localDbMedia[position].posterPath != null) {
-            showPoster(itemInGrid, localDbMedia[position]);
+        if (localMedia[position].posterPath != null) {
+            showPoster(itemInGrid, localMedia[position]);
         } else {
-            showTitle(itemInGrid, localDbMedia[position]);
+            showTitle(itemInGrid, localMedia[position]);
         }
 
         myView.setOnClickListener {
             val intent = Intent(context, AggiungiMedia::class.java)
-            prepareExtras(intent, localDbMedia[position]);
+            prepareExtras(intent, localMedia[position]);
             context.startActivity(intent)
         }
         return myView
     }
 
-    private fun showTitle(itemInGrid: ViewHolderSearch, localDbMedia: LocalDbMedia) {
+    private fun showTitle(itemInGrid: ViewHolderSearch, localMedia: LocalMedia) {
         itemInGrid.poster.visibility = View.GONE
-        itemInGrid.title.text = localDbMedia.title
+        itemInGrid.title.text = localMedia.title
     }
 
-    private fun showPoster(itemInGrid: ViewHolderSearch, localDbMedia: LocalDbMedia) {
+    private fun showPoster(itemInGrid: ViewHolderSearch, localMedia: LocalMedia) {
         itemInGrid.title.visibility = View.GONE
-        Picasso.get().load(localDbMedia.posterPath).into(itemInGrid.poster);
+        Picasso.get().load(localMedia.posterPath).into(itemInGrid.poster);
     }
 
 
-    private fun prepareExtras(intent: Intent, localDbMedia: LocalDbMedia) {
-        intent.putExtra("id", localDbMedia.mediaId)
-        intent.putExtra("titoloMedia", localDbMedia.title)
-        intent.putExtra("poster", localDbMedia.posterPath)
-        intent.putExtra("platforms", Converters().platformToString(localDbMedia.platform))
-        intent.putExtra("isFilm", localDbMedia.isFilm)
-        intent.putExtra("sinossi", localDbMedia.sinossi)
+    private fun prepareExtras(intent: Intent, localMedia: LocalMedia) {
+        intent.putExtra("id", localMedia.mediaId)
+        intent.putExtra("titoloMedia", localMedia.title)
+        intent.putExtra("poster", localMedia.posterPath)
+        intent.putExtra("platforms", Converters().platformToString(localMedia.platform))
+        intent.putExtra("isFilm", localMedia.isFilm)
+        intent.putExtra("sinossi", localMedia.sinossi)
     }
 
     override fun getItem(p0: Int): Any {
-        return localDbMedia[p0]
+        return localMedia[p0]
     }
 
     override fun getItemId(p0: Int): Long {
@@ -79,6 +79,6 @@ class AdapterSearch(private var context: Context, private var localDbMedia: List
     }
 
     override fun getCount(): Int {
-        return localDbMedia.size
+        return localMedia.size
     }
 }

@@ -7,19 +7,16 @@ import android.text.method.ScrollingMovementMethod
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.room.Room
 import com.example.test.R
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
-import unitn.app.api.LocalDbMedia
+import unitn.app.api.LocalMedia
 import unitn.app.localdb.Converters
-import unitn.app.localdb.MediaDatabase
 import unitn.app.remotedb.RemoteDAO
 
 class AggiungiMedia : AppCompatActivity() {
@@ -70,19 +67,13 @@ class AggiungiMedia : AppCompatActivity() {
         val buttonAdd = findViewById<Button>(R.id.addFilm)
         buttonAdd.setOnClickListener {
             lifecycleScope.launch {
-                val mediaDao = Room.databaseBuilder(
-                    applicationContext,
-                    MediaDatabase::class.java, "media-DB"
-                ).addTypeConverter(Converters())
-                    .build().MediaDao()
-
                 val remoteDao = RemoteDAO(
                     applicationContext,
                     coroutineContext
                 );
-                remoteDao.insertToWatchlist(LocalDbMedia(id, isFilm, titolo, platforms, poster, false, sinossi))
-                Toast.makeText(this@AggiungiMedia, "Media aggiunto a Watchlist", Toast.LENGTH_SHORT).show()
-//                mediaDao.insertMedia(LocalDbMedia(id, isFilm, titolo, platforms, poster, false, sinossi))
+                val localMedia = LocalMedia(id, isFilm, titolo, platforms, poster, false, sinossi);
+                remoteDao.insertToWatchlist(localMedia)
+                LiveDatas.addMedia(localMedia)
                 finish()
             }
         }

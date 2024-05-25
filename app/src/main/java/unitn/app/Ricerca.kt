@@ -2,6 +2,8 @@ package unitn.app
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
@@ -57,6 +59,21 @@ class Ricerca : AppCompatActivity() {
                         finish()
                     }.show()
             }
+        }
+        LiveDatas.liveColore.observe(this) {
+            val states = arrayOf(
+                intArrayOf(android.R.attr.state_enabled), // enabled
+                intArrayOf(-android.R.attr.state_enabled), // disabled
+                intArrayOf(-android.R.attr.state_checked), // unchecked
+                intArrayOf(android.R.attr.state_pressed)  // pressed
+            )
+            val colors = intArrayOf(
+                Color.parseColor(it),
+                Color.parseColor(it),
+                Color.parseColor(it),
+                Color.parseColor(it),
+            )
+            buttonToSearch.backgroundTintList = ColorStateList(states, colors)
         }
 
         buttonToSearch.setOnClickListener {

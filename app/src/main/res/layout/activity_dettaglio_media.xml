@@ -63,10 +63,10 @@
                 android:layout_height="match_parent"
                 android:layout_marginEnd="10dp"
                 android:alpha="0.6"
+                android:scrollbarFadeDuration="@integer/material_motion_duration_medium_2"
+                android:scrollbars="vertical"
                 android:text="@string/lorem_ipsum_1"
                 android:textColor="@color/black"
-                android:scrollbars = "vertical"
-                android:scrollbarFadeDuration="@integer/material_motion_duration_medium_2"
                 android:textSize="16sp" />
         </LinearLayout>
     </LinearLayout>
@@ -132,8 +132,10 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="32dp"
-        android:background="@color/white"
+        android:background="@drawable/circle"
+        android:backgroundTint="#008c00"
         android:contentDescription="Button to mark media as seen"
+        android:paddingHorizontal="6dp"
         android:scaleType="fitCenter"
         android:src="@drawable/checkmark" />
 

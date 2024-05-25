@@ -18,12 +18,9 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.room.Room
 import com.example.test.R
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
-import unitn.app.localdb.Converters
-import unitn.app.localdb.MediaDatabase
 import unitn.app.remotedb.RemoteDAO
 
 
@@ -86,11 +83,6 @@ class DettaglioMedia : AppCompatActivity() {
         val switch = findViewById<SwitchCompat>(R.id.switchLocal)
         switch.isChecked = extras.getBoolean("isInLocal")
         switch.setOnCheckedChangeListener { _, isChecked ->
-            val mediaDao = Room.databaseBuilder(
-                applicationContext,
-                MediaDatabase::class.java, "media-DB"
-            ).addTypeConverter(Converters())
-                .build().MediaDao()
 
             lifecycleScope.launch {
 
@@ -99,7 +91,6 @@ class DettaglioMedia : AppCompatActivity() {
                     coroutineContext
                 );
                 remoteDao.changeIsLocal(id, isChecked)
-                mediaDao.saveInLocal(id, isChecked)
             }
         }
 
@@ -117,18 +108,12 @@ class DettaglioMedia : AppCompatActivity() {
         deleteBtn.setOnClickListener {
             val intent = Intent(this@DettaglioMedia, HomePage::class.java)
             lifecycleScope.launch {
-                val mediaDao = Room.databaseBuilder(
-                    applicationContext,
-                    MediaDatabase::class.java, "media-DB"
-                ).addTypeConverter(Converters())
-                    .build().MediaDao()
-
                 val remoteDao = RemoteDAO(
                     applicationContext,
                     coroutineContext
                 );
                 remoteDao.deleteFromWatchList(mediaID)
-                mediaDao.deleteMedia(mediaID)
+                LiveDatas.removeMedia(mediaID)
                 finish()//prevents this activity to be opened again
                 startActivity(intent)
             }
@@ -137,12 +122,6 @@ class DettaglioMedia : AppCompatActivity() {
         seenBtn.setOnClickListener {
             val intent = Intent(this@DettaglioMedia, HomePage::class.java)
             lifecycleScope.launch {
-                val mediaDao = Room.databaseBuilder(
-                    applicationContext,
-                    MediaDatabase::class.java, "media-DB"
-                ).addTypeConverter(Converters())
-                    .build().MediaDao();
-
                 val remoteDao = RemoteDAO(
                     applicationContext,
                     coroutineContext
@@ -150,7 +129,7 @@ class DettaglioMedia : AppCompatActivity() {
 
                 remoteDao.deleteFromWatchList(mediaID)
                 remoteDao.insertToSeen(mediaID)
-                mediaDao.deleteMedia(mediaID)
+                LiveDatas.removeMedia(mediaID)
                 finish()//prevents this activity to be opened again
                 startActivity(intent)
             }

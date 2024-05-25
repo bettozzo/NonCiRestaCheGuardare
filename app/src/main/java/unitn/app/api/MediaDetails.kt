@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Call
@@ -12,8 +11,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import unitn.app.localdb.Converters
-import unitn.app.localdb.MediaDatabase
+import unitn.app.LiveDatas
 import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -21,8 +19,8 @@ import kotlin.coroutines.suspendCoroutine
 
 class MediaDetails(application: Application) : AndroidViewModel(application) {
 
-    private var listMedia = emptyList<LocalDbMedia>().toMutableList()
-    private val mutLiveListMedia = MutableLiveData<List<LocalDbMedia>>();
+    private var listMedia = emptyList<LocalMedia>().toMutableList()
+    private val mutLiveListMedia = MutableLiveData<List<LocalMedia>>();
     private lateinit var currentMediaBeingQueried: String;
 
     private var mutNoInternet: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -30,13 +28,13 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
     val liveNoInternet: LiveData<Boolean>
         get() = mutNoInternet;
 
-    val liveListMedia: LiveData<List<LocalDbMedia>>
+    val liveListMedia: LiveData<List<LocalMedia>>
         get() = mutLiveListMedia;
 
     suspend fun getDetails(mediaTitle: String, apiKey: String): Boolean =
         withContext(Dispatchers.IO) {
             currentMediaBeingQueried = mediaTitle;
-            listMedia = emptyList<LocalDbMedia>().toMutableList()
+            listMedia = emptyList<LocalMedia>().toMutableList()
             var counter = 0;
             val idFilmInUserList = getAllUserMedia();
 
@@ -71,7 +69,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
 
                     val platforms = getMediaPlatform(id, isFilm, apiKey)
                     val poster = getPosterPath(media.poster_path, media.backdrop_path)
-                    val movie = LocalDbMedia(id, isFilm, title!!, platforms, poster, false, sinossi)
+                    val movie = LocalMedia(id, isFilm, title!!, platforms, poster, false, sinossi)
 
                     //prevents concurrency problems. In case user sends a new request before the previous one is finished
                     if (currentMediaBeingQueried == mediaTitle) {
@@ -94,23 +92,15 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
             return
         }
 
-        val idFilmInUserList = getAllUserMedia();
-        for (id in idFilmInUserList) {
+        val idMediaInUserList = getAllUserMedia();
+        for (id in idMediaInUserList) {
             listMedia.removeIf { it.mediaId == id }
         }
         mutLiveListMedia.postValue(listMedia);
     }
 
-    private suspend fun getAllUserMedia(): List<Int> {
-        val context = getApplication<Application>().applicationContext
-        val mediaDao = Room.databaseBuilder(
-            context,
-            MediaDatabase::class.java, "media-DB"
-        ).addTypeConverter(Converters())
-            .fallbackToDestructiveMigration()
-            .build().MediaDao()
-
-        return mediaDao.getAllId()
+    private fun getAllUserMedia(): List<Int> {
+        return LiveDatas.liveListMedia.value?.map { it.mediaId } ?: emptyList()
     }
 
     private suspend fun getMediaDetails(mediaSearchCall: Call<MediaResultsFromAPI?>?): MutableList<Pair<UnfilteredMediaDetails, Boolean>> {

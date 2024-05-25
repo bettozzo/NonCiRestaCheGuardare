@@ -1,6 +1,8 @@
 package unitn.app
 
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.View
@@ -21,6 +23,7 @@ import com.example.test.R
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import unitn.app.localdb.UserDatabase
+import unitn.app.remotedb.Colori
 import unitn.app.remotedb.RemoteDAO
 
 
@@ -44,6 +47,25 @@ class Profilo : AppCompatActivity() {
         val buttonDeleteAccount = findViewById<Button>(R.id.buttonDeleteAccount)
         val buttonSave = findViewById<ImageButton>(R.id.buttonSave)
 
+        //Change colors
+        LiveDatas.liveColore.observe(this) {
+            val states = arrayOf(
+                intArrayOf(android.R.attr.state_enabled), // enabled
+                intArrayOf(-android.R.attr.state_enabled), // disabled
+                intArrayOf(-android.R.attr.state_checked), // unchecked
+                intArrayOf(android.R.attr.state_pressed)  // pressed
+            )
+            val colors = intArrayOf(
+                Color.parseColor(it),
+                Color.parseColor(it),
+                Color.parseColor(it),
+                Color.parseColor(it),
+            )
+            val myList = ColorStateList(states, colors)
+            buttonGoToCronologia.backgroundTintList = myList
+            buttonSave.backgroundTintList = myList
+            buttonLogOff.backgroundTintList = myList
+        }
 
         //nome
         setName(textNomeUtente);
@@ -60,20 +82,20 @@ class Profilo : AppCompatActivity() {
         urlSito.movementMethod = LinkMovementMethod.getInstance()
 
         //colors
-        var nuovoColore: String? = null;
+        var nuovoColore: Colori? = null;
         val colori = arrayOf("Verde", "Viola", "Azzurro")
         val coloriCode = arrayOf("#008c00", "#852deb", "#2d95eb")
         val lastColor = coloriCode.indexOf(getCurrentColor());
 
         spinnerColors.adapter =
             ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, colori);
-        spinnerColors.setSelection(if (lastColor != -1) lastColor else 0)
+        spinnerColors.setSelection(if (lastColor != -1) lastColor else 1)
 
         spinnerColors.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?, view: View?, position: Int, id: Long,
             ) {
-                nuovoColore = colori[position]
+                nuovoColore = Colori(colori[position], coloriCode[position])
             }
 
             override fun onNothingSelected(arg0: AdapterView<*>?) {}
@@ -89,7 +111,8 @@ class Profilo : AppCompatActivity() {
         buttonSave.setOnClickListener {
             lifecycleScope.launch {
                 if (nuovoColore != null) {
-                    RemoteDAO(this@Profilo, coroutineContext).insertColor(nuovoColore!!)
+                    RemoteDAO(this@Profilo, coroutineContext).insertColor(nuovoColore!!.colorName)
+                    LiveDatas.setColore(nuovoColore!!.colorCode)
                 }
                 finish();
             }
@@ -149,7 +172,7 @@ class Profilo : AppCompatActivity() {
             return@runBlocking RemoteDAO(
                 applicationContext,
                 coroutineContext
-            ).getMainColorAsString()
+            ).getMainColor()
         }
     }
 
