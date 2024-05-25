@@ -9,19 +9,12 @@
     tools:context="unitn.app.HomePage">
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/MediaSelection"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/Verde"
-        app:tabIconTint="#D6000A00"
-        app:tabIndicatorColor="#DCA8FF2F"
-        app:tabIndicatorFullWidth="true"
-        app:tabIndicatorHeight="4dp"
-        app:tabInlineLabel="true"
-        app:tabTextColor="#CDFFFFFF" />
+        style="@style/normalTabLayout"
+        android:id="@+id/MediaSelection"/>
 
 
     <androidx.viewpager2.widget.ViewPager2
+        style="@style/viewPagerStyle"
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -29,35 +22,23 @@
 
 
     <ImageButton
+        style="@style/normalImageButton"
         android:id="@+id/goToSearchMediaButton"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="29dp"
         android:layout_marginBottom="20dp"
-        android:background="@drawable/circle"
-        android:backgroundTint="@color/Verde"
         android:contentDescription="Aggiungi un nuovo media"
-        android:paddingHorizontal="15dp"
-        android:paddingVertical="15dp"
-        android:scaleType="fitCenter"
         android:src="@drawable/lente_dingrandimento" />
 
     <ImageButton
+        style="@style/normalImageButton"
         android:id="@+id/goToProfile"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="29dp"
         android:layout_marginBottom="20dp"
-        android:background="@drawable/circle"
-        android:backgroundTint="@color/Verde"
         android:contentDescription="Vai a pagina del profilo"
-        android:paddingHorizontal="15dp"
-        android:paddingVertical="15dp"
-        android:scaleType="fitCenter"
         android:src="@drawable/user_pfp" />
 
 

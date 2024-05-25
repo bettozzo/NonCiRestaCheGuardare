@@ -22,6 +22,7 @@ class Login : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        LiveDatas.setIsDarkTheme(false)
         setContentView(R.layout.activity_login)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -43,6 +44,8 @@ class Login : AppCompatActivity() {
             val isAlreadyAuth = userDao.getUserId() != null
             if(isAlreadyAuth) {
                 val intent = Intent(this@Login, HomePage::class.java)
+                intent.flags =
+                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
             }
         }
@@ -55,6 +58,8 @@ class Login : AppCompatActivity() {
                     userDao.deleteEvertyhing();
                     userDao.insertUser(userid);
                     val intent = Intent(this@Login, HomePage::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                 }else{
                     Toast.makeText(applicationContext, "Username non valido", Toast.LENGTH_LONG).show()

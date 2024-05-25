@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="normalText">#FF000000</color>
-    <color name="titoloText">#E6FFFFFF</color>
-    <color name="backgroundHeaderTitolo">#FF000000</color>
+    <color name="normalText">#E6FAFAFA</color>
+    <color name="titoloText">#323232</color>
+    <color name="backgroundHeaderTitolo">#C3C3C3</color>
 
     <color name="black">#FF000000</color>
     <color name="Verde">#ff008c00</color>

@@ -50,6 +50,8 @@ class SignIn : AppCompatActivity() {
                     RemoteDAO.insertUser(userId)
                     userDao.insertUser(userId);
                     val intent = Intent(this@SignIn, HomePage::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                 }else{
                     Toast.makeText(applicationContext, "Username non valido!!", Toast.LENGTH_LONG).show()

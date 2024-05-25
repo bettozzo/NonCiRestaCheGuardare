@@ -2,12 +2,12 @@ package unitn.app
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -33,27 +33,33 @@ class HomePage : AppCompatActivity() {
             insets
         }
         updateColor();
+
+        LiveDatas.liveIsDarkTheme.observe(this){
+            if(it) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            }else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
+
         LiveDatas.liveColore.observe(this) {
-            val states = arrayOf(
-                intArrayOf(android.R.attr.state_enabled), // enabled
-                intArrayOf(-android.R.attr.state_enabled), // disabled
-                intArrayOf(-android.R.attr.state_checked), // unchecked
-                intArrayOf(android.R.attr.state_pressed)  // pressed
+            LiveDatas.updateColorsOfImgButtons(
+                listOf(
+                    findViewById(R.id.goToProfile),
+                    findViewById(R.id.goToSearchMediaButton)
+                )
             )
-            val colors = intArrayOf(
-                Color.parseColor(it),
-                Color.parseColor(it),
-                Color.parseColor(it),
-                Color.parseColor(it),
-            )
-            val myList = ColorStateList(states, colors)
-            findViewById<ImageButton>(R.id.goToProfile).backgroundTintList = myList
-            findViewById<ImageButton>(R.id.goToSearchMediaButton).backgroundTintList = myList
+
             findViewById<TabLayout>(R.id.MediaSelection).setBackgroundColor(Color.parseColor(it))
         }
         LiveDatas.liveListMedia.observe(this) {
             findViewById<ViewPager2>(R.id.pager).adapter = ViewPagerFragmentAdapter(this);
-            findViewById<ViewPager2>(R.id.pager).adapter?.notifyDataSetChanged()
+        }
+
+        if (LiveDatas.liveListMedia.value!!.isEmpty()) {
+            lifecycleScope.launch {
+                syncDataDB()
+            }
         }
     }
 
@@ -87,11 +93,6 @@ class HomePage : AppCompatActivity() {
             startActivity(intent)
         }
 
-        if (LiveDatas.liveListMedia.value!!.isEmpty()) {
-            lifecycleScope.launch {
-                syncDataDB()
-            }
-        }
     }
 
     private fun updateColor() {
@@ -117,8 +118,7 @@ class HomePage : AppCompatActivity() {
         for (media in rMedias) {
             LiveDatas.addMedia(media)
         }
-
-        //todo remove sync?
+        LiveDatas.setIsDarkTheme(remoteDao.getDarkTheme())
     }
 }
 

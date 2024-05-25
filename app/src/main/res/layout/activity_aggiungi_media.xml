@@ -8,17 +8,9 @@
     tools:context="unitn.app.DettaglioMedia">
 
     <TextView
+        style="@style/HeaderTitolo"
         android:id="@+id/titoloFilm"
-        android:layout_width="match_parent"
-        android:layout_height="78dp"
-        android:background="#000000"
-        android:gravity="center"
-        android:text="TitoloFilm"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:typeface="monospace" />
+        android:text="TitoloFilm" />
 
     <ImageView
         android:id="@+id/poster"
@@ -42,35 +34,32 @@
         app:layout_constraintTop_toBottomOf="@+id/poster">
 
         <TextView
+            style="@style/Header"
             android:id="@+id/HeaderInfoMedia"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sinossi"
-            android:textSize="23sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/sinossiText"
+            style="@style/normalText"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginEnd="10dp"
-            android:alpha="0.6"
-            android:text="@string/lorem_ipsum_1"
-            android:textColor="@color/black"
-            android:scrollbars = "vertical"
             android:scrollbarFadeDuration="@integer/material_motion_duration_medium_2"
-            android:textSize="16sp" />
+            android:scrollbars="vertical"
+            android:text="@string/lorem_ipsum_1"
+            android:textAlignment="textStart" />
 
     </LinearLayout>
 
     <Button
-        android:id="@+id/addFilm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/normalButton"
+        android:id="@+id/addMedia"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="67dp"
-        android:backgroundTint="#008c00"
         android:text="Aggiungi" />
 
 

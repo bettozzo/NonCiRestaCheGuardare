@@ -7,6 +7,7 @@
     tools:context="unitn.app.Login">
 
     <TextView
+        style="@style/Header"
         android:id="@+id/titoloPagina"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,7 +15,6 @@
         android:layout_marginTop="50dp"
         android:breakStrategy="simple"
         android:fontFamily="serif"
-        android:gravity="center"
         android:text="Registrazione"
         android:textSize="35sp"
         android:textStyle="bold" />
@@ -43,14 +43,12 @@
         android:textSize="16sp" />
 
     <Button
+        style="@style/normalButton"
         android:id="@+id/signInButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:height="40dp"
         android:layout_below="@+id/username"
         android:layout_marginHorizontal="100dp"
         android:layout_marginVertical="130dp"
-        android:backgroundTint="#008c00"
         android:text="Registrati"
         android:textSize="20sp" />
 </RelativeLayout>

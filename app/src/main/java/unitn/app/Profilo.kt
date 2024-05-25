@@ -1,5 +1,6 @@
 package unitn.app
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -15,6 +16,8 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -28,6 +31,7 @@ import unitn.app.remotedb.RemoteDAO
 
 
 class Profilo : AppCompatActivity() {
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -43,35 +47,27 @@ class Profilo : AppCompatActivity() {
         val buttonGoToCronologia = findViewById<Button>(R.id.buttonGoToSeen)
         val urlSito = findViewById<TextView>(R.id.URLsito)
         val spinnerColors = findViewById<Spinner>(R.id.chooseColor)
+        val switchTema = findViewById<SwitchCompat>(R.id.switchTema)
         val buttonLogOff = findViewById<Button>(R.id.buttonLogOff)
         val buttonDeleteAccount = findViewById<Button>(R.id.buttonDeleteAccount)
         val buttonSave = findViewById<ImageButton>(R.id.buttonSave)
 
         //Change colors
         LiveDatas.liveColore.observe(this) {
-            val states = arrayOf(
-                intArrayOf(android.R.attr.state_enabled), // enabled
-                intArrayOf(-android.R.attr.state_enabled), // disabled
-                intArrayOf(-android.R.attr.state_checked), // unchecked
-                intArrayOf(android.R.attr.state_pressed)  // pressed
-            )
-            val colors = intArrayOf(
-                Color.parseColor(it),
-                Color.parseColor(it),
-                Color.parseColor(it),
-                Color.parseColor(it),
-            )
-            val myList = ColorStateList(states, colors)
-            buttonGoToCronologia.backgroundTintList = myList
-            buttonSave.backgroundTintList = myList
-            buttonLogOff.backgroundTintList = myList
+            LiveDatas.updateColorsOfButtons(listOf(buttonGoToCronologia, buttonLogOff))
+            LiveDatas.updateColorsOfImgButtons(listOf(buttonSave))
         }
 
         //nome
         setName(textNomeUtente);
 
         //completismo
-        setCompletamento(textPercentuale)
+        var inPercentuale = true;
+        setCompletamento(textPercentuale, inPercentuale)
+        textPercentuale.setOnClickListener {
+            inPercentuale = !inPercentuale
+            setCompletamento(textPercentuale, inPercentuale)
+        }
 
         //cronologia
         buttonGoToCronologia.setOnClickListener {
@@ -96,10 +92,25 @@ class Profilo : AppCompatActivity() {
                 parent: AdapterView<*>?, view: View?, position: Int, id: Long,
             ) {
                 nuovoColore = Colori(colori[position], coloriCode[position])
+                updateColorsOfImgButtons(coloriCode[position])
             }
 
             override fun onNothingSelected(arg0: AdapterView<*>?) {}
         }
+
+        switchTema.isChecked = LiveDatas.liveIsDarkTheme.value!!
+        switchTema.setOnCheckedChangeListener { _, isChecked ->
+            LiveDatas.setIsDarkTheme(isChecked)
+            lifecycleScope.launch {
+                RemoteDAO(applicationContext, coroutineContext).updateDarkTheme(isChecked)
+                if (isChecked) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+            }
+        }
+
 
         //button log off
         setLogOffButton(buttonLogOff);
@@ -125,7 +136,7 @@ class Profilo : AppCompatActivity() {
 
             with(builder)
             {
-                setTitle("AZIONE IRREVERSIBILE")
+                setTitle("CANCELLA ACCOUNT")
                 setMessage("Sei sicuro di voler cancellare l'account?\nTutti i dati andranno persi in maniera irreversibile")
                 setPositiveButton(android.R.string.ok) { _, _ ->
                     runBlocking {
@@ -176,7 +187,7 @@ class Profilo : AppCompatActivity() {
         }
     }
 
-    private fun setCompletamento(textView: TextView) {
+    private fun setCompletamento(textView: TextView, inPercentuale: Boolean) {
         lifecycleScope.launch {
             val remoteDao = RemoteDAO(
                 this@Profilo, coroutineContext
@@ -187,7 +198,11 @@ class Profilo : AppCompatActivity() {
             val filmDaVedere = remoteDao.getWatchList().size
 
             val totale = filmVisti + filmDaVedere
-            textView.text = "$filmVisti/$totale"
+            textView.text = if (inPercentuale) {
+                String.format("%.1f", (filmVisti.toFloat() / totale.toFloat()) * 100) + "%"
+            } else {
+                "$filmVisti/$totale"
+            }
         }
     }
 
@@ -202,25 +217,25 @@ class Profilo : AppCompatActivity() {
             textNomeUtente.text = "Ciao, $username!"
         }
     }
+
+    private fun updateColorsOfImgButtons(color: String) {
+        val states = arrayOf(
+            intArrayOf(android.R.attr.state_enabled), // enabled
+            intArrayOf(-android.R.attr.state_enabled), // disabled
+            intArrayOf(-android.R.attr.state_checked), // unchecked
+            intArrayOf(android.R.attr.state_pressed)  // pressed
+        )
+        val colors = intArrayOf(
+            Color.parseColor(color),
+            Color.parseColor(color),
+            Color.parseColor(color),
+            Color.parseColor(color)
+        )
+
+        val myList = ColorStateList(states, colors)
+
+        findViewById<Button>(R.id.buttonGoToSeen).backgroundTintList = myList
+        findViewById<Button>(R.id.buttonLogOff).backgroundTintList = myList
+        findViewById<ImageButton>(R.id.buttonSave).backgroundTintList = myList
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

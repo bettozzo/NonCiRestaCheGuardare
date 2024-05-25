@@ -33,7 +33,6 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
 
         runBlocking {
             val userId = userDao.getUserId()!!;
-
             user = initUser(userId)!!
         }
     }
@@ -159,9 +158,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
     }
 
     suspend fun insertColor(color: String) {
-        supabase.from("Users").update({
-            set("coloreTemaPrincipale", color)
-        }) {
+        supabase.from("Users").update({ set("coloreTemaPrincipale", color) }) {
             filter {
                 eq("userId", user.userId)
             }
@@ -169,9 +166,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
     }
 
     suspend fun changeIsLocal(mediaId: Int, newState: Boolean) {
-        supabase.from("watchlist").update({
-            set("is_local", newState)
-        }) {
+        supabase.from("watchlist").update({ set("is_local", newState) }) {
             filter {
                 eq("userid", user.userId)
                 eq("mediaid", mediaId)
@@ -180,17 +175,42 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
     }
 
     suspend fun getAllSeenMedia(): List<Media> {
-        return supabase.from("CronologiaMedia").select(Columns.raw(CronologiaMedia.getStructure())) {
-            filter {
-                eq("userid", user.userId)
-            }
-        }.decodeList<CronologiaMedia>().map { it.mediaId }
+        return supabase.from("CronologiaMedia")
+            .select(Columns.raw(CronologiaMedia.getStructure())) {
+                filter {
+                    eq("userid", user.userId)
+                }
+            }.decodeList<CronologiaMedia>().map { it.mediaId }
     }
+
     suspend fun insertToSeen(mediaId: Int) {
-        supabase.from("CronologiaMedia").insert(InsertCronologiaMediaParams(user.userId, mediaId))
+        val alreadyPresent = supabase.from("CronologiaMedia")
+            .select(columns = Columns.raw(CronologiaMedia.getStructure())) {
+                filter {
+                    eq("userid", user.userId)
+                    eq("mediaId", mediaId)
+                }
+            }.decodeSingleOrNull<CronologiaMedia>() != null;
+        if (!alreadyPresent) {
+            supabase.from("CronologiaMedia")
+                .insert(InsertCronologiaMediaParams(user.userId, mediaId))
+        }
     }
 
-
+    suspend fun updateDarkTheme(isOn: Boolean) {
+        supabase.from("Users").update({ set("temaScuro", isOn) }) {
+            filter {
+                eq("userId", user.userId)
+            }
+        }
+    }
+    suspend fun getDarkTheme(): Boolean {
+        return supabase.from("Users").select(columns = Columns.raw(Users.getStructure())) {
+            filter {
+                eq("userId", user.userId)
+            }
+        }.decodeSingle<Users>().temaScuro
+    }
 }
 
 

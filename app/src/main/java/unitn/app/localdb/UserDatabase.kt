@@ -6,7 +6,7 @@ import androidx.room.TypeConverters
 import unitn.app.remotedb.Users
 
 
-@Database(entities = [Users::class], version = 8)
+@Database(entities = [Users::class], version = 9)
 @TypeConverters(unitn.app.remotedb.Converters::class)
 abstract class UserDatabase : RoomDatabase(){
     abstract fun userDao(): UserDAO

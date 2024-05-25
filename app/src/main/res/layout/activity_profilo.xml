@@ -1,161 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     tools:context="unitn.app.Profilo">
 
-    <TextView
-        android:id="@+id/titolo"
-        android:layout_width="match_parent"
-        android:layout_height="78dp"
-        android:background="#000000"
-        android:gravity="center"
-        android:text="Ciao, $NomeUtente"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:typeface="monospace" />
-
     <RelativeLayout
-        android:id="@+id/completamentoLista"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_below="@+id/titolo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="15dp"
-        android:paddingHorizontal="30dp">
+        android:layout_height="match_parent"
+        tools:context="unitn.app.Profilo">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="Completamento"
-            android:textAlignment="center"
-            android:textSize="22sp" />
+            android:id="@+id/titolo"
+            style="@style/HeaderTitolo"
+            android:layout_width="match_parent"
+            android:layout_height="78dp"
+            android:text="Ciao, $NomeUtente" />
 
-        <TextView
-            android:id="@+id/contenutiVistiEDaVedere"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:gravity="center"
-            android:text="$V/$daV"
-            android:textAlignment="center"
-            android:textSize="18sp" />
+        <RelativeLayout
+            android:id="@+id/completamentoLista"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@+id/titolo"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="15dp"
+            android:paddingHorizontal="30dp">
 
-    </RelativeLayout>
+            <TextView
+                style="@style/Header"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Percentuale visti"
+                android:textAlignment="center" />
 
+            <TextView
+                android:id="@+id/contenutiVistiEDaVedere"
+                style="@style/normalText"
+                android:layout_alignParentEnd="true"
+                android:text="$V/$daV"
+                android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/buttonGoToSeen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/completamentoLista"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:backgroundTint="#008c00"
-        android:contentDescription="Vai a media già visti"
-        android:text="Visualizza la cronologia" />
-
-
-    <LinearLayout
-        android:id="@+id/infoSito"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/buttonGoToSeen"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="50dp"
-        android:orientation="vertical"
-        android:paddingHorizontal="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Vuoi vedere la tua lista dal computer?\nVisita questo sito!"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/URLsito"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:gravity="center"
-            android:text="@string/link_to_the_website"
-            android:textAlignment="center"
-            android:textSize="18sp" />
+        </RelativeLayout>
 
 
-    </LinearLayout>
+        <Button
+            android:id="@+id/buttonGoToSeen"
+            style="@style/normalButton"
+            android:layout_below="@id/completamentoLista"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:contentDescription="Vai a media già visti"
+            android:text="Visualizza la cronologia" />
 
-    <LinearLayout
-        android:id="@+id/scegliColore"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/infoSito"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="50dp"
-        android:orientation="vertical"
-        android:paddingHorizontal="10dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Scegli un nuovo colore"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <Spinner
-            android:id="@+id/chooseColor"
+        <LinearLayout
+            android:id="@+id/infoSito"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/infoSito"
-            android:spinnerMode="dropdown" />
-    </LinearLayout>
+            android:layout_below="@+id/buttonGoToSeen"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="50dp"
+            android:orientation="vertical"
+            android:paddingHorizontal="10dp">
 
-    <Button
-        android:id="@+id/buttonLogOff"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/scegliColore"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:backgroundTint="#008c00"
-        android:contentDescription="Esci dall'account"
-        android:text="Esci dall'account" />
+            <TextView
+                style="@style/Header"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Vuoi vedere la tua lista dal computer?\nVisita questo sito!"
+                android:textAlignment="textStart" />
 
-    <Button
-        android:id="@+id/buttonDeleteAccount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="40dp"
-        android:layout_marginBottom="43dp"
-        android:alpha="0.9"
-        android:backgroundTint="#FF0E0E"
-        android:contentDescription="Cancella l'account"
-        android:text="Cancella l'account" />
+            <TextView
+                android:id="@+id/URLsito"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:gravity="center"
+                android:text="@string/link_to_the_website"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
 
-    <ImageButton
-        android:id="@+id/buttonSave"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="40dp"
-        android:layout_marginBottom="32dp"
-        android:background="@drawable/circle"
-        android:backgroundTint="#008c00"
-        android:contentDescription="Salva e vai a homepage"
-        android:paddingVertical="6dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/checkmark" />
-</RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/scegliColore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/infoSito"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="50dp"
+            android:orientation="vertical"
+            android:paddingHorizontal="10dp">
+
+            <TextView
+                style="@style/Header"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Impostazioni colore" />
+
+            <Spinner
+                android:id="@+id/chooseColor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/infoSito"
+                android:spinnerMode="dropdown" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchTema"
+                android:layout_width="187dp"
+                android:layout_height="41dp"
+                android:text="Tema scuro"
+                android:theme="@style/SCBSwitch" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/buttonLogOff"
+            style="@style/normalButton"
+            android:layout_below="@id/scegliColore"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:contentDescription="Esci dall'account"
+            android:text="Esci dall'account" />
+
+        <LinearLayout
+            android:id="@+id/containerDeleteButton"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_below="@+id/buttonLogOff"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="30dp"
+            android:background="#4DFF0000"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/buttonDeleteAccount"
+                style="@style/dangerousButton"
+                android:contentDescription="Cancella l'account"
+                android:text="Cancella l'account" />
+
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/buttonSave"
+            style="@style/normalImageButton"
+            android:layout_below="@+id/containerDeleteButton"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="50dp"
+            android:contentDescription="Salva e vai a homepage"
+            android:src="@drawable/checkmark" />
+    </RelativeLayout>
+</ScrollView>

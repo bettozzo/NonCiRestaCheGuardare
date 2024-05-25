@@ -3,6 +3,7 @@ package unitn.app
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.text.TextUtils
 import android.text.method.ScrollingMovementMethod
@@ -83,9 +84,7 @@ class DettaglioMedia : AppCompatActivity() {
         val switch = findViewById<SwitchCompat>(R.id.switchLocal)
         switch.isChecked = extras.getBoolean("isInLocal")
         switch.setOnCheckedChangeListener { _, isChecked ->
-
             lifecycleScope.launch {
-
                 val remoteDao = RemoteDAO(
                     applicationContext,
                     coroutineContext
@@ -98,6 +97,9 @@ class DettaglioMedia : AppCompatActivity() {
         val buttonDel = findViewById<ImageButton>(R.id.buttonDelete)
         val buttonSeen = findViewById<ImageButton>(R.id.buttonSeen)
         setButtonProperties(buttonDel, buttonSeen, id)
+        LiveDatas.liveColore.observe(this) {
+            LiveDatas.updateColorsOfImgButtons(listOf(buttonSeen))
+        }
     }
 
     private fun setButtonProperties(
@@ -146,29 +148,38 @@ class DettaglioMedia : AppCompatActivity() {
 
 
         if (netflixLogo == null && primevideoLogo == null && disneyplusLogo == null && raiplayLogo == null && crunchyrollLogo == null) {
-            addPlatform(null, platformList)
-        } else {
-            if (netflixLogo != null) {
-                addPlatform(netflixLogo, platformList)
+            val platformView = ImageView(this);
+            when (this.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+                Configuration.UI_MODE_NIGHT_YES -> {
+                    Picasso.get().load(R.drawable.theme_dark_no_providers).into(platformView);
+                }
+                Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED -> {
+                    Picasso.get().load(R.drawable.theme_light_no_providers).into(platformView);
+                }
             }
-            if (primevideoLogo != null) {
-                addPlatform(primevideoLogo, platformList)
-            }
-            if (disneyplusLogo != null) {
-                addPlatform(disneyplusLogo, platformList)
-            }
-            if (raiplayLogo != null) {
-                addPlatform(raiplayLogo, platformList)
-            }
-            if (crunchyrollLogo != null) {
-                addPlatform(crunchyrollLogo, platformList)
-            }
+            platformList.addView(platformView);
+            return;
+        }
+        if (netflixLogo != null) {
+            addPlatform(netflixLogo, platformList)
+        }
+        if (primevideoLogo != null) {
+            addPlatform(primevideoLogo, platformList)
+        }
+        if (disneyplusLogo != null) {
+            addPlatform(disneyplusLogo, platformList)
+        }
+        if (raiplayLogo != null) {
+            addPlatform(raiplayLogo, platformList)
+        }
+        if (crunchyrollLogo != null) {
+            addPlatform(crunchyrollLogo, platformList)
         }
     }
 
     private fun addPlatform(logoPath: String?, platformList: LinearLayout) {
         val platformView = ImageView(this);
-        Picasso.get().load(logoPath).placeholder(R.drawable.no_providers).into(platformView);
+        Picasso.get().load(logoPath).placeholder(R.drawable.theme_light_no_providers).into(platformView);
         platformList.addView(platformView);
     }
 

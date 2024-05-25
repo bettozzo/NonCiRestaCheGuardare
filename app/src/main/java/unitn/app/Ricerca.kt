@@ -112,7 +112,7 @@ class Ricerca : AppCompatActivity() {
                     if (!foundSomething) {
                         AlertDialog.Builder(this@Ricerca)
                             .setTitle("Nessun risultato.")
-                            .setMessage("Cerca un'altro titolo!")
+                            .setMessage("Cerca un altro titolo!")
                             .setPositiveButton(android.R.string.ok) { _, _ ->
                                 searchBar.requestFocus();
                                 searchBar.showKeyboard();

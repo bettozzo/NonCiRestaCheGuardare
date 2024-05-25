@@ -33,27 +33,22 @@
         android:textSize="20sp" />
 
     <Button
+        style="@style/normalButton"
         android:id="@+id/loginButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_below="@+id/username"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="100dp"
         android:layout_marginVertical="100dp"
-        android:backgroundTint="#008c00"
-        android:text="Login"
-        android:textSize="16sp" />
+        android:text="Login" />
 
     <Button
+        style="@style/normalButton"
         android:id="@+id/signInButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:width="400dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="100dp"
         android:layout_marginBottom="60dp"
-        android:backgroundTint="#008c00"
-        android:text="Crea Account"
-        android:textSize="16sp" />
+        android:text="Crea Account" />
 </RelativeLayout>

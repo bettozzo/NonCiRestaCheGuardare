@@ -64,7 +64,7 @@ class AggiungiMedia : AppCompatActivity() {
         sinossiView.text = sinossi
 
         //bottone aggiungi
-        val buttonAdd = findViewById<Button>(R.id.addFilm)
+        val buttonAdd = findViewById<Button>(R.id.addMedia)
         buttonAdd.setOnClickListener {
             lifecycleScope.launch {
                 val remoteDao = RemoteDAO(
@@ -76,6 +76,10 @@ class AggiungiMedia : AppCompatActivity() {
                 LiveDatas.addMedia(localMedia)
                 finish()
             }
+        }
+
+        LiveDatas.liveColore.observe(this) {
+            LiveDatas.updateColorsOfButtons(listOf(buttonAdd))
         }
     }
 
