@@ -120,10 +120,65 @@
                 android:theme="@style/SCBSwitch" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/containerPiattaforme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/scegliColore"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/Header"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Seleziona le tue piattaforme" />
+
+            <CheckBox
+                android:id="@+id/netflixBox"
+                style="@style/normalText"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Netflix" />
+
+            <CheckBox
+                android:id="@+id/amazonPrimeBox"
+                style="@style/normalText"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Amazon Prime" />
+
+            <CheckBox
+                android:id="@+id/raiPlayBox"
+                style="@style/normalText"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Rai Play" />
+
+
+            <CheckBox
+                android:id="@+id/disneyPlusBox"
+                style="@style/normalText"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Disney Plus" />
+
+
+            <CheckBox
+                android:id="@+id/crunchyrollBox"
+                style="@style/normalText"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Crunchyroll" />
+
+        </LinearLayout>
+
         <Button
             android:id="@+id/buttonLogOff"
             style="@style/normalButton"
-            android:layout_below="@id/scegliColore"
+            android:layout_below="@id/containerPiattaforme"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="50dp"
             android:contentDescription="Esci dall'account"
@@ -138,8 +193,7 @@
             android:layout_marginStart="14dp"
             android:layout_marginTop="30dp"
             android:background="#4DFF0000"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:gravity="center">
 
             <Button
                 android:id="@+id/buttonDeleteAccount"
@@ -159,5 +213,7 @@
             android:layout_marginBottom="50dp"
             android:contentDescription="Salva e vai a homepage"
             android:src="@drawable/checkmark" />
+
+
     </RelativeLayout>
 </ScrollView>

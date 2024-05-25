@@ -2,6 +2,7 @@ package unitn.app
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -22,6 +23,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.test.R
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import unitn.app.remotedb.RemoteDAO
 
 
@@ -138,59 +140,76 @@ class DettaglioMedia : AppCompatActivity() {
         }
     }
 
-    private fun showAvailablePlatforms(extras: Bundle) {
+    private fun showAvailablePlatforms(extras: Bundle) = runBlocking {
+
+        var hasAtLeastOnePlatofrm = false;
+        val platforms = RemoteDAO(applicationContext, coroutineContext).getPiattaformeUser()
+
         val platformList = findViewById<LinearLayout>(R.id.plaformList)
-        val netflixLogo = extras.getString("NetflixPath")
-        val primevideoLogo = extras.getString("AmazonPath")
-        val disneyplusLogo = extras.getString("DisneyPath")
-        val raiplayLogo = extras.getString("RaiPath")
-        val crunchyrollLogo = extras.getString("CrunchyrollPath")
 
+        val netflix = platforms.find { it.nome == "Netflix" }
+        val primevideoLogo = platforms.find { it.nome == "Amazon Prime Video" }
+        val disneyplusLogo = platforms.find { it.nome == "Disney Plus" }
+        val raiplayLogo = platforms.find { it.nome == "Rai Play" }
+        val crunchyrollLogo = platforms.find { it.nome == "Crunchyroll" }
 
-        if (netflixLogo == null && primevideoLogo == null && disneyplusLogo == null && raiplayLogo == null && crunchyrollLogo == null) {
-            val platformView = ImageView(this);
-            when (this.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+        if (netflix != null && extras.getString("NetflixPath") != null) {
+            addPlatform(netflix.logo_path, platformList, this@DettaglioMedia)
+            hasAtLeastOnePlatofrm = true;
+        }
+
+        if (primevideoLogo != null && extras.getString("AmazonPath") != null) {
+            addPlatform(primevideoLogo.logo_path, platformList, this@DettaglioMedia)
+            hasAtLeastOnePlatofrm = true;
+        }
+        if (disneyplusLogo != null && extras.getString("DisneyPath") != null) {
+            addPlatform(disneyplusLogo.logo_path, platformList, this@DettaglioMedia)
+            hasAtLeastOnePlatofrm = true;
+        }
+        if (raiplayLogo != null && extras.getString("RaiPath") != null) {
+            addPlatform(raiplayLogo.logo_path, platformList, this@DettaglioMedia)
+            hasAtLeastOnePlatofrm = true;
+        }
+        if (crunchyrollLogo != null && extras.getString("CrunchyrollPath") != null) {
+            addPlatform(crunchyrollLogo.logo_path, platformList, this@DettaglioMedia)
+            hasAtLeastOnePlatofrm = true;
+        }
+
+        if (!hasAtLeastOnePlatofrm) {
+            val platformView = ImageView(this@DettaglioMedia);
+            when (this@DettaglioMedia.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
                 Configuration.UI_MODE_NIGHT_YES -> {
                     Picasso.get().load(R.drawable.theme_dark_no_providers).into(platformView);
                 }
+
                 Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED -> {
                     Picasso.get().load(R.drawable.theme_light_no_providers).into(platformView);
                 }
             }
             platformList.addView(platformView);
-            return;
         }
-        if (netflixLogo != null) {
-            addPlatform(netflixLogo, platformList)
-        }
-        if (primevideoLogo != null) {
-            addPlatform(primevideoLogo, platformList)
-        }
-        if (disneyplusLogo != null) {
-            addPlatform(disneyplusLogo, platformList)
-        }
-        if (raiplayLogo != null) {
-            addPlatform(raiplayLogo, platformList)
-        }
-        if (crunchyrollLogo != null) {
-            addPlatform(crunchyrollLogo, platformList)
-        }
-    }
-
-    private fun addPlatform(logoPath: String?, platformList: LinearLayout) {
-        val platformView = ImageView(this);
-        Picasso.get().load(logoPath).placeholder(R.drawable.theme_light_no_providers).into(platformView);
-        platformList.addView(platformView);
-    }
-
-    private fun setTitleProperties(titoloFilm: TextView, extras: Bundle) {
-        titoloFilm.text = extras.getString("titoloFilm")
-        titoloFilm.ellipsize = TextUtils.TruncateAt.MARQUEE;
-        titoloFilm.marqueeRepeatLimit = -1;
-        titoloFilm.setSingleLine(true);
-        titoloFilm.setSelected(true);
     }
 }
+
+private fun addPlatform(
+    logoPath: String?,
+    platformList: LinearLayout,
+    applicationContext: Context,
+) {
+    val platformView = ImageView(applicationContext);
+    Picasso.get().load(logoPath).placeholder(R.drawable.theme_light_no_providers)
+        .into(platformView);
+    platformList.addView(platformView);
+}
+
+private fun setTitleProperties(titoloFilm: TextView, extras: Bundle) {
+    titoloFilm.text = extras.getString("titoloFilm")
+    titoloFilm.ellipsize = TextUtils.TruncateAt.MARQUEE;
+    titoloFilm.marqueeRepeatLimit = -1;
+    titoloFilm.setSingleLine(true);
+    titoloFilm.setSelected(true);
+}
+
 
 
 

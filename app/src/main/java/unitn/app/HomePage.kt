@@ -12,12 +12,14 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.example.test.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
+import unitn.app.api.LocalMedia
 import unitn.app.remotedb.RemoteDAO
 import kotlin.coroutines.coroutineContext
 
@@ -35,27 +37,23 @@ class HomePage : AppCompatActivity() {
         }
         updateColor();
 
-        LiveDatas.liveIsDarkTheme.observe(this){
-            if(it) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            }else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-        }
-
-        LiveDatas.liveColore.observe(this) {
-            LiveDatas.updateColorsOfImgButtons(
-                listOf(
-                    findViewById(R.id.goToProfile),
-                    findViewById(R.id.goToSearchMediaButton)
+        LiveDatas.liveColore.observe(this, object: Observer<String>{
+            override fun onChanged(value: String) {
+                LiveDatas.updateColorsOfImgButtons(
+                    listOf(
+                        findViewById(R.id.goToProfile),
+                        findViewById(R.id.goToSearchMediaButton)
+                    )
                 )
-            )
+                findViewById<TabLayout>(R.id.MediaSelection).setBackgroundColor(Color.parseColor(value))
+            }
+        })
 
-            findViewById<TabLayout>(R.id.MediaSelection).setBackgroundColor(Color.parseColor(it))
-        }
-        LiveDatas.liveListMedia.observe(this) {
-            findViewById<ViewPager2>(R.id.pager).adapter = ViewPagerFragmentAdapter(this);
-        }
+        LiveDatas.liveListMedia.observe(this, object: Observer<List<LocalMedia>>{
+            override fun onChanged(value: List<LocalMedia>) {
+                findViewById<ViewPager2>(R.id.pager).adapter = ViewPagerFragmentAdapter(this@HomePage);
+            }
+        })
 
         if (LiveDatas.liveListMedia.value!!.isEmpty()) {
             lifecycleScope.launch {
@@ -102,7 +100,7 @@ class HomePage : AppCompatActivity() {
                 applicationContext,
                 coroutineContext
             ).getMainColor()
-            LiveDatas.setColore(newColor)
+            LiveDatas.setColore(newColor.colorCode)
         }
     }
 
@@ -120,6 +118,11 @@ class HomePage : AppCompatActivity() {
             LiveDatas.addMedia(media)
         }
         LiveDatas.setIsDarkTheme(remoteDao.getDarkTheme())
+        if (LiveDatas.liveIsDarkTheme.value!!) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
     }
 }
 

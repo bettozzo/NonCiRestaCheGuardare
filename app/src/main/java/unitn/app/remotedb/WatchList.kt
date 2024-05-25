@@ -15,9 +15,8 @@ data class WatchList(
                     "userid(" +
                     Users.getStructure() + ")," +
                     "mediaid(" +
-                    Media.getStructure() + (")," +
-                    "is_local")
-                .trimIndent()
+                    Media.getStructure() + ")," +
+                    "is_local"
         }
     }
 }

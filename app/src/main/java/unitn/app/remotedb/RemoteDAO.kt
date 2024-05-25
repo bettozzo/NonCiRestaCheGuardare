@@ -153,11 +153,11 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         return piattaforme
     }
 
-    fun getMainColor(): String {
-        return user.coloreTemaPrincipale.colorCode
+    fun getMainColor(): Colori {
+        return user.coloreTemaPrincipale
     }
 
-    suspend fun insertColor(color: String) {
+    suspend fun updateColor(color: String) {
         supabase.from("Users").update({ set("coloreTemaPrincipale", color) }) {
             filter {
                 eq("userId", user.userId)
@@ -204,12 +204,35 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
             }
         }
     }
+
     suspend fun getDarkTheme(): Boolean {
         return supabase.from("Users").select(columns = Columns.raw(Users.getStructure())) {
             filter {
                 eq("userId", user.userId)
             }
         }.decodeSingle<Users>().temaScuro
+    }
+
+    suspend fun insertPiattaformaAdUser(piattaformaNome: String) {
+        supabase.from("PiattaformeDiUser").insert(InsertPiattaformeDiUsersParams(user.userId, piattaformaNome))
+    }
+
+    suspend fun removePiattaformaAdUser(piattaformaNome: String) {
+        supabase.from("PiattaformeDiUser").delete {
+            filter {
+                eq("userId", user.userId)
+                eq("piattaformaNome", piattaformaNome)
+            }
+        }
+    }
+
+    suspend fun getPiattaformeUser(): List<Piattaforme> {
+        return supabase.from("PiattaformeDiUser")
+            .select(columns = Columns.raw(PiattaformeDiUsers.getStructure())) {
+                filter {
+                    eq("userId", user.userId)
+                }
+            }.decodeList<PiattaformeDiUsers>().map { it.piattaformaNome }
     }
 }
 

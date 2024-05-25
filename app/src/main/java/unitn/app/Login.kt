@@ -24,10 +24,10 @@ class Login : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         LiveDatas.setIsDarkTheme(false)
-        LiveDatas.liveIsDarkTheme.observe(this){
-            if(it) {
+        LiveDatas.liveIsDarkTheme.observe(this) {
+            if (it) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            }else {
+            } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
@@ -52,7 +52,7 @@ class Login : AppCompatActivity() {
 
         runBlocking {
             val isAlreadyAuth = userDao.getUserId() != null
-            if(isAlreadyAuth) {
+            if (isAlreadyAuth) {
                 val intent = Intent(this@Login, HomePage::class.java)
                 intent.flags =
                     Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -60,24 +60,29 @@ class Login : AppCompatActivity() {
             }
         }
 
+
         loginButton.setOnClickListener {
             runBlocking {
                 val userid = username.text.toString();
                 val isValid = RemoteDAO.initUser(userid) != null;
-                if(isValid) {
+                if (isValid) {
                     userDao.deleteEvertyhing();
                     userDao.insertUser(userid);
+
                     val intent = Intent(this@Login, HomePage::class.java)
                     intent.flags =
                         Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
                     startActivity(intent)
-                }else{
-                    Toast.makeText(applicationContext, "Username non valido", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(applicationContext, "Username non valido", Toast.LENGTH_LONG)
+                        .show()
                 }
             }
         }
 
-        signInButton.setOnClickListener {
+
+        signInButton.setOnClickListener{
             val userid = username.text.toString();
             val intent = Intent(this@Login, SignIn::class.java)
             intent.putExtra("userid", userid)

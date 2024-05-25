@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.TextView
@@ -31,7 +32,6 @@ import unitn.app.remotedb.RemoteDAO
 
 
 class Profilo : AppCompatActivity() {
-    private var startingStateTheme: Boolean = false;
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,29 +80,39 @@ class Profilo : AppCompatActivity() {
 
         //colors
         var nuovoColore: Colori? = null;
-        val colori = arrayOf("Verde", "Viola", "Azzurro")
-        val coloriCode = arrayOf("#008c00", "#852deb", "#2d95eb")
-        val lastColor = coloriCode.indexOf(getCurrentColor());
+        val colori = arrayOf(
+            Pair("Azzurro", "#2d95eb"),
+            Pair("Verde", "#008c00"),
+            Pair("Viola", "#852deb"),
+        );
+        val lastColor =
+            colori.indexOf(Pair(getCurrentColor().colorName, getCurrentColor().colorCode));
 
         spinnerColors.adapter =
-            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, colori);
-        spinnerColors.setSelection(if (lastColor != -1) lastColor else 1)
+            ArrayAdapter(
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                colori.map { it.first });
+        spinnerColors.setSelection(if (lastColor != -1) lastColor else 0)
 
         spinnerColors.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?, view: View?, position: Int, id: Long,
             ) {
-                nuovoColore = Colori(colori[position], coloriCode[position])
-                updateColorsOfImgButtons(coloriCode[position])
+                nuovoColore = Colori(colori[position].first, colori[position].second)
+                updateColorsOfImgButtons(colori[position].second)
             }
 
             override fun onNothingSelected(arg0: AdapterView<*>?) {}
         }
 
         switchTema.isChecked = LiveDatas.liveIsDarkTheme.value!!
-        startingStateTheme = switchTema.isChecked
         switchTema.setOnCheckedChangeListener { _, isChecked ->
             LiveDatas.setIsDarkTheme(isChecked)
+            lifecycleScope.launch {
+                RemoteDAO(applicationContext, coroutineContext)
+                    .updateDarkTheme(switchTema.isChecked)
+            }
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             } else {
@@ -110,6 +120,8 @@ class Profilo : AppCompatActivity() {
             }
         }
 
+        //piattaforme
+        setPiattaForme()
 
         //button log off
         setLogOffButton(buttonLogOff);
@@ -121,33 +133,55 @@ class Profilo : AppCompatActivity() {
         buttonSave.setOnClickListener {
             lifecycleScope.launch {
                 if (nuovoColore != null) {
-                    RemoteDAO(this@Profilo, coroutineContext).insertColor(nuovoColore!!.colorName)
+                    RemoteDAO(this@Profilo, coroutineContext).updateColor(nuovoColore!!.colorName)
                     LiveDatas.setColore(nuovoColore!!.colorCode)
-                }
-
-                val currentStateTheme = switchTema.isChecked;
-                if (currentStateTheme != startingStateTheme) {
-                    LiveDatas.setIsDarkTheme(currentStateTheme)
-                    lifecycleScope.launch {
-                        RemoteDAO(applicationContext, coroutineContext)
-                            .updateDarkTheme(currentStateTheme)
-                    }
                 }
             }
             finish();
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        val switchTema = findViewById<SwitchCompat>(R.id.switchTema)
-        val currentStateTheme = switchTema.isChecked;
-        if (currentStateTheme == startingStateTheme) {
-            LiveDatas.setIsDarkTheme(!startingStateTheme)
-            if (!startingStateTheme) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+    private fun setPiattaForme() {
+        val netflix = findViewById<CheckBox>(R.id.netflixBox)
+        val amazon = findViewById<CheckBox>(R.id.amazonPrimeBox)
+        val raiplay = findViewById<CheckBox>(R.id.raiPlayBox)
+        val disneyplus = findViewById<CheckBox>(R.id.disneyPlusBox)
+        val crunchyroll = findViewById<CheckBox>(R.id.crunchyrollBox)
+        lifecycleScope.launch {
+            val piattaforme = RemoteDAO(applicationContext, coroutineContext).getPiattaformeUser().map{it.nome};
+            if(piattaforme.contains("Netflix")){
+                netflix.isChecked = true;
+            }
+            if(piattaforme.contains("Amazon Prime Video")){
+                amazon.isChecked = true;
+            }
+            if(piattaforme.contains("Rai Play")){
+                raiplay.isChecked = true;
+            }
+            if(piattaforme.contains("Disney Plus")){
+                disneyplus.isChecked = true;
+            }
+            if(piattaforme.contains("Crunchyroll")){
+                crunchyroll.isChecked = true;
+            }
+        }.invokeOnCompletion {
+            detectStateCheckBox(netflix, "Netflix")
+            detectStateCheckBox(amazon, "Amazon Prime Video")
+            detectStateCheckBox(raiplay, "Rai Play")
+            detectStateCheckBox(disneyplus, "Disney Plus")
+            detectStateCheckBox(crunchyroll, "Crunchyroll")
+        }
+
+    }
+
+    private fun detectStateCheckBox(box: CheckBox, nomePiattaforma: String) {
+        box.setOnCheckedChangeListener { _, isChecked ->
+            lifecycleScope.launch {
+                if(isChecked) {
+                    RemoteDAO(applicationContext, coroutineContext).insertPiattaformaAdUser(nomePiattaforma)
+                }else{
+                    RemoteDAO(applicationContext, coroutineContext).removePiattaformaAdUser(nomePiattaforma)
+                }
             }
         }
     }
@@ -200,7 +234,7 @@ class Profilo : AppCompatActivity() {
         }
     }
 
-    private fun getCurrentColor(): String {
+    private fun getCurrentColor(): Colori {
         return runBlocking {
             return@runBlocking RemoteDAO(
                 applicationContext,

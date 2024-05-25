@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.GridView
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
@@ -46,10 +47,8 @@ class Ricerca : AppCompatActivity() {
 
         val gridView = findViewById<GridView>(R.id.GridView)
         val searchBar = findViewById<EditText>(R.id.searchBar)
-        searchBar.requestFocus()
-        searchBar.text = SpannableStringBuilder(LiveDatas.mediaRicercato)
-        searchBar.setSelection(searchBar.length())
         val buttonToSearch = findViewById<Button>(R.id.buttonToSearch)
+        val buttonDeleteQuery = findViewById<ImageButton>(R.id.buttonDeleteQuery)
 
         mediaDetails.liveListMedia.observe(this) {
             gridView.adapter = AdapterSearch(this@Ricerca, it)
@@ -88,6 +87,15 @@ class Ricerca : AppCompatActivity() {
             lastTitleQueried = title;
         }
 
+        buttonDeleteQuery.setOnClickListener {
+            searchBar.text.clear()
+            searchBar.requestFocus()
+            searchBar.showKeyboard();
+        }
+
+        searchBar.requestFocus()
+        searchBar.text = SpannableStringBuilder(LiveDatas.mediaRicercato)
+        searchBar.setSelection(searchBar.length())
         searchBar.setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 val title = searchBar.text.toString();

@@ -4,26 +4,41 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="unitn.app.HomePage"
-    >
+    tools:context="unitn.app.HomePage">
 
-    <EditText
-        android:id="@+id/searchBar"
-        android:layout_width="300dp"
+    <LinearLayout
+        android:id="@+id/searchBarDiv"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:inputType="text"
-        tools:ignore="LabelFor, Autofill" />
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/searchBar"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:inputType="text"
+            tools:ignore="LabelFor, Autofill" />
+
+        <ImageButton
+            android:id="@+id/buttonDeleteQuery"
+            style="@style/normalImageButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:backgroundTint="#4D9A9A9A"
+            android:src="@drawable/cross"
+            android:contentDescription="cancella query" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/buttonToSearch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/searchBar"
+        style="@style/normalButton"
+        android:layout_below="@id/searchBarDiv"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
-        android:backgroundTint="#008c00"
+        android:layout_marginBottom="10dp"
         android:text="Cerca" />
 
 
