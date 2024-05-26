@@ -58,6 +58,10 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
             }
 
             for ((media, isFilm) in results) {
+                val list = LiveDatas.liveWatchlist.value?.filter { it.mediaId == media.id }
+                if(list?.isNotEmpty()!!){
+                    continue;
+                }
                 val id = media.id
                 if (!idFilmInUserList.contains(id)) {
                     counter++;
@@ -101,7 +105,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
     }
 
     private fun getAllUserMedia(): List<Int> {
-        return LiveDatas.liveListMedia.value?.map { it.mediaId } ?: emptyList()
+        return LiveDatas.liveWatchlist.value?.map { it.mediaId } ?: emptyList()
     }
 
     private suspend fun getMediaDetails(mediaSearchCall: Call<MediaResultsFromAPI?>?): MutableList<Pair<UnfilteredMediaDetails, Boolean>> {

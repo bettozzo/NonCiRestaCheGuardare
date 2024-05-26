@@ -49,13 +49,13 @@ class HomePage : AppCompatActivity() {
             }
         })
 
-        LiveDatas.liveListMedia.observe(this, object: Observer<List<LocalMedia>>{
+        LiveDatas.liveWatchlist.observe(this, object: Observer<List<LocalMedia>>{
             override fun onChanged(value: List<LocalMedia>) {
                 findViewById<ViewPager2>(R.id.pager).adapter = ViewPagerFragmentAdapter(this@HomePage);
             }
         })
 
-        if (LiveDatas.liveListMedia.value!!.isEmpty()) {
+        if (LiveDatas.liveWatchlist.value!!.isEmpty()) {
             lifecycleScope.launch {
                 syncDataDB()
             }

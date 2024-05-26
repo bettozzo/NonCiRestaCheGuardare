@@ -77,26 +77,26 @@ object LiveDatas {
 
 
     /*--------------------------*/
-    /*--------LocalMedia--------*/
+    /*--------WatchList---------*/
     /*--------------------------*/
-    private val mutLiveListMedia = MutableLiveData<List<LocalMedia>>(emptyList());
-    val liveListMedia: LiveData<List<LocalMedia>>
-        get() = mutLiveListMedia;
+    private val mutWatchList = MutableLiveData<List<LocalMedia>>(emptyList());
+    val liveWatchlist: LiveData<List<LocalMedia>>
+        get() = mutWatchList;
 
     fun addMedia(media: LocalMedia) {
-        val lista = (mutLiveListMedia.value ?: emptyList()).toMutableList();
+        val lista = (mutWatchList.value ?: emptyList()).toMutableList();
         lista.add(media);
-        mutLiveListMedia.value = lista;
+        mutWatchList.value = lista;
     }
 
     fun removeMedia(mediaId: Int) {
-        val lista = (mutLiveListMedia.value ?: return).toMutableList();
+        val lista = (mutWatchList.value ?: return).toMutableList();
         lista.removeIf { it.mediaId == mediaId };
-        mutLiveListMedia.value = lista;
+        mutWatchList.value = lista;
     }
 
     fun emptyMedia() {
-        mutLiveListMedia.value = emptyList();
+        mutWatchList.value = emptyList();
     }
 
 

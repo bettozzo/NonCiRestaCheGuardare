@@ -20,7 +20,7 @@ class SeriesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        LiveDatas.liveListMedia.observe(viewLifecycleOwner){
+        LiveDatas.liveWatchlist.observe(viewLifecycleOwner){
             val gridViewMedia = view.findViewById<GridView>(R.id.GridViewSeries)
             gridViewMedia.adapter = AdapterHomepage(view.context, it.filter { !it.isFilm })
         }
