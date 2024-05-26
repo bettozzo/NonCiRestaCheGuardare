@@ -13,15 +13,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.Test"
+        android:screenOrientation="portrait"
         tools:targetApi="31">
         <activity
             android:name="unitn.app.CronologiaMedia"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name="unitn.app.Profilo"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name="unitn.app.Login"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,18 +35,23 @@
         </activity>
         <activity
             android:name="unitn.app.SignIn"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name="unitn.app.AggiungiMedia"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name="unitn.app.DettaglioMedia"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name="unitn.app.Ricerca"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name="unitn.app.HomePage"
+            android:screenOrientation="portrait"
             android:exported="false" />
     </application>
 

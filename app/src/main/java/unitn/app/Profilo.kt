@@ -2,12 +2,12 @@ package unitn.app
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.View
-import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -35,6 +35,7 @@ import unitn.app.remotedb.RemoteDAO
 class Profilo : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_profilo)
@@ -259,7 +260,7 @@ class Profilo : AppCompatActivity() {
             val filmDaVedere = remoteDao.getWatchList().size
 
             val totale = filmVisti + filmDaVedere
-            textView.text = if (inPercentuale) {
+            textView.text = if (inPercentuale && totale != 0) {
                 String.format("%.1f", (filmVisti.toFloat() / totale.toFloat()) * 100) + "%"
             } else {
                 "$filmVisti/$totale"

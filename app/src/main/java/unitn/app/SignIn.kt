@@ -2,6 +2,7 @@ package unitn.app
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -20,6 +21,8 @@ class SignIn : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_signin)
@@ -49,7 +52,7 @@ class SignIn : AppCompatActivity() {
                 if(isValid) {
                     RemoteDAO.insertUser(userId)
                     userDao.insertUser(userId);
-                    val intent = Intent(this@SignIn, HomePage::class.java)
+                    val intent = Intent(this@SignIn, Profilo::class.java)
                     intent.flags =
                         Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
