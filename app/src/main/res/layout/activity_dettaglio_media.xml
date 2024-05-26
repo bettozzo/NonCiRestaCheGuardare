@@ -1,130 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="unitn.app.DettaglioMedia">
+    android:fillViewport="true"
+    tools:context="unitn.app.Profilo">
 
-    <TextView
-        style="@style/HeaderTitolo"
-        android:id="@+id/titoloFilm"
-        android:text="TitoloFilm" />
-
-    <LinearLayout
-        android:id="@+id/posterAndInfo"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/titoloFilm"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="15dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/titoloFilm"
-        tools:layout_editor_absoluteX="16dp">
+        tools:context="unitn.app.DettaglioMedia">
 
-
-        <ImageView
-            android:id="@+id/poster"
-            android:layout_width="170dp"
-            android:layout_height="260dp"
-            android:layout_below="@+id/titoloFilm"
-            android:contentDescription="Poster Image"
-            tools:srcCompat="@drawable/missing_poster" />
+        <TextView
+            android:id="@+id/titoloFilm"
+            style="@style/HeaderTitolo"
+            android:text="TitoloFilm" />
 
         <LinearLayout
-            android:id="@+id/LayoutInfoFilm"
+            android:id="@+id/posterAndInfo"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/titoloFilm"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal"
+            tools:layout_editor_absoluteX="16dp">
+
+
+            <ImageView
+                android:id="@+id/poster"
+                android:layout_width="170dp"
+                android:layout_height="260dp"
+                android:layout_below="@+id/titoloFilm"
+                android:contentDescription="Poster Image"
+                tools:srcCompat="@drawable/missing_poster" />
+
+            <LinearLayout
+                android:id="@+id/LayoutInfoFilm"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/HeaderInfoMedia"
+                    style="@style/Header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sinossi"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/sinossiText"
+                    style="@style/normalText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="10dp"
+                    android:scrollbarFadeDuration="@integer/material_motion_duration_medium_2"
+                    android:scrollbars="vertical"
+                    android:text="@string/lorem_ipsum_1"
+                    android:textAlignment="textStart" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/infoProvider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/posterAndInfo"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="22dp"
             android:orientation="vertical">
 
             <TextView
-                style="@style/Header"
-                android:id="@+id/HeaderInfoMedia"
+                android:id="@+id/infoProviderText"
+                style="@style/normalText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sinossi"
-                android:textStyle="bold" />
+                android:text="Fonte: JustWatch"
+                android:textColor="#B78A8A8A"
+                android:textSize="12sp" />
 
             <TextView
-                style="@style/normalText"
-                android:id="@+id/sinossiText"
-                android:textAlignment="textStart"
+                android:id="@+id/DoveVederloText"
+                style="@style/Header"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="10dp"
-                android:scrollbarFadeDuration="@integer/material_motion_duration_medium_2"
-                android:scrollbars="vertical"
-                android:text="@string/lorem_ipsum_1"
-                />
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:text="Dove Vederlo"
+                android:textSize="34sp" />
+
         </LinearLayout>
-    </LinearLayout>
 
-    <TextView
-        android:id="@+id/DoveVederloText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/posterAndInfo"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="22dp"
-        android:text="Dove Vederlo"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/posterAndInfo"
-        tools:layout_editor_absoluteX="16dp" />
+        <LinearLayout
+            android:id="@+id/plaformList"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_below="@+id/infoProvider"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal" />
 
-    <LinearLayout
-        android:id="@+id/plaformList"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_below="@+id/DoveVederloText"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="15dp"
-        android:orientation="horizontal" />
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switchLocal"
+            android:layout_width="187dp"
+            android:layout_height="41dp"
+            android:layout_below="@+id/plaformList"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="10dp"
+            android:text="In Locale"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:theme="@style/SCBSwitch"
+            android:thumbTint="#69D31E" />
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/switchLocal"
-        android:layout_width="187dp"
-        android:layout_height="41dp"
-        android:layout_below="@+id/plaformList"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="10dp"
-        android:text="In Locale"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:theme="@style/SCBSwitch"
-        android:thumbTint="#69D31E" />
+        <ImageButton
+            android:id="@+id/buttonDelete"
+            style="@style/dangerousImageButton"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="40dp"
+            android:layout_marginBottom="32dp"
+            android:contentDescription="Button to remove media from DB"
+            android:src="@drawable/delete_bin" />
 
-    <ImageButton
-        style="@style/dangerousImageButton"
-        android:id="@+id/buttonDelete"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="40dp"
-        android:layout_marginBottom="32dp"
-        android:contentDescription="Button to remove media from DB"
-        android:src="@drawable/delete_bin" />
-
-    <ImageButton
-        android:id="@+id/buttonSeen"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="40dp"
-        android:layout_marginBottom="32dp"
-        android:background="@drawable/circle"
-        android:backgroundTint="#008c00"
-        android:contentDescription="Button to mark media as seen"
-        android:paddingHorizontal="6dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/checkmark" />
+        <ImageButton
+            android:id="@+id/buttonSeen"
+            style="@style/normalImageButton"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/circle"
+            android:contentDescription="Button to mark media as seen"
+            android:src="@drawable/checkmark" />
 
 
-</RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

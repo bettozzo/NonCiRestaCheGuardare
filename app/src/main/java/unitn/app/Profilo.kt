@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.View
+import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -148,20 +149,21 @@ class Profilo : AppCompatActivity() {
         val disneyplus = findViewById<CheckBox>(R.id.disneyPlusBox)
         val crunchyroll = findViewById<CheckBox>(R.id.crunchyrollBox)
         lifecycleScope.launch {
-            val piattaforme = RemoteDAO(applicationContext, coroutineContext).getPiattaformeUser().map{it.nome};
-            if(piattaforme.contains("Netflix")){
+            val piattaforme = RemoteDAO(applicationContext, coroutineContext).getPiattaformeUser()
+                .map { it.nome };
+            if (piattaforme.contains("Netflix")) {
                 netflix.isChecked = true;
             }
-            if(piattaforme.contains("Amazon Prime Video")){
+            if (piattaforme.contains("Amazon Prime Video")) {
                 amazon.isChecked = true;
             }
-            if(piattaforme.contains("Rai Play")){
+            if (piattaforme.contains("Rai Play")) {
                 raiplay.isChecked = true;
             }
-            if(piattaforme.contains("Disney Plus")){
+            if (piattaforme.contains("Disney Plus")) {
                 disneyplus.isChecked = true;
             }
-            if(piattaforme.contains("Crunchyroll")){
+            if (piattaforme.contains("Crunchyroll")) {
                 crunchyroll.isChecked = true;
             }
         }.invokeOnCompletion {
@@ -171,16 +173,19 @@ class Profilo : AppCompatActivity() {
             detectStateCheckBox(disneyplus, "Disney Plus")
             detectStateCheckBox(crunchyroll, "Crunchyroll")
         }
-
     }
 
     private fun detectStateCheckBox(box: CheckBox, nomePiattaforma: String) {
         box.setOnCheckedChangeListener { _, isChecked ->
             lifecycleScope.launch {
-                if(isChecked) {
-                    RemoteDAO(applicationContext, coroutineContext).insertPiattaformaAdUser(nomePiattaforma)
-                }else{
-                    RemoteDAO(applicationContext, coroutineContext).removePiattaformaAdUser(nomePiattaforma)
+                if (isChecked) {
+                    RemoteDAO(applicationContext, coroutineContext).insertPiattaformaAdUser(
+                        nomePiattaforma
+                    )
+                } else {
+                    RemoteDAO(applicationContext, coroutineContext).removePiattaformaAdUser(
+                        nomePiattaforma
+                    )
                 }
             }
         }
