@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class CronologiaMedia(
     val userid: Users,
     val mediaId: Media,
+    val dataVisione: String
 ) {
     companion object {
         fun getStructure(): String {
@@ -13,7 +14,8 @@ data class CronologiaMedia(
                     Users.getStructure() + ")," +
                     "mediaId(" +
                     Media.getStructure() +
-                    ")";
+                    "), " +
+                    "dataVisione";
         }
     }
 }
@@ -22,5 +24,4 @@ data class CronologiaMedia(
 data class InsertCronologiaMediaParams(
     val userid: String,
     val mediaId: Int,
-) {
-}
+)

@@ -6,6 +6,7 @@ import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import unitn.app.ConverterMedia
@@ -183,7 +184,9 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
             }.decodeList<CronologiaMedia>().map { it.mediaId }
     }
 
-    suspend fun insertToSeen(mediaId: Int) {
+
+    //todo upsert
+    suspend fun insertToCronologia(mediaId: Int) {
         val alreadyPresent = supabase.from("CronologiaMedia")
             .select(columns = Columns.raw(CronologiaMedia.getStructure())) {
                 filter {
@@ -233,6 +236,17 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                     eq("userId", user.userId)
                 }
             }.decodeList<PiattaformeDiUsers>().map { it.piattaformaNome }
+    }
+
+    //sort by date
+    suspend fun getCronologia(): List<Pair<Media, String>> {
+        return supabase.from("CronologiaMedia")
+            .select(columns = Columns.raw(CronologiaMedia.getStructure())) {
+                filter {
+                    eq("userid", user.userId)
+                }
+                order(column = "dataVisione", order = Order.DESCENDING)
+            }.decodeList<CronologiaMedia>().map { Pair(it.mediaId, it.dataVisione) }
     }
 }
 

@@ -8,6 +8,7 @@ import android.text.method.ScrollingMovementMethod
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -54,7 +55,7 @@ class AggiungiMedia : AppCompatActivity() {
         //poster
         if (poster != null) {
             Picasso.get().load(poster).into(findViewById<ImageView>(R.id.poster))
-        }else{
+        } else {
             val posterView = findViewById<ImageView>(R.id.poster);
             posterView.layoutParams.height = 350;
             Picasso.get().load(R.drawable.missing_poster).into(posterView);
@@ -69,14 +70,20 @@ class AggiungiMedia : AppCompatActivity() {
         val buttonAdd = findViewById<Button>(R.id.addMedia)
         buttonAdd.setOnClickListener {
             lifecycleScope.launch {
-                val remoteDao = RemoteDAO(
-                    applicationContext,
-                    coroutineContext
-                );
-                val localMedia = LocalMedia(id, isFilm, titolo, platforms, poster, false, sinossi);
-                remoteDao.insertToWatchlist(localMedia)
-                LiveDatas.addMedia(localMedia)
-                LiveDatas.removeRicercaMedia(localMedia)
+                if (LiveDatas.liveWatchlist.value?.filter { it.mediaId == id }!!.isEmpty()) {
+                    val remoteDao = RemoteDAO(
+                        applicationContext,
+                        coroutineContext
+                    );
+                    val localMedia =
+                        LocalMedia(id, isFilm, titolo, platforms, poster, false, sinossi);
+                    remoteDao.insertToWatchlist(localMedia)
+                    LiveDatas.addMedia(localMedia)
+                    LiveDatas.removeRicercaMedia(localMedia)
+                } else {
+                    Toast.makeText(applicationContext, "Media già presente", Toast.LENGTH_SHORT)
+                        .show()
+                }
                 finish()
             }
         }

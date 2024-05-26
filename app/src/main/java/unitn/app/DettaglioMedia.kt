@@ -134,7 +134,7 @@ class DettaglioMedia : AppCompatActivity() {
                 );
 
                 remoteDao.deleteFromWatchList(mediaID)
-                remoteDao.insertToSeen(mediaID)
+                remoteDao.insertToCronologia(mediaID)
                 LiveDatas.removeMedia(mediaID)
                 finish()//prevents this activity to be opened again
                 startActivity(intent)

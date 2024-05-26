@@ -61,8 +61,24 @@ class Profilo : AppCompatActivity() {
             LiveDatas.updateColorsOfImgButtons(listOf(buttonSave))
         }
 
-        //nome
-        setName(textNomeUtente);
+        lifecycleScope.launch {
+            val userDao = Room.databaseBuilder(
+                applicationContext,
+                UserDatabase::class.java, "user-db"
+            ).fallbackToDestructiveMigration()
+                .build().userDao()
+            val username = userDao.getUserId()!!;
+
+            //nome
+            textNomeUtente.text = "Ciao, $username!"
+
+            //cronologia
+            buttonGoToCronologia.setOnClickListener {
+                val intent = Intent(this@Profilo, CronologiaMedia::class.java)
+                intent.putExtra("username", username)
+                startActivity(intent)
+            }
+        }
 
         //completismo
         var inPercentuale = true;
@@ -72,10 +88,7 @@ class Profilo : AppCompatActivity() {
             setCompletamento(textPercentuale, inPercentuale)
         }
 
-        //cronologia
-        buttonGoToCronologia.setOnClickListener {
-            startActivity(Intent(this@Profilo, CronologiaMedia::class.java))
-        }
+
 
         //url sito
         urlSito.movementMethod = LinkMovementMethod.getInstance()
@@ -268,17 +281,6 @@ class Profilo : AppCompatActivity() {
         }
     }
 
-    private fun setName(textNomeUtente: TextView) {
-        lifecycleScope.launch {
-            val userDao = Room.databaseBuilder(
-                applicationContext,
-                UserDatabase::class.java, "user-db"
-            ).fallbackToDestructiveMigration()
-                .build().userDao()
-            val username = userDao.getUserId();
-            textNomeUtente.text = "Ciao, $username!"
-        }
-    }
 
     private fun updateColorsOfImgButtons(color: String) {
         val states = arrayOf(

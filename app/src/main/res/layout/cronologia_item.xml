@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/posterAndInfo"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="5dp"
+    android:orientation="horizontal">
+
+
+    <ImageView
+        android:id="@+id/poster"
+        android:layout_width="70dp"
+        android:layout_height="100dp"
+        android:contentDescription="Poster Image"
+        android:src="@drawable/missing_poster" />
+
+
+    <TextView
+        android:id="@+id/titoloFilm"
+        style="@style/normalText"
+        android:layout_width="160dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="10dp"
+        android:textAlignment="textStart"
+        android:paddingEnd="10dp"
+        android:text="FF.SS. cioè' ... che mi hai portato a fare sopra posillipo se non mi vuoi più bene?" />
+
+    <TextView
+        android:id="@+id/data"
+        style="@style/normalText"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:breakStrategy="simple"
+        android:text="data"
+        android:textAlignment="center" />
+</LinearLayout>
