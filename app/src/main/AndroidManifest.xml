@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="unitn.app.SignIn"
+            android:name="unitn.app.SignUp"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity

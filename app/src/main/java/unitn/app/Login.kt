@@ -86,7 +86,7 @@ class Login : AppCompatActivity() {
 
         signInButton.setOnClickListener{
             val userid = username.text.toString();
-            val intent = Intent(this@Login, SignIn::class.java)
+            val intent = Intent(this@Login, SignUp::class.java)
             intent.putExtra("userid", userid)
             startActivity(intent)
         }
