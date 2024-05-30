@@ -86,7 +86,7 @@ object LiveDatas {
     fun addMedia(media: LocalMedia) {
         val lista = (mutWatchList.value ?: emptyList()).toMutableList();
         lista.add(media);
-        mutWatchList.value = lista;
+        mutWatchList.postValue(lista);
     }
 
     fun removeMedia(mediaId: Int) {
@@ -107,12 +107,13 @@ object LiveDatas {
     val liveRicercaMedia: LiveData<List<LocalMedia>>
         get() = mutLiveRicercaMedia;
 
-    var mediaRicercato:String = "Kill Bill"
+    var mediaRicercato: String = "Kill Bill"
     fun addRicercaMedia(media: LocalMedia) {
         val lista = (mutLiveRicercaMedia.value ?: emptyList()).toMutableList();
         lista.add(media);
         mutLiveRicercaMedia.postValue(lista);
     }
+
     fun removeRicercaMedia(media: LocalMedia) {
         val lista = (mutLiveRicercaMedia.value ?: emptyList()).toMutableList();
         lista.remove(media);

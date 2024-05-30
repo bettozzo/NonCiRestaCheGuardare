@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -22,7 +21,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
 import unitn.app.api.LocalMedia
 import unitn.app.remotedb.RemoteDAO
-import kotlin.coroutines.coroutineContext
 
 
 class HomePage : AppCompatActivity() {
@@ -57,11 +55,6 @@ class HomePage : AppCompatActivity() {
             }
         })
 
-        if (LiveDatas.liveWatchlist.value!!.isEmpty()) {
-            lifecycleScope.launch {
-                syncDataDB()
-            }
-        }
     }
 
     override fun onResume() {
@@ -106,26 +99,7 @@ class HomePage : AppCompatActivity() {
         }
     }
 
-    private suspend fun syncDataDB() {
-        val remoteDao = RemoteDAO(
-            applicationContext,
-            coroutineContext
-        );
 
-        //add remote to local
-        val rMedias =
-            remoteDao.getWatchList()
-                .map { ConverterMedia.toLocal(applicationContext, it.first, it.second) }
-        for (media in rMedias) {
-            LiveDatas.addMedia(media)
-        }
-        LiveDatas.setIsDarkTheme(remoteDao.getDarkTheme())
-        if (LiveDatas.liveIsDarkTheme.value!!) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        }
-    }
 }
 
 

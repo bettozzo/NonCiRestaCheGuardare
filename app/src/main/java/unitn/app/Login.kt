@@ -55,7 +55,7 @@ class Login : AppCompatActivity() {
         runBlocking {
             val isAlreadyAuth = userDao.getUserId() != null
             if (isAlreadyAuth) {
-                val intent = Intent(this@Login, HomePage::class.java)
+                val intent = Intent(this@Login, LoadingScreen::class.java)
                 intent.flags =
                     Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
@@ -71,7 +71,7 @@ class Login : AppCompatActivity() {
                     userDao.deleteEvertyhing();
                     userDao.insertUser(userid);
 
-                    val intent = Intent(this@Login, HomePage::class.java)
+                    val intent = Intent(this@Login, LoadingScreen::class.java)
                     intent.flags =
                         Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 
