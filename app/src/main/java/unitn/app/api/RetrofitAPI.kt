@@ -2,6 +2,7 @@ package unitn.app.api
 
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface RetrofitAPI {
@@ -17,4 +18,8 @@ interface RetrofitAPI {
 
     @GET("providers?")
     fun getPlatform(@Query("api_key") api_key: String): Call<StreamingResult?>?
+
+
+    @GET("{id}/credits?")
+    fun getCredits(@Path("id") path:Int, @Query("api_key") api_key: String): Call<CreditsResults?>?
 }

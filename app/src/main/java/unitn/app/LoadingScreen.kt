@@ -3,7 +3,6 @@ package unitn.app
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -31,13 +30,11 @@ class LoadingScreen : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        Log.d("custom debug", "start")
         runBlocking {
             syncDataDB()
         }
         isFinished.observe(this) {
             if (it) {
-                Log.d("custom debug", "finished")
                 startActivity(Intent(this@LoadingScreen, HomePage::class.java))
                 finish()
             }
@@ -77,7 +74,6 @@ class LoadingScreen : AppCompatActivity() {
                     text.text = "$counter/$total"
                 }
                 LiveDatas.addMedia(media)
-                Log.d("custom debug", "$media")
                 if (counter == total) {
                     isFinished.postValue(true);
                 }

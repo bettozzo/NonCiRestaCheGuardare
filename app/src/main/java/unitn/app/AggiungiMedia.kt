@@ -47,11 +47,20 @@ class AggiungiMedia : AppCompatActivity() {
         val isFilm = extras.getBoolean("isFilm");
         val platforms = Converters().stringToPlatform(extras.getString("platforms"));
         val sinossi = extras.getString("sinossi", "NO Sinossi");
+        val cast = extras.getStringArrayList("cast") ?: emptyList<String>();
+        val crew = extras.getStringArrayList("crew") ?: emptyList<String>();
 
         //titolo
         val titoloMedia = findViewById<TextView>(R.id.titoloFilm);
         setTitleProperties(titoloMedia, titolo)
+        //isFilm
 
+        val isFilmview = findViewById<TextView>(R.id.isFilm)
+        isFilmview.text = if(isFilm){
+            "Film"
+        }else{
+            "Serie TV"
+        }
         //poster
         if (poster != null) {
             Picasso.get().load(poster).into(findViewById<ImageView>(R.id.poster))
@@ -66,6 +75,22 @@ class AggiungiMedia : AppCompatActivity() {
         sinossiView.movementMethod = ScrollingMovementMethod();
         sinossiView.text = sinossi
 
+        //credits
+        //cast
+        val castView = findViewById<TextView>(R.id.castText)
+        val builderCast: StringBuilder = StringBuilder("CAST:\n\t")
+        for(c in cast){
+            builderCast.append(c).append("\n\t")
+        }
+        castView.text = builderCast
+        //crew
+        val crewView = findViewById<TextView>(R.id.crewText)
+        val builderCrew: StringBuilder = StringBuilder("CREW:\n\t")
+        for(c in crew){
+            builderCrew.append(c).append("\n\t")
+        }
+        crewView.text = builderCrew
+
         //bottone aggiungi
         val buttonAdd = findViewById<Button>(R.id.addMedia)
         buttonAdd.setOnClickListener {
@@ -76,7 +101,17 @@ class AggiungiMedia : AppCompatActivity() {
                         coroutineContext
                     );
                     val localMedia =
-                        LocalMedia(id, isFilm, titolo, platforms, poster, false, sinossi);
+                        LocalMedia(
+                            id,
+                            isFilm,
+                            titolo,
+                            platforms,
+                            poster,
+                            false,
+                            sinossi,
+                            emptyList(),
+                            emptyList()
+                        );
                     remoteDao.insertToWatchlist(localMedia)
                     LiveDatas.addMedia(localMedia)
                     LiveDatas.removeRicercaMedia(localMedia)

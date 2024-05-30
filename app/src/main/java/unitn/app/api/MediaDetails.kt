@@ -72,10 +72,21 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
 
                     val platforms = getMediaPlatform(id, isFilm, apiKey)
                     val poster = getPosterPath(media.poster_path, media.backdrop_path)
-                    val movie = LocalMedia(id, isFilm, title!!, platforms, poster, false, sinossi)
-                    LiveDatas.addRicercaMedia(movie);
+                    val (cast, crew) = getCredits(id, isFilm, apiKey);
+                    val movie = LocalMedia(
+                        id,
+                        isFilm,
+                        title!!,
+                        platforms,
+                        poster,
+                        false,
+                        sinossi,
+                        cast,
+                        crew
+                    )
                     //prevents concurrency problems. In case user sends a new request before the previous one is finished
                     if (currentMediaBeingQueried == mediaTitle) {
+                        LiveDatas.addRicercaMedia(movie);
                         listMedia.add(movie)
                     }
                 }
@@ -83,6 +94,56 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
 
             return@withContext true;
         }
+
+    private suspend fun getCredits(
+        id: Int,
+        isFilm: Boolean,
+        apiKey: String,
+    ): Pair<List<String>, List<String>> {
+
+        val mBaseUrl = if (isFilm) {
+            "https://api.themoviedb.org/3/movie/"
+        } else {
+            "https://api.themoviedb.org/3/tv/"
+        }
+        val apiCallerPlatforms =
+            Retrofit.Builder().baseUrl(mBaseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(RetrofitAPI::class.java)
+
+        return suspendCoroutine { continuation ->
+            apiCallerPlatforms.getCredits(id, apiKey)?.enqueue(object : Callback<CreditsResults?> {
+                override fun onResponse(
+                    call: Call<CreditsResults?>,
+                    response: Response<CreditsResults?>,
+                ) {
+                    if (!response.isSuccessful) throw IOException("Unexpected code $response")
+                    val castPopolarity = emptyList<Pair<String, Float>>().toMutableList();
+                    val crewPopolarity = emptyList<Pair<String, Float>>().toMutableList();
+                    for (c in response.body()!!.cast) {
+                        castPopolarity.add(Pair(c.name, c.popularity))
+                    }
+                    for (c in response.body()!!.crew.filter { it.job == "Director" || it.job == "Executive Producer" }) {
+                        crewPopolarity.add(Pair(c.name, c.popularity))
+                    }
+                    var cast = castPopolarity.sortedWith(compareBy { it.second }).asReversed().map { it.first }
+                    var crew = crewPopolarity.sortedWith(compareBy { it.second }).asReversed().map { it.first }
+                    if(cast.size > 3){
+                        cast= cast.take(3)
+                    }
+                    if(crew.size > 3){
+                        crew= crew.take(3)
+                    }
+                    continuation.resume(Pair(cast, crew))
+                }
+
+                override fun onFailure(call: Call<CreditsResults?>, t: Throwable) {
+                    failureNoInternet();
+                }
+            })
+        }
+    }
 
     fun updateMediaList() {
         if (listMedia.isEmpty()) {

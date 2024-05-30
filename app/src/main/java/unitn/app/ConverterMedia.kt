@@ -18,7 +18,7 @@ object ConverterMedia {
         );
 
         val piattaforme = ConverterPiattaforme.toLocal(remoteDao.getDoveVedereMedia(media.mediaID))
-        return@runBlocking LocalMedia(media.mediaID, media.is_film, media.titolo, piattaforme, media.poster_path, isLocal, media.sinossi)
+        return@runBlocking LocalMedia(media.mediaID, media.is_film, media.titolo, piattaforme, media.poster_path, isLocal, media.sinossi, emptyList(), emptyList())
     }
 }
 

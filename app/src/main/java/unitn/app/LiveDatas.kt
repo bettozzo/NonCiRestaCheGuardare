@@ -116,7 +116,8 @@ object LiveDatas {
 
     fun removeRicercaMedia(media: LocalMedia) {
         val lista = (mutLiveRicercaMedia.value ?: emptyList()).toMutableList();
-        lista.remove(media);
+
+        lista.removeIf { it.mediaId == media.mediaId };
         mutLiveRicercaMedia.postValue(lista);
     }
 
