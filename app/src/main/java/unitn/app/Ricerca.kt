@@ -52,9 +52,6 @@ class Ricerca : AppCompatActivity() {
         val buttonToSearch = findViewById<Button>(R.id.buttonToSearch)
         val buttonDeleteQuery = findViewById<ImageButton>(R.id.buttonDeleteQuery)
 
-        mediaDetails.liveListMedia.observe(this) {
-            gridView.adapter = AdapterSearch(this@Ricerca, it)
-        }
         LiveDatas.liveRicercaMedia.observe(this) {
             gridView.adapter = AdapterSearch(this@Ricerca, it)
         }

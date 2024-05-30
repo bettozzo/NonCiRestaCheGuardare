@@ -20,7 +20,6 @@ import kotlin.coroutines.suspendCoroutine
 class MediaDetails(application: Application) : AndroidViewModel(application) {
 
     private var listMedia = emptyList<LocalMedia>().toMutableList()
-    private val mutLiveListMedia = MutableLiveData<List<LocalMedia>>();
     private lateinit var currentMediaBeingQueried: String;
 
     private var mutNoInternet: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -28,8 +27,6 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
     val liveNoInternet: LiveData<Boolean>
         get() = mutNoInternet;
 
-    val liveListMedia: LiveData<List<LocalMedia>>
-        get() = mutLiveListMedia;
 
     suspend fun getDetails(mediaTitle: String, apiKey: String): Boolean =
         withContext(Dispatchers.IO) {
@@ -42,24 +39,25 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                 .addConverterFactory(GsonConverterFactory.create()).build()
                 .create(RetrofitAPI::class.java)
 
-            val multiCall = apiCallerMedia.getMovieAndSeries(mediaTitle, false, "it", 1, apiKey)
+            var multiCall = apiCallerMedia.getMovieAndSeries(mediaTitle, false, "it", 1, apiKey)
 
-            val results = getMediaDetails(multiCall)
+            val (results, totalPages) = getMediaDetails(multiCall)
+            for (pag in 2..totalPages) {
+                multiCall = apiCallerMedia.getMovieAndSeries(mediaTitle, false, "it", pag, apiKey)
+                results.addAll(getMediaDetails(multiCall).first)
+            }
 
             results.sortBy { it.first.popularity }
             results.reverse()
 
             LiveDatas.emptyRicercaMedia()
             if (results.isEmpty()) {
-                if (currentMediaBeingQueried == mediaTitle) {
-                    mutLiveListMedia.postValue(listMedia);
-                }
                 return@withContext false;
             }
 
             for ((media, isFilm) in results) {
                 val list = LiveDatas.liveWatchlist.value?.filter { it.mediaId == media.id }
-                if(list?.isNotEmpty()!!){
+                if (list?.isNotEmpty()!!) {
                     continue;
                 }
                 val id = media.id
@@ -79,16 +77,10 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                     //prevents concurrency problems. In case user sends a new request before the previous one is finished
                     if (currentMediaBeingQueried == mediaTitle) {
                         listMedia.add(movie)
-                        if (counter % 2 == 0) {
-                            mutLiveListMedia.postValue(listMedia);
-                        }
                     }
                 }
             }
 
-            if (currentMediaBeingQueried == mediaTitle) {
-                mutLiveListMedia.postValue(listMedia);
-            }
             return@withContext true;
         }
 
@@ -101,14 +93,13 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
         for (id in idMediaInUserList) {
             listMedia.removeIf { it.mediaId == id }
         }
-        mutLiveListMedia.postValue(listMedia);
     }
 
     private fun getAllUserMedia(): List<Int> {
         return LiveDatas.liveWatchlist.value?.map { it.mediaId } ?: emptyList()
     }
 
-    private suspend fun getMediaDetails(mediaSearchCall: Call<MediaResultsFromAPI?>?): MutableList<Pair<UnfilteredMediaDetails, Boolean>> {
+    private suspend fun getMediaDetails(mediaSearchCall: Call<MediaResultsFromAPI?>?): Pair<MutableList<Pair<UnfilteredMediaDetails, Boolean>>, Int> {
 
         return suspendCoroutine { continuation ->
             mediaSearchCall?.enqueue(object : Callback<MediaResultsFromAPI?> {
@@ -117,8 +108,13 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                     response: Response<MediaResultsFromAPI?>,
                 ) {
                     if (!response.isSuccessful) throw IOException("Unexpected code $response")
-                    continuation.resume(response.body()!!.results.filter { it.media_type != "person" && it.media_type != "collection" }
-                        .map { Pair(it, it.media_type == "movie") }.toMutableList())
+                    val body = response.body()!!
+                    continuation.resume(Pair(
+                        body.results.filter { it.media_type != "person" && it.media_type != "collection" }
+                            .map { Pair(it, it.media_type == "movie") }.toMutableList(),
+                        body.total_pages
+                    )
+                    )
                 }
 
                 override fun onFailure(call: Call<MediaResultsFromAPI?>, t: Throwable) {
