@@ -3,6 +3,7 @@
     <color name="normalText">#FF000000</color>
     <color name="titoloText">#E6FFFFFF</color>
     <color name="backgroundHeaderTitolo">#FF000000</color>
+    <color name="invertedTextColor">#E6FAFAFA</color>
 
     <color name="black">#FF000000</color>
     <color name="Verde">#ff008c00</color>

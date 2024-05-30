@@ -1,111 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    tools:context="unitn.app.AggiungiMedia">
+    tools:context="unitn.app.DettaglioMedia">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <ScrollView
+        android:id="@+id/scrollable"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="unitn.app.DettaglioMedia">
+        android:fillViewport="true"
+        tools:context="unitn.app.AggiungiMedia">
 
-        <TextView
-            android:id="@+id/titoloFilm"
-            style="@style/HeaderTitolo"
-            android:text="TitoloFilm" />
-        <TextView
-            android:id="@+id/isFilm"
-            style="@style/normalText"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/titoloFilm"
-            android:text="Film o SerieTv " />
-        <ImageView
-            android:id="@+id/poster"
-            android:layout_width="200dp"
-            android:layout_height="300dp"
-            android:layout_below="@+id/isFilm"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            tools:srcCompat="@drawable/missing_poster" />
-
-
-        <LinearLayout
-            android:id="@+id/LayoutInfoFilm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/poster"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="12dp"
-            android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@+id/poster">
+            android:layout_height="match_parent"
+            tools:context="unitn.app.DettaglioMedia">
 
             <TextView
-                android:id="@+id/HeaderInfoMedia"
-                style="@style/Header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sinossi"
-                android:textStyle="bold" />
+                android:id="@+id/titoloFilm"
+                style="@style/HeaderTitolo"
+                android:text="TitoloFilm" />
 
             <TextView
-                android:id="@+id/sinossiText"
-                style="@style/normalText"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="10dp"
-                android:gravity="start"
-                android:scrollbarFadeDuration="@integer/material_motion_duration_medium_2"
-                android:scrollbars="vertical"
-                android:text="@string/lorem_ipsum_1"
-                android:textAlignment="textStart" />
-
-            <TextView
-                android:id="@+id/credits"
-                style="@style/Header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Credits"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/castText"
-                style="@style/normalText"
+                android:id="@+id/isFilm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:gravity="start"
-                android:scrollbars="vertical"
-                android:text="cast: x,x,x"
-                android:textAlignment="textStart" />
+                android:layout_below="@id/titoloFilm"
+                android:layout_marginTop="-20dp"
+                android:gravity="center"
+                android:text="Film o SerieTv "
+                android:textColor="@color/invertedTextColor"
+                android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/crewText"
-                style="@style/normalText"
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/poster"
+                android:layout_width="200dp"
+                android:layout_height="300dp"
+                android:layout_below="@+id/isFilm"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                tools:srcCompat="@drawable/missing_poster" />
+
+
+            <LinearLayout
+                android:id="@+id/LayoutInfoFilm"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:gravity="start"
-                android:scrollbars="vertical"
-                android:text="crew: x,x,x"
-                android:textAlignment="textStart" />
+                android:layout_below="@+id/poster"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/poster">
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/HeaderInfoMedia"
+                    style="@style/Header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sinossi"
+                    android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/addMedia"
-            style="@style/normalButton"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/LayoutInfoFilm"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-            android:text="Aggiungi" />
+                <TextView
+                    android:id="@+id/sinossiText"
+                    style="@style/normalText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="start"
+                    android:scrollbarFadeDuration="@integer/material_motion_duration_medium_2"
+                    android:text="@string/lorem_ipsum_1"
+                    android:textAlignment="textStart" />
 
+                <TextView
+                    android:id="@+id/castCredits"
+                    style="@style/Header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cast"
+                    android:textStyle="bold" />
 
-    </RelativeLayout>
-</ScrollView>
+                <TextView
+                    android:id="@+id/castText"
+                    style="@style/normalText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:id="@+id/crewCredits"
+                    style="@style/Header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Directors and Executive Producers"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/crewText"
+                    style="@style/normalText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="100dp"
+                    android:gravity="center"
+                    android:scrollbars="vertical"/>
+
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/addMedia"
+        style="@style/normalButton"
+        android:layout_height="wrap_content"
+        android:text="Aggiungi"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

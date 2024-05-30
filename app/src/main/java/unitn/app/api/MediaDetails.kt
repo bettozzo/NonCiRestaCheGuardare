@@ -99,7 +99,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
         id: Int,
         isFilm: Boolean,
         apiKey: String,
-    ): Pair<List<String>, List<String>> {
+    ): Pair<List<Pair<String, String>>, List<Pair<String, String>>> {
 
         val mBaseUrl = if (isFilm) {
             "https://api.themoviedb.org/3/movie/"
@@ -119,21 +119,24 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                     response: Response<CreditsResults?>,
                 ) {
                     if (!response.isSuccessful) throw IOException("Unexpected code $response")
-                    val castPopolarity = emptyList<Pair<String, Float>>().toMutableList();
-                    val crewPopolarity = emptyList<Pair<String, Float>>().toMutableList();
+                    val castPopolarity = emptyList<Triple<String, String, Float>>().toMutableList();
+                    val crewPopolarity = emptyList<Triple<String, String, Float>>().toMutableList();
                     for (c in response.body()!!.cast) {
-                        castPopolarity.add(Pair(c.name, c.popularity))
+                        castPopolarity.add(Triple(c.name, c.character, c.popularity))
                     }
                     for (c in response.body()!!.crew.filter { it.job == "Director" || it.job == "Executive Producer" }) {
-                        crewPopolarity.add(Pair(c.name, c.popularity))
+                        crewPopolarity.add(Triple(c.name, c.job, c.popularity))
                     }
-                    var cast = castPopolarity.sortedWith(compareBy { it.second }).asReversed().map { it.first }
-                    var crew = crewPopolarity.sortedWith(compareBy { it.second }).asReversed().map { it.first }
-                    if(cast.size > 3){
-                        cast= cast.take(3)
+                    var cast = castPopolarity.sortedWith(compareBy { it.third }).asReversed()
+                        .map { Pair(it.first, it.second) }
+                    var crew = crewPopolarity.sortedWith(compareBy { it.third }).asReversed()
+                        .map { Pair(it.first, it.second) }
+                    val amount = 5;
+                    if (cast.size > amount) {
+                        cast = cast.take(amount)
                     }
-                    if(crew.size > 3){
-                        crew= crew.take(3)
+                    if (crew.size > amount) {
+                        crew = crew.take(amount)
                     }
                     continuation.resume(Pair(cast, crew))
                 }

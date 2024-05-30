@@ -68,8 +68,8 @@ class AdapterSearch(private var context: Context, private var localMedia: List<L
         intent.putExtra("platforms", Converters().platformToString(localMedia.platform))
         intent.putExtra("isFilm", localMedia.isFilm)
         intent.putExtra("sinossi", localMedia.sinossi)
-        intent.putExtra("cast", localMedia.cast as ArrayList<String>)
-        intent.putExtra("crew", localMedia.crew as ArrayList<String>)
+        intent.putExtra("cast", Converters().platformToString(localMedia.cast))
+        intent.putExtra("crew", Converters().platformToString(localMedia.crew))
     }
 
     override fun getItem(p0: Int): Any {

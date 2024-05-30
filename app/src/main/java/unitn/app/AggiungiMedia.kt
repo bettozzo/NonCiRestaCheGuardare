@@ -3,14 +3,17 @@ package unitn.app
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.text.TextUtils
 import android.text.method.ScrollingMovementMethod
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.bold
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -47,18 +50,18 @@ class AggiungiMedia : AppCompatActivity() {
         val isFilm = extras.getBoolean("isFilm");
         val platforms = Converters().stringToPlatform(extras.getString("platforms"));
         val sinossi = extras.getString("sinossi", "NO Sinossi");
-        val cast = extras.getStringArrayList("cast") ?: emptyList<String>();
-        val crew = extras.getStringArrayList("crew") ?: emptyList<String>();
+        val cast = Converters().stringToPlatform(extras.getString("cast"));
+        val crew = Converters().stringToPlatform(extras.getString("crew"));
 
         //titolo
         val titoloMedia = findViewById<TextView>(R.id.titoloFilm);
         setTitleProperties(titoloMedia, titolo)
-        //isFilm
 
+        //isFilm
         val isFilmview = findViewById<TextView>(R.id.isFilm)
-        isFilmview.text = if(isFilm){
+        isFilmview.text = if (isFilm) {
             "Film"
-        }else{
+        } else {
             "Serie TV"
         }
         //poster
@@ -78,18 +81,26 @@ class AggiungiMedia : AppCompatActivity() {
         //credits
         //cast
         val castView = findViewById<TextView>(R.id.castText)
-        val builderCast: StringBuilder = StringBuilder("CAST:\n\t")
-        for(c in cast){
-            builderCast.append(c).append("\n\t")
+        val builderCast = SpannableStringBuilder()
+        for (c in cast) {
+            builderCast.append("--- ").bold { append(c.first) }.append(" ---").append("\n")
+                .append(c.second).append("\n")
         }
         castView.text = builderCast
         //crew
-        val crewView = findViewById<TextView>(R.id.crewText)
-        val builderCrew: StringBuilder = StringBuilder("CREW:\n\t")
-        for(c in crew){
-            builderCrew.append(c).append("\n\t")
+        if(crew.isNotEmpty()) {
+            val crewView = findViewById<TextView>(R.id.crewText)
+            val builderCrew = SpannableStringBuilder()
+            for (c in crew) {
+                builderCrew.append("--- ").bold { append(c.first) }.append(" ---").append("\n")
+                    .append(c.second).append("\n")
+
+            }
+            crewView.text = builderCrew
+        }else{
+            findViewById<TextView>(R.id.crewCredits).visibility = View.GONE;
+            findViewById<TextView>(R.id.crewText).visibility = View.INVISIBLE;
         }
-        crewView.text = builderCrew
 
         //bottone aggiungi
         val buttonAdd = findViewById<Button>(R.id.addMedia)
