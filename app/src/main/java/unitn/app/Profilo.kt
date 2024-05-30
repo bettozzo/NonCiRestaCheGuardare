@@ -94,7 +94,6 @@ class Profilo : AppCompatActivity() {
         urlSito.movementMethod = LinkMovementMethod.getInstance()
 
         //colors
-        var nuovoColore: Colori? = null;
         val colori = arrayOf(
             Pair("Azzurro", "#2d95eb"),
             Pair("Verde", "#008c00"),
@@ -114,7 +113,10 @@ class Profilo : AppCompatActivity() {
             override fun onItemSelected(
                 parent: AdapterView<*>?, view: View?, position: Int, id: Long,
             ) {
-                nuovoColore = Colori(colori[position].first, colori[position].second)
+                lifecycleScope.launch {
+                    RemoteDAO(this@Profilo, coroutineContext).updateColor(colori[position].first)
+                }
+                LiveDatas.setColore(colori[position].second)
                 updateColorsOfImgButtons(colori[position].second)
             }
 
@@ -146,13 +148,8 @@ class Profilo : AppCompatActivity() {
 
         //button to save
         buttonSave.setOnClickListener {
-            lifecycleScope.launch {
-                if (nuovoColore != null) {
-                    RemoteDAO(this@Profilo, coroutineContext).updateColor(nuovoColore!!.colorName)
-                    LiveDatas.setColore(nuovoColore!!.colorCode)
-                }
-            }
-            finish();
+            startActivity(Intent(this@Profilo, HomePage::class.java))
+            finish()
         }
     }
 

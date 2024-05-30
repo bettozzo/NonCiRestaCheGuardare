@@ -59,6 +59,11 @@ class LoadingScreen : AppCompatActivity() {
 
         //add remote to local
         val medias = remoteDao.getWatchList();
+        if (medias.isEmpty() || LiveDatas.liveWatchlist.value?.size == medias.size) {
+            isFinished.value = true;
+            return;
+        }
+
         val total = medias.size;
         val text = findViewById<TextView>(R.id.loadingText)
         var counter = 0;
