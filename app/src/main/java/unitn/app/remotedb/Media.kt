@@ -21,4 +21,8 @@ data class Media(
             """.trimIndent().replace("\n", "")
         }
     }
+
+    override fun toString(): String {
+        return "[$mediaID]$titolo";
+    }
 }

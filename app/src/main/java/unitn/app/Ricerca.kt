@@ -35,6 +35,10 @@ class Ricerca : AppCompatActivity() {
 
     private var lastTitleQueried: String? = null;
 
+
+    private val listMedias = emptyList<LocalMedia>().toMutableList()
+    private val adapter = AdapterSearch(this@Ricerca, listMedias);
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -53,14 +57,12 @@ class Ricerca : AppCompatActivity() {
         val buttonToSearch = findViewById<Button>(R.id.buttonToSearch)
         val buttonDeleteQuery = findViewById<ImageButton>(R.id.buttonDeleteQuery)
 
-        val listMedias = emptyList<LocalMedia>().toMutableList()
-        val adapter = AdapterSearch(this@Ricerca, listMedias);
-        gridView.adapter =adapter
+        gridView.adapter = adapter
         LiveDatas.liveRicercaMedia.observe(this) {
-            if(it.isNotEmpty()) {
+            if (it.isNotEmpty()) {
                 listMedias.add(it[it.size - 1])
                 adapter.notifyDataSetChanged()
-            }else{
+            } else {
                 listMedias.removeAll { true }
             }
         }
@@ -121,6 +123,16 @@ class Ricerca : AppCompatActivity() {
     override fun onResume() = runBlocking {
         super.onResume()
         mediaDetails.updateMediaList();
+        listMedias.removeAll { true }
+        adapter.notifyDataSetChanged()
+
+        LiveDatas.liveRicercaMedia.observe(this@Ricerca) {
+            if (it.isNotEmpty()) {
+                listMedias.removeAll { true }
+                listMedias.addAll(it)
+                adapter.notifyDataSetChanged()
+            }
+        }
     }
 
     private fun callAPI(title: String, lastQuery: String?) {

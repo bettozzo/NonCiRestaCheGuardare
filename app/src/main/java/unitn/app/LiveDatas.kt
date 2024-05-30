@@ -79,23 +79,23 @@ object LiveDatas {
     /*--------------------------*/
     /*--------WatchList---------*/
     /*--------------------------*/
-    private val mutWatchList = MutableLiveData<List<LocalMedia>>(emptyList());
+    private val watchList = emptyList<LocalMedia>().toMutableList();
+    private val mutWatchList = MutableLiveData(watchList.toList());
     val liveWatchlist: LiveData<List<LocalMedia>>
         get() = mutWatchList;
 
     fun addMedia(media: LocalMedia) {
-        val lista = (mutWatchList.value ?: emptyList()).toMutableList();
-        lista.add(media);
-        mutWatchList.postValue(lista);
+        watchList.add(media)
+        mutWatchList.postValue(watchList);
     }
 
     fun removeMedia(mediaId: Int) {
-        val lista = (mutWatchList.value ?: return).toMutableList();
-        lista.removeIf { it.mediaId == mediaId };
-        mutWatchList.value = lista;
+        watchList.removeIf { it.mediaId == mediaId };
+        mutWatchList.value = watchList;
     }
 
     fun emptyMedia() {
+        watchList.removeAll { true };
         mutWatchList.value = emptyList();
     }
 
@@ -103,25 +103,24 @@ object LiveDatas {
     /*--------------------------*/
     /*---------Ricerca----------*/
     /*--------------------------*/
-    private val mutLiveRicercaMedia = MutableLiveData<List<LocalMedia>>(emptyList());
+    private val ricerca = emptyList<LocalMedia>().toMutableList();
+    private val mutLiveRicercaMedia = MutableLiveData(ricerca.toList());
     val liveRicercaMedia: LiveData<List<LocalMedia>>
         get() = mutLiveRicercaMedia;
 
     var mediaRicercato: String = ""
     fun addRicercaMedia(media: LocalMedia) {
-        val lista = (mutLiveRicercaMedia.value ?: emptyList()).toMutableList();
-        lista.add(media);
-        mutLiveRicercaMedia.postValue(lista);
+        ricerca.add(media)
+        mutLiveRicercaMedia.postValue(ricerca);
     }
 
     fun removeRicercaMedia(media: LocalMedia) {
-        val lista = (mutLiveRicercaMedia.value ?: emptyList()).toMutableList();
-
-        lista.removeIf { it.mediaId == media.mediaId };
-        mutLiveRicercaMedia.postValue(lista);
+        ricerca.removeIf { it.mediaId == media.mediaId };
+        mutLiveRicercaMedia.postValue(ricerca);
     }
 
     fun emptyRicercaMedia() {
+        ricerca.removeAll { true };
         mutLiveRicercaMedia.postValue(emptyList());
     }
 }

@@ -59,7 +59,7 @@ class LoadingScreen : AppCompatActivity() {
 
         //add remote to local
         val medias = remoteDao.getWatchList();
-        if (medias.isEmpty() || LiveDatas.liveWatchlist.value?.size == medias.size) {
+        if (medias.isEmpty()) {
             isFinished.value = true;
             return;
         }
@@ -82,7 +82,6 @@ class LoadingScreen : AppCompatActivity() {
                 LiveDatas.addMedia(media)
                 if (counter == total) {
                     isFinished.postValue(true);
-
                 }
             }
         }
