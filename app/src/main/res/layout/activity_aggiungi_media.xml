@@ -19,27 +19,33 @@
             android:layout_height="match_parent"
             tools:context="unitn.app.DettaglioMedia">
 
-            <TextView
-                android:id="@+id/titoloFilm"
+            <LinearLayout
+                android:id="@+id/titoloFilmHeader"
                 style="@style/HeaderTitolo"
-                android:text="TitoloFilm" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/isFilm"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/titoloFilm"
-                android:layout_marginTop="-20dp"
-                android:gravity="center"
-                android:text="Film o SerieTv "
-                android:textColor="@color/invertedTextColor"
-                android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/titoloFilm"
+                    style="@style/HeaderTitolo"
+                    android:layout_height="54dp"
+                    android:text="TitoloFilm" />
+
+                <TextView
+                    android:id="@+id/isFilm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Film o SerieTv "
+                    android:textColor="@color/invertedTextColor"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
 
             <ImageView
                 android:id="@+id/poster"
                 android:layout_width="200dp"
                 android:layout_height="300dp"
-                android:layout_below="@+id/isFilm"
+                android:layout_below="@+id/titoloFilmHeader"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
                 tools:srcCompat="@drawable/missing_poster" />
@@ -88,7 +94,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
-                    android:gravity="center"/>
+                    android:gravity="center" />
 
                 <TextView
                     android:id="@+id/crewCredits"
@@ -106,7 +112,7 @@
                     android:layout_marginEnd="10dp"
                     android:layout_marginBottom="100dp"
                     android:gravity="center"
-                    android:scrollbars="vertical"/>
+                    android:scrollbars="vertical" />
 
             </LinearLayout>
         </RelativeLayout>
@@ -116,8 +122,8 @@
         android:id="@+id/addMedia"
         style="@style/normalButton"
         android:layout_height="wrap_content"
-        android:text="Aggiungi"
         android:layout_marginBottom="15dp"
+        android:text="Aggiungi"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />

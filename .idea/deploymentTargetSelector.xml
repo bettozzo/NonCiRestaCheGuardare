@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="App">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-05-30T10:06:17.929975200Z">
+        <DropdownSelection timestamp="2024-05-30T19:04:24.049385300Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\betto\.android\avd\Pixel_5_API_31.avd" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=QSLBP7PV9PDM8D6P" />
             </handle>
           </Target>
         </DropdownSelection>

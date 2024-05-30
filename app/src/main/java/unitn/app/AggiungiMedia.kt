@@ -80,15 +80,20 @@ class AggiungiMedia : AppCompatActivity() {
 
         //credits
         //cast
-        val castView = findViewById<TextView>(R.id.castText)
-        val builderCast = SpannableStringBuilder()
-        for (c in cast) {
-            builderCast.append("--- ").bold { append(c.first) }.append(" ---").append("\n")
-                .append(c.second).append("\n")
+        if (cast.isNotEmpty()) {
+            val castView = findViewById<TextView>(R.id.castText)
+            val builderCast = SpannableStringBuilder()
+            for (c in cast) {
+                builderCast.append("--- ").bold { append(c.first) }.append(" ---").append("\n")
+                    .append(c.second).append("\n")
+            }
+            castView.text = builderCast
+        } else {
+            findViewById<TextView>(R.id.castCredits).visibility = View.GONE;
+            findViewById<TextView>(R.id.castText).visibility = View.INVISIBLE;
         }
-        castView.text = builderCast
         //crew
-        if(crew.isNotEmpty()) {
+        if (crew.isNotEmpty()) {
             val crewView = findViewById<TextView>(R.id.crewText)
             val builderCrew = SpannableStringBuilder()
             for (c in crew) {
@@ -97,7 +102,7 @@ class AggiungiMedia : AppCompatActivity() {
 
             }
             crewView.text = builderCrew
-        }else{
+        } else {
             findViewById<TextView>(R.id.crewCredits).visibility = View.GONE;
             findViewById<TextView>(R.id.crewText).visibility = View.INVISIBLE;
         }

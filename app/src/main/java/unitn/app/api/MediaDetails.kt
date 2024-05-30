@@ -43,8 +43,8 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
             var multiCall = apiCallerMedia.getMovieAndSeries(mediaTitle, false, "it", 1, apiKey)
 
             val (results, totalPages) = getMediaDetails(multiCall)
-            //todo remove limit of pages to query?
-            for (pag in 2..min(totalPages, 6)) {
+
+            for (pag in 2..min(totalPages, 5)) {
                 multiCall = apiCallerMedia.getMovieAndSeries(mediaTitle, false, "it", pag, apiKey)
                 results.addAll(getMediaDetails(multiCall).first)
             }
