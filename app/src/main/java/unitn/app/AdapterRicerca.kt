@@ -77,7 +77,7 @@ class AdapterSearch(private var context: Context, private var localMedia: List<L
     }
 
     override fun getItemId(p0: Int): Long {
-        return 0
+        return (p0/3).toLong()
     }
 
     override fun getCount(): Int {

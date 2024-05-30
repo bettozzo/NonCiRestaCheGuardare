@@ -15,6 +15,7 @@ import unitn.app.LiveDatas
 import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import kotlin.math.min
 
 
 class MediaDetails(application: Application) : AndroidViewModel(application) {
@@ -42,7 +43,8 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
             var multiCall = apiCallerMedia.getMovieAndSeries(mediaTitle, false, "it", 1, apiKey)
 
             val (results, totalPages) = getMediaDetails(multiCall)
-            for (pag in 2..totalPages) {
+            //todo remove limit of pages to query?
+            for (pag in 2..min(totalPages, 6)) {
                 multiCall = apiCallerMedia.getMovieAndSeries(mediaTitle, false, "it", pag, apiKey)
                 results.addAll(getMediaDetails(multiCall).first)
             }
@@ -119,16 +121,15 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                     response: Response<CreditsResults?>,
                 ) {
                     if (!response.isSuccessful) throw IOException("Unexpected code $response")
-                    val castPopolarity = emptyList<Triple<String, String, Float>>().toMutableList();
+                    val castPopolarity = emptyList<Pair<String, String>>().toMutableList();
                     val crewPopolarity = emptyList<Triple<String, String, Float>>().toMutableList();
                     for (c in response.body()!!.cast) {
-                        castPopolarity.add(Triple(c.name, c.character, c.popularity))
+                        castPopolarity.add(Pair(c.name, c.character))
                     }
                     for (c in response.body()!!.crew.filter { it.job == "Director" || it.job == "Executive Producer" }) {
                         crewPopolarity.add(Triple(c.name, c.job, c.popularity))
                     }
-                    var cast = castPopolarity.sortedWith(compareBy { it.third }).asReversed()
-                        .map { Pair(it.first, it.second) }
+                    var cast = castPopolarity.toList()
                     var crew = crewPopolarity.sortedWith(compareBy { it.third }).asReversed()
                         .map { Pair(it.first, it.second) }
                     val amount = 5;

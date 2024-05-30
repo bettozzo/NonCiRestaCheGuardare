@@ -26,6 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import unitn.app.api.LocalMedia
 import unitn.app.api.MediaDetails
 
 
@@ -52,8 +53,16 @@ class Ricerca : AppCompatActivity() {
         val buttonToSearch = findViewById<Button>(R.id.buttonToSearch)
         val buttonDeleteQuery = findViewById<ImageButton>(R.id.buttonDeleteQuery)
 
+        val listMedias = emptyList<LocalMedia>().toMutableList()
+        val adapter = AdapterSearch(this@Ricerca, listMedias);
+        gridView.adapter =adapter
         LiveDatas.liveRicercaMedia.observe(this) {
-            gridView.adapter = AdapterSearch(this@Ricerca, it)
+            if(it.isNotEmpty()) {
+                listMedias.add(it[it.size - 1])
+                adapter.notifyDataSetChanged()
+            }else{
+                listMedias.removeAll { true }
+            }
         }
         mediaDetails.liveNoInternet.observe(this) {
             if (it) {

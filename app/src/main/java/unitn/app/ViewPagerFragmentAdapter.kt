@@ -17,4 +17,5 @@ class ViewPagerFragmentAdapter (fragmentActivity: FragmentActivity): FragmentSta
         }
         return FilmFragment()
     }
+
 }
