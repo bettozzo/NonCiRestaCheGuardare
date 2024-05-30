@@ -1,6 +1,7 @@
 package unitn.app
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.runBlocking
 import unitn.app.api.LocalMedia
 import unitn.app.remotedb.Media
@@ -11,15 +12,16 @@ object ConverterMedia {
     fun toRemote(media: LocalMedia): Media {
         return Media(media.mediaId, media.isFilm, media.title, media.posterPath, media.sinossi!!)
     }
-    fun toLocal(context: Context, media: Media, isLocal: Boolean): LocalMedia = runBlocking {
+    fun toLocal(context: Context, media: Media, isLocal: Boolean, appCompatActivity: AppCompatActivity): LocalMedia = runBlocking {
         val remoteDao = RemoteDAO(
             context,
             coroutineContext
         );
 
-        val piattaforme = ConverterPiattaforme.toLocal(remoteDao.getDoveVedereMedia(media.mediaID))
+        val piattaforme = ConverterPiattaforme.toLocal(remoteDao.getDoveVedereMedia(media.mediaID, appCompatActivity))
         return@runBlocking LocalMedia(media.mediaID, media.is_film, media.titolo, piattaforme, media.poster_path, isLocal, media.sinossi, emptyList(), emptyList())
     }
+
 }
 
 

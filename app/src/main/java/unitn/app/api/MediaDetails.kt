@@ -189,7 +189,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
     }
 
 
-    private suspend fun getMediaPlatform(
+    suspend fun getMediaPlatform(
         id: Int,
         isFilm: Boolean,
         apiKey: String,

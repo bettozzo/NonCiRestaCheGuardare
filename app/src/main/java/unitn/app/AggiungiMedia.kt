@@ -123,7 +123,7 @@ class AggiungiMedia : AppCompatActivity() {
                             emptyList(),
                             emptyList()
                         );
-                    remoteDao.insertToWatchlist(localMedia)
+                    remoteDao.insertToWatchlist(localMedia, this@AggiungiMedia)
                     LiveDatas.addMedia(localMedia)
                     LiveDatas.removeRicercaMedia(localMedia)
                 } else {

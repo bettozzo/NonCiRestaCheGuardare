@@ -7,6 +7,7 @@ data class DoveVedereMedia(
     val id: Int,
     val mediaID: Media,
     val piattaforma: Piattaforme,
+    val lastUpdate: String
 ) {
     companion object {
         fun getStructure(): String {
@@ -14,7 +15,8 @@ data class DoveVedereMedia(
                     "mediaID(" +
                     Media.getStructure() + ")," +
                     "piattaforma(" +
-                    Piattaforme.getStructure()+ ")"
+                    Piattaforme.getStructure()+ ")," +
+                    "lastUpdate"
         }
     }
 }

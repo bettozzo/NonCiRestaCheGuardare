@@ -267,10 +267,10 @@ class Profilo : AppCompatActivity() {
             val remoteDao = RemoteDAO(
                 this@Profilo, coroutineContext
             );
-            val cronologia = remoteDao.getAllSeenMedia()
+            val cronologia = remoteDao.getCronologia()
 
             val filmVisti = cronologia.size;
-            val filmDaVedere = remoteDao.getWatchList().size
+            val filmDaVedere = LiveDatas.liveWatchlist.value?.size ?: 0
 
             val totale = filmVisti + filmDaVedere
             textView.text = if (inPercentuale && totale != 0) {

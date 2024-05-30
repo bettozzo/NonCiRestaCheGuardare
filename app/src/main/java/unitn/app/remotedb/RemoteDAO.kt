@@ -1,7 +1,10 @@
 package unitn.app.remotedb
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
+import com.example.test.R
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
@@ -11,7 +14,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import unitn.app.ConverterMedia
 import unitn.app.api.LocalMedia
+import unitn.app.api.MediaDetails
 import unitn.app.localdb.UserDatabase
+import java.time.LocalDate
 import kotlin.coroutines.CoroutineContext
 
 
@@ -23,7 +28,6 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
     ) {
         install(Postgrest)
     }
-
     private var user: Users;
 
     init {
@@ -69,6 +73,10 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         }
     }
 
+
+    /*--------------------------*/
+    /*-------Single Media-------*/
+    /*--------------------------*/
     private suspend fun insertMedia(media: Media) {
         supabase.from("Media").insert(media)
     }
@@ -81,9 +89,44 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         }.decodeSingleOrNull<Media>();
     }
 
+
     private suspend fun isMediaPresent(id: Int): Boolean {
         return getMedia(id) != null;
     }
+
+
+    /*--------------------------*/
+    /*-------Piattaforme--------*/
+    /*--------------------------*/
+    private suspend fun insertPiattaforma(nome: String, mediaId: Int) {
+        val piattaformaInfo = supabase.from("Piattaforme").select {
+            filter {
+                eq("nome", nome)
+            }
+        }.decodeSingleOrNull<Piattaforme>() ?: return;
+
+        insertDoveVedereMedia(mediaId, piattaformaInfo.nome)
+    }
+
+
+    /*--------------------------*/
+    /*---------Watchlist--------*/
+    /*--------------------------*/
+    suspend fun insertToWatchlist(media: LocalMedia, appCompatActivity: AppCompatActivity) {
+        if (!isMediaPresent(media.mediaId)) {
+            insertMedia(ConverterMedia.toRemote(media))
+            val piattaforme = media.platform;
+            for (piattaforma in piattaforme) {
+                insertPiattaforma(piattaforma.first, media.mediaId)
+            }
+        }
+        maybeReloadDoveVedereMedia(media.mediaId, appCompatActivity)
+
+        if (!isInWatchList(media.mediaId)) {
+            supabase.from("watchlist").insert(InsertWatchListParams(user.userId, media.mediaId))
+        }
+    }
+
 
     private suspend fun isInWatchList(id: Int): Boolean {
         val mediaInString = supabase.from("watchlist").select {
@@ -93,32 +136,6 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
             }
         }.component1();
         return mediaInString != "[]"
-    }
-
-    private suspend fun insertPiattaforma(nome: String, mediaId: Int) {
-        val piattaformaInfo = supabase.from("Piattaforme").select {
-            filter {
-                eq("nome", nome)
-            }
-        }.decodeSingleOrNull<Piattaforme>() ?: return;
-
-
-        supabase.from("DoveVedereMedia")
-            .insert(InsertDoveVedereMediaParams(mediaId, piattaformaInfo!!.nome))
-    }
-
-    suspend fun insertToWatchlist(media: LocalMedia) {
-        if (!isMediaPresent(media.mediaId)) {
-            insertMedia(ConverterMedia.toRemote(media))
-            val piattaforme = media.platform;
-            for (piattaforma in piattaforme) {
-                insertPiattaforma(piattaforma.first, media.mediaId)
-            }
-        }
-
-        if (!isInWatchList(media.mediaId)) {
-            supabase.from("watchlist").insert(InsertWatchListParams(user.userId, media.mediaId))
-        }
     }
 
     suspend fun deleteFromWatchList(mediaID: Int) {
@@ -135,13 +152,30 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         val result = supabase.from("watchlist").select(columns = columns) {
             filter {
                 eq("userid", user.userId)
+
             }
+            order(column = "id", order = Order.ASCENDING)
         }
         val list = result.decodeList<WatchList>()
         return list.map { Pair(it.mediaid, it.is_local) }
     }
 
-    suspend fun getDoveVedereMedia(mediaID: Int): List<Piattaforme> {
+    suspend fun changeIsLocal(mediaId: Int, newState: Boolean) {
+        supabase.from("watchlist").update({ set("is_local", newState) }) {
+            filter {
+                eq("userid", user.userId)
+                eq("mediaid", mediaId)
+            }
+        }
+    }
+
+    /*--------------------------*/
+    /*--------Dove Vedere-------*/
+    /*--------------------------*/
+    suspend fun getDoveVedereMedia(
+        mediaID: Int,
+        appCompatActivity: AppCompatActivity,
+    ): List<Piattaforme> {
 
         val columns = Columns.raw(DoveVedereMedia.getStructure())
         val doveVedereMedia = supabase.from("DoveVedereMedia").select(columns = columns) {
@@ -149,11 +183,59 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                 eq("mediaID", mediaID)
             }
         }.decodeList<DoveVedereMedia>()
+        maybeReloadDoveVedereMedia(mediaID, appCompatActivity)
 
         val piattaforme = doveVedereMedia.map { it.piattaforma };
         return piattaforme
     }
 
+    private suspend fun maybeReloadDoveVedereMedia(
+        mediaID: Int,
+        appCompatActivity: AppCompatActivity,
+    ) {
+        val columns = Columns.raw(DoveVedereMedia.getStructure())
+        val today = LocalDate.now()
+        val doveVedereMedia = supabase.from("DoveVedereMedia").select(columns = columns) {
+            filter {
+                eq("mediaID", mediaID)
+            }
+        }.decodeList<DoveVedereMedia>()
+        val lastUpdates = doveVedereMedia.map { LocalDate.parse(it.lastUpdate) }
+        for (lastUpdate in lastUpdates) {
+            val monthAfterUpdate = lastUpdate.plusMonths(1)
+            if (today.isAfter(monthAfterUpdate)) {
+                val media = getMedia(mediaID)!!
+                deleteDoveVedereMedia(mediaID)
+                val mediaDetails = ViewModelProvider(appCompatActivity)[MediaDetails::class.java];
+                val platforms = mediaDetails.getMediaPlatform(
+                    mediaID,
+                    media.is_film,
+                    appCompatActivity.resources.getString(R.string.api_key_tmdb)
+                )
+                for (piattaforma in platforms) {
+                    insertPiattaforma(piattaforma.first, mediaID)
+                }
+            }
+        }
+    }
+
+    private suspend fun insertDoveVedereMedia(mediaId: Int, nomePiattaforme: String) {
+        supabase.from("DoveVedereMedia")
+            .insert(InsertDoveVedereMediaParams(mediaId, nomePiattaforme))
+    }
+
+    private suspend fun deleteDoveVedereMedia(mediaId: Int) {
+        supabase.from("DoveVedereMedia").delete {
+            filter {
+                eq("mediaID", mediaId)
+            }
+        }
+    }
+
+
+    /*--------------------------*/
+    /*-----------Users----------*/
+    /*--------------------------*/
     fun getMainColor(): Colori {
         return user.coloreTemaPrincipale
     }
@@ -166,24 +248,34 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         }
     }
 
-    suspend fun changeIsLocal(mediaId: Int, newState: Boolean) {
-        supabase.from("watchlist").update({ set("is_local", newState) }) {
+    suspend fun getDarkTheme(): Boolean {
+        return supabase.from("Users").select(columns = Columns.raw(Users.getStructure())) {
             filter {
-                eq("userid", user.userId)
-                eq("mediaid", mediaId)
+                eq("userId", user.userId)
+            }
+        }.decodeSingle<Users>().temaScuro
+    }
+
+    suspend fun updateDarkTheme(isOn: Boolean) {
+        supabase.from("Users").update({ set("temaScuro", isOn) }) {
+            filter {
+                eq("userId", user.userId)
             }
         }
     }
 
-    suspend fun getAllSeenMedia(): List<Media> {
+    /*--------------------------*/
+    /*--------Cronologia--------*/
+    /*--------------------------*/
+    suspend fun getCronologia(): List<Pair<Media, String>> {
         return supabase.from("CronologiaMedia")
-            .select(Columns.raw(CronologiaMedia.getStructure())) {
+            .select(columns = Columns.raw(CronologiaMedia.getStructure())) {
                 filter {
                     eq("userid", user.userId)
                 }
-            }.decodeList<CronologiaMedia>().map { it.mediaId }
+                order(column = "dataVisione", order = Order.DESCENDING)
+            }.decodeList<CronologiaMedia>().map { Pair(it.mediaId, it.dataVisione) }
     }
-
 
     //todo upsert
     suspend fun insertToCronologia(mediaId: Int) {
@@ -200,24 +292,12 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         }
     }
 
-    suspend fun updateDarkTheme(isOn: Boolean) {
-        supabase.from("Users").update({ set("temaScuro", isOn) }) {
-            filter {
-                eq("userId", user.userId)
-            }
-        }
-    }
-
-    suspend fun getDarkTheme(): Boolean {
-        return supabase.from("Users").select(columns = Columns.raw(Users.getStructure())) {
-            filter {
-                eq("userId", user.userId)
-            }
-        }.decodeSingle<Users>().temaScuro
-    }
-
+    /*--------------------------*/
+    /*----Piattaforme User------*/
+    /*--------------------------*/
     suspend fun insertPiattaformaAdUser(piattaformaNome: String) {
-        supabase.from("PiattaformeDiUser").insert(InsertPiattaformeDiUsersParams(user.userId, piattaformaNome))
+        supabase.from("PiattaformeDiUser")
+            .insert(InsertPiattaformeDiUsersParams(user.userId, piattaformaNome))
     }
 
     suspend fun removePiattaformaAdUser(piattaformaNome: String) {
@@ -238,16 +318,6 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
             }.decodeList<PiattaformeDiUsers>().map { it.piattaformaNome }
     }
 
-    //sort by date
-    suspend fun getCronologia(): List<Pair<Media, String>> {
-        return supabase.from("CronologiaMedia")
-            .select(columns = Columns.raw(CronologiaMedia.getStructure())) {
-                filter {
-                    eq("userid", user.userId)
-                }
-                order(column = "dataVisione", order = Order.DESCENDING)
-            }.decodeList<CronologiaMedia>().map { Pair(it.mediaId, it.dataVisione) }
-    }
 }
 
 

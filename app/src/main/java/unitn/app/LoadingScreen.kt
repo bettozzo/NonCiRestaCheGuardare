@@ -67,7 +67,8 @@ class LoadingScreen : AppCompatActivity() {
                 val media = ConverterMedia.toLocal(
                     applicationContext,
                     it.first,
-                    it.second
+                    it.second,
+                    this@LoadingScreen
                 )
                 counter++;
                 withContext(Dispatchers.Main) {
@@ -76,6 +77,7 @@ class LoadingScreen : AppCompatActivity() {
                 LiveDatas.addMedia(media)
                 if (counter == total) {
                     isFinished.postValue(true);
+
                 }
             }
         }
