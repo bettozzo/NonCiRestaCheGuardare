@@ -107,7 +107,7 @@ object LiveDatas {
     val liveRicercaMedia: LiveData<List<LocalMedia>>
         get() = mutLiveRicercaMedia;
 
-    var mediaRicercato: String = "Kill Bill"
+    var mediaRicercato: String = ""
     fun addRicercaMedia(media: LocalMedia) {
         val lista = (mutLiveRicercaMedia.value ?: emptyList()).toMutableList();
         lista.add(media);

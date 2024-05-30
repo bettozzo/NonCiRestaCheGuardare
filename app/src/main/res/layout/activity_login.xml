@@ -29,7 +29,6 @@
         android:hint="Username"
         android:inputType="text"
         android:singleLine="true"
-        android:text="test"
         android:textSize="20sp" />
 
     <Button
