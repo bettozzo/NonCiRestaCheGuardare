@@ -48,7 +48,12 @@ class CronologiaMedia : AppCompatActivity() {
                 val dataDMY = dataYMD[2] + "/" + dataYMD[1] + "/" + dataYMD[0]
                 view.findViewById<TextView>(R.id.data).text = dataDMY
                 view.setOnClickListener {
-                    val localMedia = ConverterMedia.toLocal(this@CronologiaMedia, media, false, this@CronologiaMedia)
+                    val localMedia = ConverterMedia.toLocal(
+                        this@CronologiaMedia,
+                        media,
+                        false,
+                        this@CronologiaMedia
+                    )
                     val intent = Intent(this@CronologiaMedia, AggiungiMedia::class.java)
                     intent.putExtra("id", media.mediaID)
                     intent.putExtra("titoloMedia", media.titolo)

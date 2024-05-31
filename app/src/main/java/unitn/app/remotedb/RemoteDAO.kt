@@ -276,20 +276,10 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                 order(column = "dataVisione", order = Order.DESCENDING)
             }.decodeList<CronologiaMedia>().map { Pair(it.mediaId, it.dataVisione) }
     }
-
-    //todo upsert
     suspend fun insertToCronologia(mediaId: Int) {
-        val alreadyPresent = supabase.from("CronologiaMedia")
-            .select(columns = Columns.raw(CronologiaMedia.getStructure())) {
-                filter {
-                    eq("userid", user.userId)
-                    eq("mediaId", mediaId)
-                }
-            }.decodeSingleOrNull<CronologiaMedia>() != null;
-        if (!alreadyPresent) {
-            supabase.from("CronologiaMedia")
-                .insert(InsertCronologiaMediaParams(user.userId, mediaId))
-        }
+        supabase.from("CronologiaMedia")
+            .insert(InsertCronologiaMediaParams(user.userId, mediaId))
+
     }
 
     /*--------------------------*/

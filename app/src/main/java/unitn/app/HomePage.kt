@@ -17,13 +17,17 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.example.test.R
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
-import unitn.app.api.LocalMedia
 import unitn.app.remotedb.RemoteDAO
 
 
 class HomePage : AppCompatActivity() {
+
+    private val viewFragAdapter = ViewPagerFragmentAdapter(this);
+    private var currentTab = 0;
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -37,7 +41,7 @@ class HomePage : AppCompatActivity() {
         }
         updateColor();
 
-        LiveDatas.liveColore.observe(this, object: Observer<String>{
+        LiveDatas.liveColore.observe(this, object : Observer<String> {
             override fun onChanged(value: String) {
                 LiveDatas.updateColorsOfImgButtons(
                     listOf(
@@ -45,28 +49,22 @@ class HomePage : AppCompatActivity() {
                         findViewById(R.id.goToSearchMediaButton)
                     )
                 )
-                findViewById<TabLayout>(R.id.MediaSelection).setBackgroundColor(Color.parseColor(value))
+                findViewById<TabLayout>(R.id.MediaSelection).setBackgroundColor(
+                    Color.parseColor(
+                        value
+                    )
+                )
             }
         })
 
-        LiveDatas.liveWatchlist.observe(this, object: Observer<List<LocalMedia>>{
-            override fun onChanged(value: List<LocalMedia>) {
-                findViewById<ViewPager2>(R.id.pager).adapter = ViewPagerFragmentAdapter(this@HomePage);
-            }
-        })
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        val viewPager = findViewById<ViewPager2>(R.id.pager)
         val mediaSelected = findViewById<TabLayout>(R.id.MediaSelection);
-        val viewFragAdapter = ViewPagerFragmentAdapter(this);
-        val goToSearchButton = findViewById<ImageButton>(R.id.goToSearchMediaButton)
-        val goToProfileButton = findViewById<ImageButton>(R.id.goToProfile)
-
+        val viewPager = findViewById<ViewPager2>(R.id.pager)
         viewPager.adapter = viewFragAdapter;
+
+        LiveDatas.liveWatchlist.observe(this) {
+            viewFragAdapter.notifyDataSetChanged()
+        }
+
         TabLayoutMediator(mediaSelected, viewPager) { tab, position ->
             if (position == 0) {
                 tab.text = "Films";
@@ -76,6 +74,26 @@ class HomePage : AppCompatActivity() {
                 tab.icon = ContextCompat.getDrawable(applicationContext, R.drawable.series_icon);
             }
         }.attach()
+
+        mediaSelected.addOnTabSelectedListener(object : OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                currentTab = tab.position
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val viewPager = findViewById<ViewPager2>(R.id.pager)
+        val goToSearchButton = findViewById<ImageButton>(R.id.goToSearchMediaButton)
+        val goToProfileButton = findViewById<ImageButton>(R.id.goToProfile)
+
+        viewPager.currentItem = currentTab;
 
         goToSearchButton.setOnClickListener {
             val intent = Intent(this@HomePage, Ricerca::class.java)
@@ -98,8 +116,6 @@ class HomePage : AppCompatActivity() {
             LiveDatas.setColore(newColor.colorCode)
         }
     }
-
-
 }
 
 
