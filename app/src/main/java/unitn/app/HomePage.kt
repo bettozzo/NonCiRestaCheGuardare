@@ -61,10 +61,6 @@ class HomePage : AppCompatActivity() {
         val viewPager = findViewById<ViewPager2>(R.id.pager)
         viewPager.adapter = viewFragAdapter;
 
-        LiveDatas.liveWatchlist.observe(this) {
-            viewFragAdapter.notifyDataSetChanged()
-        }
-
         TabLayoutMediator(mediaSelected, viewPager) { tab, position ->
             if (position == 0) {
                 tab.text = "Films";
@@ -81,7 +77,6 @@ class HomePage : AppCompatActivity() {
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
-
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
     }

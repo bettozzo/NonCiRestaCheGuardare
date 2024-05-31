@@ -16,11 +16,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import unitn.app.api.LocalMedia
 import unitn.app.remotedb.RemoteDAO
 import kotlin.coroutines.coroutineContext
 
 class LoadingScreen : AppCompatActivity() {
     private var isFinished: MutableLiveData<Boolean> = MutableLiveData(false)
+    private val orderAndId = mutableListOf<Pair<Int, Int>>()
+    private val mediasGlobal = mutableListOf<LocalMedia>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -35,55 +38,60 @@ class LoadingScreen : AppCompatActivity() {
         }
         isFinished.observe(this) {
             if (it) {
-                startActivity(Intent(this@LoadingScreen, HomePage::class.java))
-                finish()
-            }
-        }
-
-    }
-
-    @SuppressLint("SetTextI18n")
-    private suspend fun syncDataDB() {
-        val remoteDao = RemoteDAO(
-            applicationContext,
-            coroutineContext
-        );
-
-        if (LiveDatas.liveIsDarkTheme.value!!) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        }
-        LiveDatas.setIsDarkTheme(remoteDao.getDarkTheme())
-
-
-        //add remote to local
-        val medias = remoteDao.getWatchList();
-        if (medias.isEmpty()) {
-            isFinished.value = true;
-            return;
-        }
-
-        val total = medias.size;
-        val text = findViewById<TextView>(R.id.loadingText)
-        var counter = 0;
-        medias.map {
-            lifecycleScope.launch(Dispatchers.IO) {
-                val media = ConverterMedia.toLocal(
-                    applicationContext,
-                    it.first,
-                    it.second,
-                    this@LoadingScreen
-                )
-                counter++;
-                withContext(Dispatchers.Main) {
-                    text.text = "$counter/$total"
-                }
-                LiveDatas.addMedia(media)
-                if (counter == total) {
-                    isFinished.postValue(true);
+                orderAndId.sortedWith(compareBy { it.first }).map { (_, mediaId) ->
+                    LiveDatas.addMedia(mediasGlobal.find { it.mediaId == mediaId }!!)}
+                    startActivity(Intent(this@LoadingScreen, HomePage::class.java))
+                    finish()
                 }
             }
+
+        }
+
+        @SuppressLint("SetTextI18n")
+        private suspend fun syncDataDB() {
+            val remoteDao = RemoteDAO(
+                applicationContext,
+                coroutineContext
+            );
+
+            if (LiveDatas.liveIsDarkTheme.value!!) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+            LiveDatas.setIsDarkTheme(remoteDao.getDarkTheme())
+
+
+            //add remote to local
+            val medias = remoteDao.getWatchList();
+            if (medias.isEmpty()) {
+                isFinished.value = true;
+                return;
+            }
+
+            val total = medias.size;
+            val text = findViewById<TextView>(R.id.loadingText)
+            var counter = 0;
+            var order = 0;
+            medias.map {
+                order++;
+                orderAndId.add(Pair(order, it.first.mediaID))
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val media = ConverterMedia.toLocal(
+                        applicationContext,
+                        it.first,
+                        it.second,
+                        this@LoadingScreen
+                    )
+                    mediasGlobal.add(media)
+                    counter++;
+                    withContext(Dispatchers.Main) {
+                        text.text = "$counter/$total"
+                    }
+                    if (counter == total) {
+                        isFinished.postValue(true);
+                    }
+                }
+            }
         }
     }
-}

@@ -85,8 +85,10 @@ object LiveDatas {
         get() = mutWatchList;
 
     fun addMedia(media: LocalMedia) {
-        watchList.add(media)
-        mutWatchList.postValue(watchList);
+        if (!watchList.contains(media)) {
+            watchList.add(media)
+            mutWatchList.postValue(watchList);
+        }
     }
 
     fun removeMedia(mediaId: Int) {
