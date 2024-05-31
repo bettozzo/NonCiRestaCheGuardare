@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="unitn.app.AggiungiCustomMedia">
+
+    <TextView
+        android:id="@+id/HeaderTitolo"
+        style="@style/HeaderTitolo"
+        android:text="Aggiungi Media Custom" />
+
+
+    <TextView
+        android:id="@+id/info"
+        style="@style/Header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/HeaderTitolo"
+        android:text="Inserisci tutte le informazioni" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/info"
+        android:layout_marginTop="70dp"
+        android:divider="@drawable/divider30p"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="10dp"
+        android:showDividers="middle">
+
+
+        <EditText
+            android:id="@+id/titolo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/Grigio"
+            android:hint="Titolo" />
+
+        <EditText
+            android:id="@+id/poster"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/Grigio"
+            android:hint="URL poster (opzionale)" />
+
+        <EditText
+            android:id="@+id/sinossi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/Grigio"
+            android:gravity="top|start"
+            android:hint="Sinossi (opzionale)"
+            android:inputType="textMultiLine"
+            android:lines="4"
+            android:scrollbars="vertical" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingHorizontal="10dp">
+
+
+            <TextView
+                style="@style/normalText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Serie TV" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch1"
+                style="@style/SCBSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                style="@style/normalText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Film" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/addMedia"
+        style="@style/normalButton"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:text="Aggiungi" />
+</RelativeLayout>

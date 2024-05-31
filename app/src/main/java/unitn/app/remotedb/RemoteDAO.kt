@@ -79,6 +79,11 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
     /*--------------------------*/
     private suspend fun insertMedia(media: Media) {
         supabase.from("Media").insert(media)
+
+        if (media.mediaID > 2147383646) {
+            //is Custom
+            deleteId(media.mediaID)
+        }
     }
 
     private suspend fun getMedia(id: Int): Media? {
@@ -89,6 +94,13 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         }.decodeSingleOrNull<Media>();
     }
 
+    private suspend fun deleteMedia(id: Int) {
+        supabase.from("Media").delete {
+            filter {
+                eq("mediaID", id)
+            }
+        };
+    }
 
     private suspend fun isMediaPresent(id: Int): Boolean {
         return getMedia(id) != null;
@@ -120,6 +132,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                 insertPiattaforma(piattaforma.first, media.mediaId)
             }
         }
+
         maybeReloadDoveVedereMedia(media.mediaId, appCompatActivity)
 
         if (!isInWatchList(media.mediaId)) {
@@ -144,6 +157,11 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                 eq("mediaid", mediaID)
                 eq("userid", user.userId)
             }
+        }
+
+        if (mediaID > 2147383646) {
+            //is Custom
+            deleteMedia(mediaID)
         }
     }
 
@@ -276,6 +294,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                 order(column = "dataVisione", order = Order.DESCENDING)
             }.decodeList<CronologiaMedia>().map { Pair(it.mediaId, it.dataVisione) }
     }
+
     suspend fun insertToCronologia(mediaId: Int) {
         supabase.from("CronologiaMedia")
             .insert(InsertCronologiaMediaParams(user.userId, mediaId))
@@ -308,6 +327,31 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
             }.decodeList<PiattaformeDiUsers>().map { it.piattaformaNome }
     }
 
+    /*--------------------------*/
+    /*------Possibili ID--------*/
+    /*--------------------------*/
+    suspend fun getRandomHighID(): PossibiliID {
+        val id = supabase.from("possibiliID")
+            .select(columns = Columns.raw(PossibiliID.getStructure())) {
+                limit(count = 1);
+            }.decodeSingle<PossibiliID>()
+        deleteId(id.possibiliID);
+        return id;
+    }
+
+    private suspend fun deleteId(id: Int) {
+        supabase.from("possibiliID")
+            .delete {
+                filter {
+                    eq("possibiliID", id)
+                }
+            }
+    }
+
+    private suspend fun insertID(id: Int) {
+        supabase.from("possibiliID")
+            .insert(PossibiliID(id))
+    }
 }
 
 

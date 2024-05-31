@@ -133,8 +133,8 @@ class DettaglioMedia : AppCompatActivity() {
                     coroutineContext
                 );
 
-                remoteDao.deleteFromWatchList(mediaID)
                 remoteDao.insertToCronologia(mediaID)
+                remoteDao.deleteFromWatchList(mediaID)
                 LiveDatas.removeMedia(mediaID)
                 finish()//prevents this activity to be opened again
                 startActivity(intent)
