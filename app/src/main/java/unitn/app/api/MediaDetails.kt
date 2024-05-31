@@ -71,6 +71,12 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                         media.name
                     }
                     val sinossi = media.overview
+                    val annoUscita = if (isFilm) {
+                        media.release_date!!.split("-")[0]
+                    } else {
+                        media.first_air_date!!.split("-")[0]
+
+                    }
 
                     val platforms = getMediaPlatform(id, isFilm, apiKey)
                     val poster = getPosterPath(media.poster_path, media.backdrop_path)
@@ -84,7 +90,8 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                         false,
                         sinossi,
                         cast,
-                        crew
+                        crew,
+                        " ($annoUscita)"
                     )
                     //prevents concurrency problems. In case user sends a new request before the previous one is finished
                     if (currentMediaBeingQueried == mediaTitle) {

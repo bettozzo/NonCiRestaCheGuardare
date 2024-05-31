@@ -5,7 +5,6 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.TextUtils
-import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -52,6 +51,7 @@ class AggiungiMedia : AppCompatActivity() {
         val sinossi = extras.getString("sinossi", "NO Sinossi");
         val cast = Converters().stringToPlatform(extras.getString("cast"));
         val crew = Converters().stringToPlatform(extras.getString("crew"));
+        val annoUscita = extras.getString("annoUscita");
 
         //titolo
         val titoloMedia = findViewById<TextView>(R.id.titoloFilm);
@@ -64,6 +64,9 @@ class AggiungiMedia : AppCompatActivity() {
         } else {
             "Serie TV"
         }
+        //Anno Uscita
+        val annoUscitaView = findViewById<TextView>(R.id.AnnoUscita)
+        annoUscitaView.text = annoUscita;
         //poster
         if (poster != null) {
             Picasso.get().load(poster).into(findViewById<ImageView>(R.id.poster))
@@ -75,8 +78,12 @@ class AggiungiMedia : AppCompatActivity() {
 
         //sinossi
         val sinossiView = findViewById<TextView>(R.id.sinossiText);
-        sinossiView.movementMethod = ScrollingMovementMethod();
-        sinossiView.text = sinossi
+        if (sinossi.isNotEmpty()) {
+            sinossiView.text = sinossi
+        } else {
+            sinossiView.visibility = View.GONE;
+            findViewById<TextView>(R.id.HeaderInfoMedia).visibility = View.GONE;
+        }
 
         //credits
         //cast
@@ -124,9 +131,7 @@ class AggiungiMedia : AppCompatActivity() {
                             platforms,
                             poster,
                             false,
-                            sinossi,
-                            emptyList(),
-                            emptyList()
+                            sinossi
                         );
                     remoteDao.insertToWatchlist(localMedia, this@AggiungiMedia)
                     LiveDatas.addMedia(localMedia)

@@ -8,8 +8,9 @@ data class LocalMedia(
     val posterPath: String?,
     val isLocallySaved: Boolean,
     val sinossi: String?,
-    val cast: List<Pair<String, String>>,
-    val crew: List<Pair<String, String>>,
+    val cast: List<Pair<String, String>> = emptyList(),
+    val crew: List<Pair<String, String>> = emptyList(),
+    val periodoUscita: String = "",
     val databaseID: Int = 0,
 ) {
     override fun toString(): String {

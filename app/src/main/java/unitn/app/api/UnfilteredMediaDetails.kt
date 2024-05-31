@@ -12,6 +12,7 @@ data class UnfilteredMediaDetails(
     val popularity: Float?,
     val poster_path: String?,
     val release_date: String?,
+    val first_air_date: String?,
     val title: String?,
     val name: String?,
     val vote_average: Float?,
