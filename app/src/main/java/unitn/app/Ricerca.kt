@@ -106,7 +106,6 @@ class Ricerca : AppCompatActivity() {
         }
 
         searchBar.text = SpannableStringBuilder(LiveDatas.mediaRicercato)
-//        searchBar.setSelection(searchBar.length())
         searchBar.setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 buttonToSearch.performClick()

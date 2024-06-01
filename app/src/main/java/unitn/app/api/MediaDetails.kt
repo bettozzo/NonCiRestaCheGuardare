@@ -28,12 +28,11 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
     val liveNoInternet: LiveData<Boolean>
         get() = mutNoInternet;
 
-
+    private val mApplication = application;
     suspend fun getDetails(mediaTitle: String, apiKey: String): Boolean =
         withContext(Dispatchers.IO) {
             currentMediaBeingQueried = mediaTitle;
             listMedia = emptyList<LocalMedia>().toMutableList()
-            var counter = 0;
             val idFilmInUserList = getAllUserMedia();
 
             val apiCallerMedia = Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/")
@@ -52,23 +51,28 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
             results.sortBy { it.first.popularity }
             results.reverse()
 
+            val filteredResults = results.map { resultMedia ->
+                if (LiveDatas.liveWatchlist.value?.none { liveResult -> liveResult.mediaId == resultMedia.first.id }!!) {
+                    return@map resultMedia;
+                } else {
+                    return@map Pair(null, null);
+                }
+            }.toMutableList()
+            filteredResults.removeAll { it.first == null }
+
             LiveDatas.emptyRicercaMedia()
-            if (results.isEmpty()) {
+
+            if (filteredResults.isEmpty()) {
                 return@withContext false;
             }
 
-            for ((media, isFilm) in results) {
-                val list = LiveDatas.liveWatchlist.value?.filter { it.mediaId == media.id }
-                if (list?.isNotEmpty()!!) {
-                    continue;
-                }
-                val id = media.id
+            for ((media, isFilm) in filteredResults) {
+                val id = media?.id!!
                 if (!idFilmInUserList.contains(id)) {
-                    counter++;
-                    val title = if (isFilm) {
-                        media.title
+                    val title = if (isFilm!!) {
+                        media.title!!
                     } else {
-                        media.name
+                        media.name!!
                     }
                     val sinossi = media.overview
                     var annoUscita = if (isFilm) {
@@ -76,7 +80,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                     } else {
                         media.first_air_date!!.split("-")[0]
                     }
-                    if(annoUscita != ""){
+                    if (annoUscita != "") {
                         annoUscita = " ($annoUscita)"
                     }
 
@@ -86,7 +90,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                     val movie = LocalMedia(
                         id,
                         isFilm,
-                        title!!,
+                        title,
                         platforms,
                         poster,
                         false,
