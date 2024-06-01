@@ -101,6 +101,14 @@ object LiveDatas {
         mutWatchList.value = emptyList();
     }
 
+    fun tickIsLocal(mediaid: Int) {
+        val media = watchList.find { it.mediaId == mediaid }!!
+        val index = watchList.indexOf(media)
+        media.isLocallySaved = !media.isLocallySaved;
+
+        watchList[index] = media;
+        mutWatchList.postValue(watchList);
+    }
 
     /*--------------------------*/
     /*---------Ricerca----------*/

@@ -6,7 +6,7 @@ data class LocalMedia(
     val title: String,
     val platform: List<Pair<String, String>>,
     val posterPath: String?,
-    val isLocallySaved: Boolean,
+    var isLocallySaved: Boolean,
     val sinossi: String?,
     val cast: List<Pair<String, String>> = emptyList(),
     val crew: List<Pair<String, String>> = emptyList(),

@@ -94,6 +94,7 @@ class DettaglioMedia : AppCompatActivity() {
                     coroutineContext
                 );
                 remoteDao.changeIsLocal(id, isChecked)
+                LiveDatas.tickIsLocal(id)
             }
         }
 

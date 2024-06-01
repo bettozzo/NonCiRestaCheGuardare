@@ -57,7 +57,7 @@ class Profilo : AppCompatActivity() {
 
         //Change colors
         LiveDatas.liveColore.observe(this) {
-            LiveDatas.updateColorsOfButtons(listOf(buttonGoToCronologia, buttonLogOff))
+            LiveDatas.updateColorsOfButtons(listOf(buttonGoToCronologia))
             LiveDatas.updateColorsOfImgButtons(listOf(buttonSave))
         }
 
@@ -87,8 +87,6 @@ class Profilo : AppCompatActivity() {
             inPercentuale = !inPercentuale
             setCompletamento(textPercentuale, inPercentuale)
         }
-
-
 
         //url sito
         urlSito.movementMethod = LinkMovementMethod.getInstance()
@@ -296,7 +294,6 @@ class Profilo : AppCompatActivity() {
         val myList = ColorStateList(states, colors)
 
         findViewById<Button>(R.id.buttonGoToSeen).backgroundTintList = myList
-        findViewById<Button>(R.id.buttonLogOff).backgroundTintList = myList
         findViewById<ImageButton>(R.id.buttonSave).backgroundTintList = myList
     }
 }

@@ -11,4 +11,5 @@
     <color name="Azzurro">#ff2d95eb</color>
     <color name="Rosso">#E6FF0E0E</color>
     <color name="Grigio">#E6232323</color>
+    <color name="GrigioScuro">#E6808080</color>
 </resources>

@@ -81,7 +81,6 @@ class AdapterHomepage(private var context: Context, private var localMedia: List
                 "Crunchyroll" -> {
                     intent.putExtra("CrunchyrollPath", platform.second)
                 };
-                //TODO no , infinity?
             }
         }
     }
