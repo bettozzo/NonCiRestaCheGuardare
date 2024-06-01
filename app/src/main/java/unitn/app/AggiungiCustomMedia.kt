@@ -48,9 +48,9 @@ class AggiungiCustomMedia : AppCompatActivity() {
                     coroutineContext
                 );
                 val id = remoteDao.getRandomHighID().possibiliID;
-                //todo fix image
+
                 val poster = if(posterView.text.isEmpty()){
-                    "https://image.tmdb.org/t/p/w780/2V9YZqkiPE3vDbvWvQWTWJOhQba.jpg"
+                    null
                 }else{
                     posterView.text.toString()
                 }

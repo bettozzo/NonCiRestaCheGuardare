@@ -17,6 +17,7 @@ import unitn.app.api.LocalMedia
 import unitn.app.api.MediaDetails
 import unitn.app.localdb.UserDatabase
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import kotlin.coroutines.CoroutineContext
 
 
@@ -94,13 +95,6 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         }.decodeSingleOrNull<Media>();
     }
 
-    private suspend fun deleteMedia(id: Int) {
-        supabase.from("Media").delete {
-            filter {
-                eq("mediaID", id)
-            }
-        };
-    }
 
     private suspend fun isMediaPresent(id: Int): Boolean {
         return getMedia(id) != null;
@@ -157,11 +151,6 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                 eq("mediaid", mediaID)
                 eq("userid", user.userId)
             }
-        }
-
-        if (mediaID > 2147383646) {
-            //is Custom
-            deleteMedia(mediaID)
         }
     }
 
@@ -296,9 +285,19 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
     }
 
     suspend fun insertToCronologia(mediaId: Int) {
-        supabase.from("CronologiaMedia")
-            .insert(InsertCronologiaMediaParams(user.userId, mediaId))
-
+        val today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        val alreadyPresent = supabase.from("CronologiaMedia")
+            .select(columns = Columns.raw(CronologiaMedia.getStructure())) {
+                filter {
+                    eq("userid", user.userId)
+                    eq("mediaId", mediaId)
+                    eq("dataVisione", today)
+                }
+            }.decodeSingleOrNull<CronologiaMedia>() != null;
+        if (!alreadyPresent) {
+            supabase.from("CronologiaMedia")
+                .insert(InsertCronologiaMediaParams(user.userId, mediaId))
+        }
     }
 
     /*--------------------------*/
@@ -346,11 +345,6 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                     eq("possibiliID", id)
                 }
             }
-    }
-
-    private suspend fun insertID(id: Int) {
-        supabase.from("possibiliID")
-            .insert(PossibiliID(id))
     }
 }
 
