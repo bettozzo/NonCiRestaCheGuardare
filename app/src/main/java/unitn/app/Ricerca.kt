@@ -56,7 +56,7 @@ class Ricerca : AppCompatActivity() {
         val gridView = findViewById<GridView>(R.id.GridView)
         val searchBar = findViewById<EditText>(R.id.searchBar)
         val buttonToSearch = findViewById<Button>(R.id.buttonToSearch)
-        val buttonToAddCustom = findViewById<Button>(R.id.addCustom)
+        val buttonToAddCustom = findViewById<ImageButton>(R.id.addCustom)
         val buttonDeleteQuery = findViewById<ImageButton>(R.id.buttonDeleteQuery)
 
         gridView.adapter = adapter
@@ -105,21 +105,16 @@ class Ricerca : AppCompatActivity() {
             searchBar.showKeyboard();
         }
 
-        searchBar.requestFocus()
         searchBar.text = SpannableStringBuilder(LiveDatas.mediaRicercato)
-        searchBar.setSelection(searchBar.length())
+//        searchBar.setSelection(searchBar.length())
         searchBar.setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                val title = searchBar.text.toString();
-                callAPI(title, lastTitleQueried)
-                lastTitleQueried = title;
+                buttonToSearch.performClick()
                 return@setOnKeyListener true;
-            }
-            if (event.isLongPress && keyCode == KeyEvent.KEYCODE_DEL) {
-                searchBar.text.clear()
             }
             return@setOnKeyListener false;
         }
+
         buttonToAddCustom.setOnClickListener {
             startActivity(Intent(this@Ricerca, AggiungiCustomMedia::class.java))
             finish()

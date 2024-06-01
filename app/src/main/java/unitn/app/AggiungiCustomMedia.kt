@@ -1,6 +1,7 @@
 package unitn.app
 
 import android.os.Bundle
+import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
@@ -49,7 +50,7 @@ class AggiungiCustomMedia : AppCompatActivity() {
                 );
                 val id = remoteDao.getRandomHighID().possibiliID;
 
-                val poster = if(posterView.text.isEmpty()){
+                val poster = if(posterView.text.isEmpty() || !posterView.text.toString().isValidUrl()){
                     null
                 }else{
                     posterView.text.toString()
@@ -72,4 +73,8 @@ class AggiungiCustomMedia : AppCompatActivity() {
             }
         }
     }
+}
+
+fun String.isValidUrl(): Boolean {
+    return this.startsWith("http://") || this.startsWith("https://") && Patterns.WEB_URL.matcher(this).matches()
 }

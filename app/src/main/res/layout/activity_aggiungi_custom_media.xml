@@ -9,16 +9,18 @@
     <TextView
         android:id="@+id/HeaderTitolo"
         style="@style/HeaderTitolo"
-        android:text="Aggiungi Media Custom" />
+        android:text="Aggiunta Personale"/>
 
 
     <TextView
         android:id="@+id/info"
-        style="@style/Header"
+        style="@style/normalText"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/HeaderTitolo"
-        android:text="Inserisci tutte le informazioni" />
+        android:justificationMode="inter_word"
+        android:text="Inserire dati di film o serie TV che non sono state trovate nell'elenco disponibile" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,6 +39,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/Grigio"
+            android:lines="1"
+            android:inputType="textNoSuggestions"
+            android:autofillHints="name"
             android:hint="Titolo" />
 
         <EditText
@@ -44,6 +49,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/Grigio"
+            android:inputType="textNoSuggestions"
+            android:lines="1"
             android:hint="URL poster (opzionale)" />
 
         <EditText
@@ -74,6 +81,7 @@
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switch1"
+                android:checked="true"
                 style="@style/SCBSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -82,7 +90,7 @@
                 style="@style/normalText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Film" />
+                android:text=" Film" />
         </LinearLayout>
     </LinearLayout>
 

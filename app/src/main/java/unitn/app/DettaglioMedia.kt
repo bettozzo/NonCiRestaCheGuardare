@@ -69,7 +69,7 @@ class DettaglioMedia : AppCompatActivity() {
                 val settingsDialog = Dialog(this)
                 settingsDialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
                 settingsDialog.addContentView(
-                    imageView, ViewGroup.LayoutParams(900, 1500)
+                    imageView, ViewGroup.LayoutParams(900, 1400)
                 )
                 settingsDialog.show()
             }
