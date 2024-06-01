@@ -93,10 +93,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
-                    android:gravity="start"
-                    android:scrollbarFadeDuration="@integer/material_motion_duration_medium_2"
-                    android:text="@string/lorem_ipsum_1"
-                    android:textAlignment="textStart" />
+                    android:text="@string/lorem_ipsum_1" />
 
                 <TextView
                     android:id="@+id/castCredits"

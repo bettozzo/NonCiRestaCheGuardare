@@ -1,11 +1,14 @@
 package unitn.app
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.TextUtils
 import android.view.View
+import android.view.ViewGroup
+import android.view.Window
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -70,6 +73,18 @@ class AggiungiMedia : AppCompatActivity() {
         //poster
         if (poster != null) {
             Picasso.get().load(poster).into(findViewById<ImageView>(R.id.poster))
+
+            findViewById<ImageView>(R.id.poster).setOnClickListener {
+                val imageView = ImageView(this)
+                Picasso.get().load(poster).into(imageView)
+                imageView.scaleType = ImageView.ScaleType.FIT_XY
+                val settingsDialog = Dialog(this)
+                settingsDialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
+                settingsDialog.addContentView(
+                    imageView, ViewGroup.LayoutParams(900, 1400)
+                )
+                settingsDialog.show()
+            }
         } else {
             val posterView = findViewById<ImageView>(R.id.poster);
             posterView.layoutParams.height = 350;
