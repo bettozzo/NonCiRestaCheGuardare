@@ -86,7 +86,7 @@ class LoadingScreen : AppCompatActivity() {
                     mediasGlobal.add(media)
                     counter++;
                     withContext(Dispatchers.Main) {
-                        text.text = "$counter/$total"
+                        text.text = "%.0f".format(((counter.toFloat()/total.toFloat())*100))+"%"
                     }
                     if (counter == total) {
                         isFinished.postValue(true);

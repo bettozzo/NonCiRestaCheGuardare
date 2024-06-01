@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.KeyEvent
@@ -78,19 +76,16 @@ class Ricerca : AppCompatActivity() {
             }
         }
         LiveDatas.liveColore.observe(this) {
-            val states = arrayOf(
-                intArrayOf(android.R.attr.state_enabled), // enabled
-                intArrayOf(-android.R.attr.state_enabled), // disabled
-                intArrayOf(-android.R.attr.state_checked), // unchecked
-                intArrayOf(android.R.attr.state_pressed)  // pressed
+            LiveDatas.updateColorsOfImgButtons(
+                listOf(
+                    findViewById(R.id.addCustom)
+                )
+            );
+            LiveDatas.updateColorsOfButtons(
+                listOf(
+                    findViewById(R.id.buttonToSearch),
+                )
             )
-            val colors = intArrayOf(
-                Color.parseColor(it),
-                Color.parseColor(it),
-                Color.parseColor(it),
-                Color.parseColor(it),
-            )
-            buttonToSearch.backgroundTintList = ColorStateList(states, colors)
         }
 
         buttonToSearch.setOnClickListener {

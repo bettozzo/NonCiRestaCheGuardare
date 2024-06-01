@@ -49,11 +49,20 @@ class HomePage : AppCompatActivity() {
                         findViewById(R.id.goToSearchMediaButton)
                     )
                 )
-                findViewById<TabLayout>(R.id.MediaSelection).setBackgroundColor(
-                    Color.parseColor(
-                        value
-                    )
-                )
+                val tab = findViewById<TabLayout>(R.id.MediaSelection);
+                tab.setBackgroundColor(Color.parseColor(value))
+                when (value) {
+                    "#2d95eb" -> {
+                        //azzurro
+                        tab.setSelectedTabIndicatorColor(Color.parseColor("#DC5eeaff"))
+                    }
+                    "#008c00" -> {
+                        //verde
+                        tab.setSelectedTabIndicatorColor(Color.parseColor("#DCA8FF2F"))}
+                    "#852deb" -> {
+                        //viola
+                        tab.setSelectedTabIndicatorColor(Color.parseColor("#e045f5"))}
+                }
             }
         })
 
