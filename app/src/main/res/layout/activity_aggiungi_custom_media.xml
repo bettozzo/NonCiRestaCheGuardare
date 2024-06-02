@@ -9,88 +9,97 @@
     <TextView
         android:id="@+id/HeaderTitolo"
         style="@style/HeaderTitolo"
-        android:text="Aggiunta Personale"/>
+        android:text="Aggiunta Personale" />
 
 
     <TextView
         android:id="@+id/info"
         style="@style/normalText"
-        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/HeaderTitolo"
-        android:justificationMode="inter_word"
-        android:text="Inserire dati di film o serie TV che non sono state trovate nell'elenco disponibile" />
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp"
 
-    <LinearLayout
+        android:text="Inserire dati di film o serie TV che non sono reperibili nell'elenco" />
+
+
+    <EditText
+        android:id="@+id/titolo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/info"
-        android:layout_marginTop="70dp"
-        android:divider="@drawable/divider30p"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="50dp"
+        android:autofillHints="name"
+        android:background="@color/Grigio"
+        android:hint="Titolo"
+        android:inputType="textNoSuggestions"
+        android:lines="1" />
+
+    <EditText
+        android:id="@+id/poster"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titolo"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="30dp"
+        android:autofillHints="name"
+        android:background="@color/Grigio"
+        android:hint="URL poster (opzionale)"
+        android:inputType="textNoSuggestions"
+        android:lines="1" />
+
+    <EditText
+        android:id="@+id/sinossi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/poster"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="30dp"
+        android:autofillHints="name"
+        android:background="@color/Grigio"
+        android:gravity="top|start"
+        android:hint="Sinossi (opzionale)"
+        android:inputType="textMultiLine"
+        android:lines="4"
+        android:scrollbars="vertical" />
+
+    <TextView
+        android:id="@+id/tipologia"
+        style="@style/Header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sinossi"
+        android:layout_marginTop="20dp"
+        android:text="Tipologia" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@id/tipologia"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="15dp"
         android:gravity="center"
-        android:orientation="vertical"
-        android:paddingHorizontal="10dp"
-        android:showDividers="middle">
+        android:orientation="horizontal"
+        android:textAlignment="center">
 
+        <TextView
+            android:id="@+id/filmView"
+            style="@style/normalText"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:background="@color/Verde"
+            android:text="Film"
+            android:textSize="20sp"/>
 
-        <EditText
-            android:id="@+id/titolo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/Grigio"
-            android:lines="1"
-            android:inputType="textNoSuggestions"
-            android:autofillHints="name"
-            android:hint="Titolo" />
-
-        <EditText
-            android:id="@+id/poster"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/Grigio"
-            android:inputType="textNoSuggestions"
-            android:lines="1"
-            android:hint="URL poster (opzionale)" />
-
-        <EditText
-            android:id="@+id/sinossi"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/Grigio"
-            android:gravity="top|start"
-            android:hint="Sinossi (opzionale)"
-            android:inputType="textMultiLine"
-            android:lines="4"
-            android:scrollbars="vertical" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingHorizontal="10dp">
-
-
-            <TextView
-                style="@style/normalText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Serie TV" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switch1"
-                android:checked="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                style="@style/normalText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=" Film" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/serieTvView"
+            style="@style/normalText"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:text="Serie TV"
+            android:textSize="20sp" />
     </LinearLayout>
 
     <Button

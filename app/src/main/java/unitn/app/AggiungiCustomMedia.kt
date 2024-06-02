@@ -1,13 +1,14 @@
 package unitn.app
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -29,8 +30,29 @@ class AggiungiCustomMedia : AppCompatActivity() {
         val titoloView = findViewById<EditText>(R.id.titolo)
         val posterView = findViewById<EditText>(R.id.poster)
         val sinossiView = findViewById<EditText>(R.id.sinossi)
-        val switch = findViewById<SwitchCompat>(R.id.switch1)
+        val filmView = findViewById<TextView>(R.id.filmView)
+        val serieView = findViewById<TextView>(R.id.serieTvView)
         val addMedia = findViewById<Button>(R.id.addMedia)
+
+        val colore = LiveDatas.getColore();
+        LiveDatas.updateColorsOfButtons(listOf(findViewById(R.id.addMedia)))
+        filmView.setBackgroundColor(Color.parseColor(colore))
+        filmView.background.alpha = (0.7 * 255).toInt();
+        serieView.setBackgroundColor(Color.TRANSPARENT)
+
+        var isFilm = true;
+        filmView.setOnClickListener {
+            filmView.setBackgroundColor(Color.parseColor(colore))
+            filmView.background.alpha = (0.7 * 255).toInt();
+            serieView.setBackgroundColor(Color.TRANSPARENT)
+            isFilm = true;
+        }
+        serieView.setOnClickListener {
+            serieView.setBackgroundColor(Color.parseColor(colore))
+            serieView.background.alpha = (0.7 * 255).toInt();
+            filmView.setBackgroundColor(Color.TRANSPARENT)
+            isFilm = false;
+        }
 
         addMedia.setOnClickListener {
             if (titoloView.text.isEmpty()) {
@@ -50,16 +72,17 @@ class AggiungiCustomMedia : AppCompatActivity() {
                 );
                 val id = remoteDao.getRandomHighID().possibiliID;
 
-                val poster = if(posterView.text.isEmpty() || !posterView.text.toString().isValidUrl()){
-                    null
-                }else{
-                    posterView.text.toString()
-                }
+                val poster =
+                    if (posterView.text.isEmpty() || !posterView.text.toString().isValidUrl()) {
+                        null
+                    } else {
+                        posterView.text.toString()
+                    }
 
                 val localMedia =
                     LocalMedia(
                         id,
-                        switch.isChecked,
+                        isFilm,
                         titoloView.text.toString(),
                         emptyList(),
                         poster,
@@ -76,5 +99,7 @@ class AggiungiCustomMedia : AppCompatActivity() {
 }
 
 fun String.isValidUrl(): Boolean {
-    return this.startsWith("http://") || this.startsWith("https://") && Patterns.WEB_URL.matcher(this).matches()
+    return this.startsWith("http://") || this.startsWith("https://") && Patterns.WEB_URL.matcher(
+        this
+    ).matches()
 }

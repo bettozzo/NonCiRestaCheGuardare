@@ -33,6 +33,10 @@ object LiveDatas {
         mutLiveColore.value = colore
     }
 
+    fun getColore(): String {
+        return mutLiveColore.value!!;
+    }
+
     fun updateColorsOfImgButtons(imageButtons: List<ImageButton>) {
         val states = arrayOf(
             intArrayOf(android.R.attr.state_enabled), // enabled
