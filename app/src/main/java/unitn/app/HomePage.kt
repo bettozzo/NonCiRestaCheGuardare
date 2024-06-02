@@ -54,14 +54,14 @@ class HomePage : AppCompatActivity() {
                 when (value) {
                     "#2d95eb" -> {
                         //azzurro
-                        tab.setSelectedTabIndicatorColor(Color.parseColor("#DC5eeaff"))
+                        tab.setSelectedTabIndicatorColor(Color.parseColor("#77edff"))
                     }
                     "#008c00" -> {
                         //verde
-                        tab.setSelectedTabIndicatorColor(Color.parseColor("#DCA8FF2F"))}
+                        tab.setSelectedTabIndicatorColor(Color.parseColor("#A8FF2F"))}
                     "#852deb" -> {
                         //viola
-                        tab.setSelectedTabIndicatorColor(Color.parseColor("#e045f5"))}
+                        tab.setSelectedTabIndicatorColor(Color.parseColor("#cf06f9"))}
                 }
             }
         })

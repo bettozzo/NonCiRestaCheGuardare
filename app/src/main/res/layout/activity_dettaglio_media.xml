@@ -113,7 +113,7 @@
             android:layout_below="@+id/plaformList"
             android:layout_marginStart="14dp"
             android:layout_marginTop="10dp"
-            android:text="In Locale       "
+            android:text="In possesso          "
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -137,7 +137,5 @@
             android:background="@drawable/circle"
             android:contentDescription="Button to mark media as seen"
             android:src="@drawable/checkmark" />
-
-
     </RelativeLayout>
 </ScrollView>
