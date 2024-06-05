@@ -8,8 +8,10 @@ import com.example.test.R
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
+import io.github.jan.supabase.postgrest.rpc
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import unitn.app.ConverterMedia
@@ -74,6 +76,38 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         }
     }
 
+
+    /*--------------------------*/
+    /*-----Custom functions-----*/
+    /*--------------------------*/
+
+    suspend fun getAllMediaDetails(): List<LocalMedia> {
+        val media = supabase.postgrest.rpc("get_full_details_media") {
+            filter {
+                eq("userid", user.userId)
+            }
+        }.decodeList<AllDetailsMedia>()
+        val results = mutableListOf<LocalMedia>();
+        for (m in media) {
+            val sameIdOnes = media.filter { it.mediaid == m.mediaid }
+            val maybePiattaforme = sameIdOnes.map { Pair(it.nome, it.logo_path) }.filterNotNull()
+
+            val localMedia = LocalMedia(
+                m.mediaid,
+                m.is_film,
+                m.titolo,
+                maybePiattaforme,
+                m.poster_path,
+                m.is_local,
+                m.sinossi
+            )
+            results.add(localMedia);
+        }
+        return results.toSet().toList();
+    }
+
+    private fun <T, U> List<Pair<T?, U?>>.filterNotNull() =
+        mapNotNull { it.takeIf { it.first != null && it.second != null } as? Pair<T, U> }
 
     /*--------------------------*/
     /*-------Single Media-------*/

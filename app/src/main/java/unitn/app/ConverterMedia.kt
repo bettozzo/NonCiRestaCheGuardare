@@ -22,6 +22,10 @@ object ConverterMedia {
         return@runBlocking LocalMedia(media.mediaID, media.is_film, media.titolo, piattaforme, media.poster_path, isLocal, media.sinossi)
     }
 
+    fun toLocal(media: Media, isLocal: Boolean, piattaforme:List<Pair<String, String>>): LocalMedia{
+        return LocalMedia(media.mediaID, media.is_film, media.titolo, piattaforme, media.poster_path, isLocal, media.sinossi)
+    }
+
 }
 
 

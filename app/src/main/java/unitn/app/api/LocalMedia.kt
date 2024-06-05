@@ -14,6 +14,6 @@ data class LocalMedia(
     val databaseID: Int = 0,
 ) {
     override fun toString(): String {
-        return "[$mediaId]$title"
+        return "$title, $platform\n"
     }
 }
