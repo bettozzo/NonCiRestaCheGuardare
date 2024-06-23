@@ -68,7 +68,7 @@ class Login : AppCompatActivity() {
         loginButton.setOnClickListener {
             runBlocking {
                 val userid = username.text.toString();
-                val isValid = RemoteDAO.initUser(userid) != null;
+                val isValid = RemoteDAO.getUser(userid) != null;
                 if (isValid) {
                     userDao.deleteEvertyhing();
                     userDao.insertUser(userid);

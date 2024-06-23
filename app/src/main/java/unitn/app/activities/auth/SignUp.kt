@@ -58,7 +58,7 @@ class SignUp : AppCompatActivity() {
                     }
                 }
 
-                val isNotPresent = RemoteDAO.initUser(userId) == null;
+                val isNotPresent = RemoteDAO.getUser(userId) == null;
                 val isNotTooLong = count < 16;
 
                 val isValid = isNotPresent && isNotTooLong && !hasWeirdChar

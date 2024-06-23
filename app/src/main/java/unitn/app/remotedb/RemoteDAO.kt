@@ -41,7 +41,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
 
         runBlocking {
             val userId = userDao.getUserId()!!;
-            user = initUser(userId)!!
+            user = getUser(userId)!!
 
             val columns = Columns.raw(ApiKeys.getStructure())
             val apiKeys = supabase.from("ApiKeys").select(columns = columns) {
@@ -54,10 +54,6 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         }
 
     }
-    /*--------------------------*/
-    /*---------API KEYS---------*/
-    /*--------------------------*/
-
 
     companion object {
         private val supabase = createSupabaseClient(
@@ -67,7 +63,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
             install(Postgrest)
         }
 
-        suspend fun initUser(userid: String): Users? {
+        suspend fun getUser(userid: String): Users? {
             val columns = Columns.raw(Users.getStructure())
             return supabase.from("Users").select(columns = columns) {
                 filter {
@@ -79,7 +75,6 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         suspend fun insertUser(userid: String) {
             supabase.from("Users").insert(InsertUsersParams(userid))
         }
-
 
         suspend fun deleteUser(userid: String) {
             supabase.from("Users").delete {
@@ -212,19 +207,6 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         }
     }
 
-    suspend fun getWatchList(): List<Pair<Media, Boolean>> {
-        val columns = Columns.list(WatchList.getStructure())
-        val result = supabase.from("watchlist").select(columns = columns) {
-            filter {
-                eq("userid", user.userId)
-
-            }
-            order(column = "id", order = Order.ASCENDING)
-        }
-        val list = result.decodeList<WatchList>()
-        return list.map { Pair(it.mediaid, it.is_local) }
-    }
-
     suspend fun changeIsLocal(mediaId: Int, newState: Boolean) {
         supabase.from("watchlist").update({ set("is_local", newState) }) {
             filter {
@@ -305,6 +287,34 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         return user.coloreTemaPrincipale
     }
 
+    suspend fun getUser(): Users?{
+        return supabase.from("Users").select(columns = Columns.raw(Users.getStructure()) ){
+            filter {
+                eq("userId", user.userId)
+            }
+        }.decodeSingleOrNull<Users>()
+    }
+    suspend fun updateUser(userid: String, context: Context): Boolean {
+        if(getUser(userid) != null){
+            return false;
+        }
+
+        supabase.from("Users").update({ set("userId", userid) }) {
+            filter {
+                eq("userId", user.userId)
+            }
+        }
+        val userDao = Room.databaseBuilder(
+            context,
+            UserDatabase::class.java, "user-db"
+        ).fallbackToDestructiveMigration()
+            .build().userDao()
+
+        user = getUser(userid)!!;
+        userDao.deleteEvertyhing();
+        userDao.insertUser(userid);
+        return true;
+    }
     suspend fun updateColor(color: String) {
         supabase.from("Users").update({ set("coloreTemaPrincipale", color) }) {
             filter {

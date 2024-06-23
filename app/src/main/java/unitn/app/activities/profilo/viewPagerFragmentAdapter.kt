@@ -4,12 +4,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class ViewPagerFragmentAdapter(fragmentActivity: FragmentActivity) :
+class ViewPagerFragmentAdapter(fragmentActivity: FragmentActivity, username: String) :
     FragmentStateAdapter(fragmentActivity) {
     private val cronolgia = FragmentCronologia();
     private val personalizzazioneUI = FragmentPersonalizzazioneUI();
     private val piattaforme = FragmentPiattaforme();
-    private val settings = FragmentSettings();
+    private val settings = FragmentSettings(username);
 
     override fun getItemCount(): Int {
         return 4

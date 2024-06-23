@@ -10,13 +10,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import androidx.viewpager2.widget.ViewPager2
 import com.example.test.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import unitn.app.activities.LiveDatas
 import unitn.app.activities.homepage.HomePage
 import unitn.app.localdb.UserDatabase
@@ -24,7 +23,6 @@ import unitn.app.localdb.UserDatabase
 
 class Profilo : AppCompatActivity() {
 
-    private val viewFragAdapter = ViewPagerFragmentAdapter(this);
     private var currentTab = 0;
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,17 +43,18 @@ class Profilo : AppCompatActivity() {
         LiveDatas.liveColore.observe(this) {
             LiveDatas.updateColorsOfImgButtons(listOf(buttonSave))
         }
-
-        lifecycleScope.launch {
+        val username: String;
+        runBlocking {
             val userDao = Room.databaseBuilder(
                 applicationContext,
                 UserDatabase::class.java, "user-db"
             ).fallbackToDestructiveMigration()
                 .build().userDao()
-            val username = userDao.getUserId()!!;
-            //nome
-            textNomeUtente.text = "Ciao, $username!"
+            username = userDao.getUserId()!!;
         }
+
+        //nome
+        textNomeUtente.text = "Ciao, $username!"
 
         //button to save
         buttonSave.setOnClickListener {
@@ -63,6 +62,7 @@ class Profilo : AppCompatActivity() {
             finish()
         }
 
+        val viewFragAdapter = ViewPagerFragmentAdapter(this, username);
         val mediaSelected = findViewById<TabLayout>(R.id.pageSelection);
         val viewPager = findViewById<ViewPager2>(R.id.pager)
         viewPager.adapter = viewFragAdapter;
@@ -92,6 +92,6 @@ class Profilo : AppCompatActivity() {
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
-
     }
+
 }
