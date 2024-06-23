@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import unitn.app.api.LocalMedia
 import unitn.app.api.MediaDetails
+import unitn.app.remotedb.RemoteDAO
 
 
 class Ricerca : AppCompatActivity() {
@@ -133,7 +134,10 @@ class Ricerca : AppCompatActivity() {
     private fun callAPI(title: String, lastQuery: String?) {
         LiveDatas.mediaRicercato = title
         val searchBar = findViewById<EditText>(R.id.searchBar)
-        val apiKey = resources.getString(R.string.api_key_tmdb)
+        val apiKey: String;
+        runBlocking {
+             apiKey = RemoteDAO.getTMDBKey();
+        }
         //prevents concurrency problems
         if (lastQuery != title) {
             CoroutineScope(Dispatchers.IO).launch {

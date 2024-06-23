@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
-import com.example.test.R
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
@@ -32,6 +31,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         install(Postgrest)
     }
     private var user: Users;
+    private var apiKeyTMDB: String;
 
     init {
         val userDao = Room.databaseBuilder(
@@ -42,8 +42,22 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         runBlocking {
             val userId = userDao.getUserId()!!;
             user = initUser(userId)!!
+
+            val columns = Columns.raw(ApiKeys.getStructure())
+            val apiKeys = supabase.from("ApiKeys").select(columns = columns) {
+                filter {
+                    eq("sito", "TheMovieDB")
+                }
+            }.decodeSingle<ApiKeys>();
+
+            apiKeyTMDB = apiKeys.value;
         }
+
     }
+    /*--------------------------*/
+    /*---------API KEYS---------*/
+    /*--------------------------*/
+
 
     companion object {
         private val supabase = createSupabaseClient(
@@ -74,8 +88,18 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                 }
             }
         }
-    }
 
+        suspend fun getTMDBKey(): String{
+            val columns = Columns.raw(ApiKeys.getStructure())
+            val apiKeys = supabase.from("ApiKeys").select(columns = columns) {
+                filter {
+                    eq("sito", "TheMovieDB")
+                }
+            }.decodeSingle<ApiKeys>();
+
+            return apiKeys.value;
+        }
+    }
 
     /*--------------------------*/
     /*-----Custom functions-----*/
@@ -251,7 +275,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                 val platforms = mediaDetails.getMediaPlatform(
                     mediaID,
                     media.is_film,
-                    appCompatActivity.resources.getString(R.string.api_key_tmdb)
+                    apiKeyTMDB
                 )
                 for (piattaforma in platforms) {
                     insertPiattaforma(piattaforma.first, mediaID)
