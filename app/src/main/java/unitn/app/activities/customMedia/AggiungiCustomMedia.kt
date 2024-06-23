@@ -1,4 +1,4 @@
-package unitn.app
+package unitn.app.activities.customMedia
 
 import android.graphics.Color
 import android.os.Bundle
@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.test.R
 import kotlinx.coroutines.launch
+import unitn.app.activities.LiveDatas
 import unitn.app.api.LocalMedia
 import unitn.app.remotedb.RemoteDAO
 

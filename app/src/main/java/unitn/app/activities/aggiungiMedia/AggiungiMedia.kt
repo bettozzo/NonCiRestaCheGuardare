@@ -1,4 +1,4 @@
-package unitn.app
+package unitn.app.activities.aggiungiMedia
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -22,6 +22,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.test.R
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
+import unitn.app.activities.LiveDatas
 import unitn.app.api.LocalMedia
 import unitn.app.localdb.Converters
 import unitn.app.remotedb.RemoteDAO
@@ -39,7 +40,8 @@ class AggiungiMedia : AppCompatActivity() {
             insets
         }
 
-        //extras from: ./AdapterRicerca.kt
+        //extras from: ../ricerca/AdapterRicerca.kt
+        //extras from: ../profilo/FragmentCronologia.kt
         val extras = intent.extras;
         if (extras == null) {
             System.err.println("Bundle is null")

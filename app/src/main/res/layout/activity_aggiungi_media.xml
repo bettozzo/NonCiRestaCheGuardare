@@ -5,19 +5,19 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="unitn.app.DettaglioMedia">
+    tools:context="unitn.app.activities.dettaglio.DettaglioMedia">
 
     <ScrollView
         android:id="@+id/scrollable"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        tools:context="unitn.app.AggiungiMedia">
+        tools:context="unitn.app.activities.aggiungiMedia.AggiungiMedia">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="unitn.app.DettaglioMedia">
+            tools:context="unitn.app.activities.dettaglio.DettaglioMedia">
 
             <LinearLayout
                 android:id="@+id/titoloFilmHeader"

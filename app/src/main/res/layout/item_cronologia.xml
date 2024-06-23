@@ -3,7 +3,7 @@
     android:id="@+id/posterAndInfo"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="5dp"
+    android:layout_marginBottom="10dp"
     android:orientation="horizontal">
 
 
@@ -21,9 +21,9 @@
         android:layout_width="160dp"
         android:layout_height="100dp"
         android:layout_marginStart="10dp"
-        android:textAlignment="textStart"
         android:paddingEnd="10dp"
-        android:text="FF.SS. cioè' ... che mi hai portato a fare sopra posillipo se non mi vuoi più bene?" />
+        android:text="FF.SS. cioè' ... che mi hai portato a fare sopra posillipo se non mi vuoi più bene?"
+        android:textAlignment="textStart" />
 
     <TextView
         android:id="@+id/data"

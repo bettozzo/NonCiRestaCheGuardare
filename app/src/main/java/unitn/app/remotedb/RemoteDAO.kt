@@ -13,7 +13,7 @@ import io.github.jan.supabase.postgrest.query.Order
 import io.github.jan.supabase.postgrest.rpc
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
-import unitn.app.ConverterMedia
+import unitn.app.activities.ConverterMedia
 import unitn.app.api.LocalMedia
 import unitn.app.api.MediaDetails
 import unitn.app.localdb.UserDatabase

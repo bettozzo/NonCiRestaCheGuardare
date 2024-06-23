@@ -1,4 +1,4 @@
-package unitn.app
+package unitn.app.activities.loadingScreen
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -11,6 +11,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.MutableLiveData
 import com.example.test.R
 import kotlinx.coroutines.runBlocking
+import unitn.app.activities.LiveDatas
+import unitn.app.activities.homepage.HomePage
 import unitn.app.remotedb.RemoteDAO
 import kotlin.coroutines.coroutineContext
 

@@ -8,7 +8,7 @@
     android:focusable="false"
     android:focusedByDefault="true"
     android:focusableInTouchMode="false"
-    tools:context="unitn.app.LoadingScreen">
+    tools:context="unitn.app.activities.loadingScreen.LoadingScreen">
 
     <ImageView
         android:id="@+id/logo"

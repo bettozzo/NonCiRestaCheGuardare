@@ -1,4 +1,4 @@
-package unitn.app
+package unitn.app.activities.dettaglio
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -25,6 +25,8 @@ import com.example.test.R
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import unitn.app.activities.LiveDatas
+import unitn.app.activities.homepage.HomePage
 import unitn.app.remotedb.RemoteDAO
 
 
@@ -192,26 +194,27 @@ class DettaglioMedia : AppCompatActivity() {
             platformList.addView(platformView);
         }
     }
+    fun addPlatform(
+        logoPath: String?,
+        platformList: LinearLayout,
+        applicationContext: Context,
+    ) {
+        val platformView = ImageView(applicationContext);
+        Picasso.get().load(logoPath).placeholder(R.drawable.theme_light_no_providers)
+            .into(platformView);
+        platformList.addView(platformView);
+    }
+
+    fun setTitleProperties(titoloFilm: TextView, extras: Bundle) {
+        titoloFilm.text = extras.getString("titoloFilm")
+        titoloFilm.ellipsize = TextUtils.TruncateAt.MARQUEE;
+        titoloFilm.marqueeRepeatLimit = -1;
+        titoloFilm.setSingleLine(true);
+        titoloFilm.setSelected(true);
+    }
 }
 
-private fun addPlatform(
-    logoPath: String?,
-    platformList: LinearLayout,
-    applicationContext: Context,
-) {
-    val platformView = ImageView(applicationContext);
-    Picasso.get().load(logoPath).placeholder(R.drawable.theme_light_no_providers)
-        .into(platformView);
-    platformList.addView(platformView);
-}
 
-private fun setTitleProperties(titoloFilm: TextView, extras: Bundle) {
-    titoloFilm.text = extras.getString("titoloFilm")
-    titoloFilm.ellipsize = TextUtils.TruncateAt.MARQUEE;
-    titoloFilm.marqueeRepeatLimit = -1;
-    titoloFilm.setSingleLine(true);
-    titoloFilm.setSelected(true);
-}
 
 
 

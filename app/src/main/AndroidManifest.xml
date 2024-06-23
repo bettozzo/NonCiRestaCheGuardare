@@ -16,21 +16,21 @@
         android:theme="@style/Base.Theme.Test"
         tools:targetApi="31">
         <activity
-            android:name="unitn.app.AggiungiCustomMedia"
+            android:name="unitn.app.activities.customMedia.AggiungiCustomMedia"
             android:exported="false" />
         <activity
-            android:name="unitn.app.LoadingScreen"
+            android:name="unitn.app.activities.loadingScreen.LoadingScreen"
             android:exported="false" />
         <activity
-            android:name="unitn.app.CronologiaMedia"
+            android:name="unitn.app.activities.cronologia.CronologiaMedia"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="unitn.app.Profilo"
+            android:name="unitn.app.activities.profilo.Profilo"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="unitn.app.Login"
+            android:name="unitn.app.activities.auth.Login"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -40,23 +40,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="unitn.app.SignUp"
+            android:name="unitn.app.activities.auth.SignUp"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="unitn.app.AggiungiMedia"
+            android:name="unitn.app.activities.aggiungiMedia.AggiungiMedia"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="unitn.app.DettaglioMedia"
+            android:name="unitn.app.activities.dettaglio.DettaglioMedia"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="unitn.app.Ricerca"
+            android:name="unitn.app.activities.ricerca.Ricerca"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="unitn.app.HomePage"
+            android:name="unitn.app.activities.homepage.HomePage"
             android:exported="false"
             android:screenOrientation="portrait" />
     </application>

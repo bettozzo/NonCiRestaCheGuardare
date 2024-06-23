@@ -1,4 +1,4 @@
-package unitn.app
+package unitn.app.activities
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
@@ -18,7 +18,12 @@ object ConverterMedia {
             coroutineContext
         );
 
-        val piattaforme = ConverterPiattaforme.toLocal(remoteDao.getDoveVedereMedia(media.mediaID, appCompatActivity))
+        val piattaforme = ConverterPiattaforme.toLocal(
+            remoteDao.getDoveVedereMedia(
+                media.mediaID,
+                appCompatActivity
+            )
+        )
         return@runBlocking LocalMedia(media.mediaID, media.is_film, media.titolo, piattaforme, media.poster_path, isLocal, media.sinossi)
     }
 

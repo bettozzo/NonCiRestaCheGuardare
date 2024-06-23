@@ -1,0 +1,29 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="unitn.app.activities.profilo.FragmentSettings"
+    tools:ignore="HardcodedText">
+
+    <Button
+        android:id="@+id/buttonLogOff"
+        style="@style/normalButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:backgroundTint="@color/GrigioScuro"
+        android:contentDescription="Esci dall'account"
+        android:text="Esci dall'account" />
+
+
+    <Button
+        android:id="@+id/buttonDeleteAccount"
+        style="@style/dangerousButton"
+        android:layout_below="@id/buttonLogOff"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="40dp"
+        android:contentDescription="Cancella l'account"
+        android:text="Cancella l'account" />
+
+
+</RelativeLayout>

@@ -1,4 +1,4 @@
-package unitn.app
+package unitn.app.activities.ricerca
 
 import android.app.Activity
 import android.content.Context
@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.example.test.R
 import com.squareup.picasso.Picasso
+import unitn.app.activities.aggiungiMedia.AggiungiMedia
 import unitn.app.api.LocalMedia
 import unitn.app.localdb.Converters
 
@@ -26,7 +27,7 @@ class AdapterSearch(private var context: Context, private var localMedia: List<L
         var myView = convertView
         if (myView == null) {
             val mInflater = (context as Activity).layoutInflater
-            myView = mInflater.inflate(R.layout.grid_item, parent, false)
+            myView = mInflater.inflate(R.layout.item_grid, parent, false)
 
             itemInGrid = ViewHolderSearch()
             itemInGrid.poster = myView!!.findViewById(R.id.imageView)!!

@@ -1,4 +1,4 @@
-package unitn.app
+package unitn.app.activities.ricerca
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -25,6 +25,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import unitn.app.activities.customMedia.AggiungiCustomMedia
+import unitn.app.activities.LiveDatas
 import unitn.app.api.LocalMedia
 import unitn.app.api.MediaDetails
 import unitn.app.remotedb.RemoteDAO

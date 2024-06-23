@@ -1,0 +1,91 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="HardcodedText"
+    tools:context="unitn.app.activities.profilo.FragmentPiattaforme">
+
+    <LinearLayout
+        android:id="@+id/containerPiattaforme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/Header"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Seleziona le tue piattaforme" />
+
+        <CheckBox
+            android:id="@+id/netflixBox"
+            style="@style/normalText"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Netflix" />
+
+        <CheckBox
+            android:id="@+id/amazonPrimeBox"
+            style="@style/normalText"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Amazon Prime" />
+
+        <CheckBox
+            android:id="@+id/raiPlayBox"
+            style="@style/normalText"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Rai Play" />
+
+
+        <CheckBox
+            android:id="@+id/disneyPlusBox"
+            style="@style/normalText"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Disney Plus" />
+
+
+        <CheckBox
+            android:id="@+id/crunchyrollBox"
+            style="@style/normalText"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Crunchyroll" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/infoSito"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/containerPiattaforme"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="40dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="10dp">
+
+        <TextView
+            style="@style/Header"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Per la versione web visitare:"
+            android:textAlignment="textStart" />
+
+        <TextView
+            android:id="@+id/URLsito"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/link_to_the_website"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+</RelativeLayout>

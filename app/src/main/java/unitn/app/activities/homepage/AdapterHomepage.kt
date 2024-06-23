@@ -1,4 +1,4 @@
-package unitn.app
+package unitn.app.activities.homepage
 
 import android.app.Activity
 import android.content.Context
@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.example.test.R
 import com.squareup.picasso.Picasso
+import unitn.app.activities.dettaglio.DettaglioMedia
 import unitn.app.api.LocalMedia
 
 class ViewHolderHomepage {
@@ -24,7 +25,7 @@ class AdapterHomepage(private var context: Context, private var localMedia: List
         var myView = convertView
         if (myView == null) {
             val mInflater = (context as Activity).layoutInflater
-            myView = mInflater.inflate(R.layout.grid_item, parent, false)
+            myView = mInflater.inflate(R.layout.item_grid, parent, false)
             itemInGrid = ViewHolderHomepage()
             itemInGrid.poster = myView!!.findViewById(R.id.imageView)!!
             itemInGrid.title = myView.findViewById(R.id.textView)!!

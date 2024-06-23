@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context="unitn.app.Profilo">
+    tools:context="unitn.app.activities.profilo.Profilo">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context="unitn.app.DettaglioMedia">
+        tools:context="unitn.app.activities.dettaglio.DettaglioMedia">
 
         <TextView
             android:id="@+id/titoloFilm"

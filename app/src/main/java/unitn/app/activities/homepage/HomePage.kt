@@ -1,4 +1,4 @@
-package unitn.app
+package unitn.app.activities.homepage
 
 import android.annotation.SuppressLint
 import android.app.ActivityOptions
@@ -20,6 +20,9 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
+import unitn.app.activities.LiveDatas
+import unitn.app.activities.profilo.Profilo
+import unitn.app.activities.ricerca.Ricerca
 import unitn.app.remotedb.RemoteDAO
 
 
@@ -49,7 +52,7 @@ class HomePage : AppCompatActivity() {
                         findViewById(R.id.goToSearchMediaButton)
                     )
                 )
-                val tab = findViewById<TabLayout>(R.id.MediaSelection);
+                val tab = findViewById<TabLayout>(R.id.pageSelection);
                 tab.setBackgroundColor(Color.parseColor(value))
                 when (value) {
                     "#2d95eb" -> {
@@ -66,7 +69,7 @@ class HomePage : AppCompatActivity() {
             }
         })
 
-        val mediaSelected = findViewById<TabLayout>(R.id.MediaSelection);
+        val mediaSelected = findViewById<TabLayout>(R.id.pageSelection);
         val viewPager = findViewById<ViewPager2>(R.id.pager)
         viewPager.adapter = viewFragAdapter;
 

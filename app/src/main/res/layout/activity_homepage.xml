@@ -4,12 +4,11 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#B5F1F1F1"
-    tools:context="unitn.app.HomePage">
+    tools:context="unitn.app.activities.homepage.HomePage">
 
     <com.google.android.material.tabs.TabLayout
         style="@style/normalTabLayout"
-        android:id="@+id/MediaSelection"/>
+        android:id="@+id/pageSelection"/>
 
 
     <androidx.viewpager2.widget.ViewPager2
@@ -17,7 +16,7 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/MediaSelection" />
+        android:layout_below="@+id/pageSelection" />
 
 
     <ImageButton

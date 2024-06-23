@@ -1,4 +1,4 @@
-package unitn.app
+package unitn.app.activities.homepage
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -6,8 +6,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 
 class ViewPagerFragmentAdapter(fragmentActivity: FragmentActivity) :
     FragmentStateAdapter(fragmentActivity) {
-    private val filmFragment = FilmFragment();
-    private val seriesFragment = SeriesFragment();
+    private val filmFragment = FragmentFilm();
+    private val seriesFragment = FragmentSeries();
 
     override fun getItemCount(): Int {
         return 2

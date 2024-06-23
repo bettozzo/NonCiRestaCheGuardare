@@ -1,4 +1,4 @@
-package unitn.app
+package unitn.app.activities.auth
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.room.Room
 import com.example.test.R
 import kotlinx.coroutines.runBlocking
+import unitn.app.activities.profilo.Profilo
 import unitn.app.localdb.UserDatabase
 import unitn.app.remotedb.RemoteDAO
 
