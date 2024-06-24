@@ -18,12 +18,18 @@ import androidx.room.Room
 import com.example.test.R
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import unitn.app.activities.LiveDatas
 import unitn.app.activities.auth.Login
 import unitn.app.localdb.UserDatabase
 import unitn.app.remotedb.RemoteDAO
 
+
 class FragmentSettings(private val username: String) : Fragment() {
+    constructor() : this("boh") {
+    }
+
     private var root: View? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,7 +53,7 @@ class FragmentSettings(private val username: String) : Fragment() {
         //username
         usernameView.text = SpannableStringBuilder(username)
 
-        //save username
+        //save button username
         setSaveUsernameButton(buttonSaveUsername, usernameView, view.context);
 
         //button log off
@@ -58,6 +64,9 @@ class FragmentSettings(private val username: String) : Fragment() {
     }
 
     private fun setSaveUsernameButton(buttonSave: Button, nameView: EditText, context: Context) {
+        LiveDatas.liveColore.observe(viewLifecycleOwner) {
+            LiveDatas.updateColorsOfButtons(listOf(buttonSave))
+        }
         buttonSave.setOnClickListener {
             val newUsername = nameView.text.toString()
             lifecycleScope.launch {
@@ -66,7 +75,8 @@ class FragmentSettings(private val username: String) : Fragment() {
                 if (!result) {
                     Toast.makeText(context, "Nome non disponibile", Toast.LENGTH_SHORT).show();
                 } else {
-                    requireActivity().findViewById<TextView>(R.id.titolo).text = "Ciao, $newUsername!"
+                    requireActivity().findViewById<TextView>(R.id.titolo).text =
+                        "Ciao, $newUsername!"
                 }
             }
         }

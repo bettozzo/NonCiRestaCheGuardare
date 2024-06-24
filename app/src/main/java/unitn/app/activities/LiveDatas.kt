@@ -1,12 +1,16 @@
 package unitn.app.activities
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.widget.Button
 import android.widget.ImageButton
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.runBlocking
 import unitn.app.api.LocalMedia
+import unitn.app.remotedb.RemoteDAO
 
 object LiveDatas {
     /*--------------------------*/
@@ -19,6 +23,18 @@ object LiveDatas {
 
     fun setIsDarkTheme(isDark: Boolean) {
         mutLiveIsDarkTHeme.value = isDark
+    }
+
+    fun updateIsDarkTheme(isDark: Boolean, context: Context) {
+        mutLiveIsDarkTHeme.value = isDark
+        runBlocking {
+            RemoteDAO(context, coroutineContext).updateDarkTheme(isDark)
+            if (isDark) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
     }
 
 

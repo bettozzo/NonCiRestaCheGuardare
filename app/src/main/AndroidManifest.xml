@@ -22,10 +22,6 @@
             android:name="unitn.app.activities.loadingScreen.LoadingScreen"
             android:exported="false" />
         <activity
-            android:name="unitn.app.activities.cronologia.CronologiaMedia"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="unitn.app.activities.profilo.Profilo"
             android:exported="false"
             android:screenOrientation="portrait" />

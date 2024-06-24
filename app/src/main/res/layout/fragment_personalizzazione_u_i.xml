@@ -1,36 +1,87 @@
-<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="unitn.app.activities.profilo.FragmentPersonalizzazioneUI">
+    tools:context="unitn.app.activities.profilo.FragmentPersonalizzazioneUI"
+    tools:ignore="HardcodedText">
+
+
+    <TextView
+        android:id="@+id/headerColori"
+        style="@style/Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="25dp"
+        android:text="Seleziona un colore" />
 
     <LinearLayout
         android:id="@+id/scegliColore"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/headerColori"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="25dp"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:paddingHorizontal="10dp">
 
-        <TextView
-            style="@style/Header"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Scegli un colore" />
+        <ImageButton
+            android:id="@+id/btnAzzurro"
+            style="@style/normalImageButton"
+            android:backgroundTint="#2d95eb"
+            android:contentDescription="colore azzurro"
+            android:scaleX="0.8"
+            android:scaleY="0.8" />
 
-        <Spinner
-            android:id="@+id/chooseColor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dropdown" />
+        <ImageButton
+            android:id="@+id/btnVerde"
+            style="@style/normalImageButton"
+            android:backgroundTint="#008c00"
+            android:contentDescription="colore azzurro"
+            android:scaleX="0.8"
+            android:scaleY="0.8" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switchTema"
-            android:layout_width="187dp"
-            android:layout_height="41dp"
-            android:text="Tema scuro" />
+        <ImageButton
+            android:id="@+id/btnViola"
+            style="@style/normalImageButton"
+            android:backgroundTint="#852deb"
+            android:contentDescription="colore azzurro"
+            android:scaleX="0.8"
+            android:scaleY="0.8" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/headerTema"
+        style="@style/Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/scegliColore"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="35dp"
+        android:text="Seleziona un tema" />
+
+    <LinearLayout
+        android:id="@+id/scegliTema"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/headerTema"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="10dp"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/temaChiaro"
+            android:layout_width="85dp"
+            android:layout_height="23dp"
+            android:layout_weight="0.5"
+            android:checked="true"
+            android:text="Giorno" />
+
+        <CheckBox
+            android:id="@+id/temaScuro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Notte" />
+
+    </LinearLayout>
 </RelativeLayout>

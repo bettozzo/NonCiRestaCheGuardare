@@ -1,26 +1,26 @@
 package unitn.app.activities.profilo
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.SwitchCompat
+import android.widget.CheckBox
+import android.widget.ImageButton
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.test.R
 import kotlinx.coroutines.launch
 import unitn.app.activities.LiveDatas
+import unitn.app.remotedb.Colori
 import unitn.app.remotedb.RemoteDAO
 
 
 class FragmentPersonalizzazioneUI : Fragment() {
 
     private var root: View? = null
-
+    private lateinit var activeButton: ImageButton;
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,47 +34,70 @@ class FragmentPersonalizzazioneUI : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val btnAzzuro = view.findViewById<ImageButton>(R.id.btnAzzurro)
+        val btnVerde = view.findViewById<ImageButton>(R.id.btnVerde)
+        val btnViola = view.findViewById<ImageButton>(R.id.btnViola)
 
-        val spinnerColors = view.findViewById<Spinner>(R.id.chooseColor)
-        val switchTema = view.findViewById<SwitchCompat>(R.id.switchTema)
-
+        val temaChiaro = view.findViewById<CheckBox>(R.id.temaChiaro)
+        val temaScuro = view.findViewById<CheckBox>(R.id.temaScuro)
 
         //colors
         val colori = arrayOf(
-            Pair("Azzurro", "#2d95eb"),
-            Pair("Verde", "#008c00"),
-            Pair("Viola", "#852deb"),
+            Colori("Azzurro", "#2d95eb"),
+            Colori("Verde", "#008c00"),
+            Colori("Viola", "#852deb"),
         );
-        val lastColor = 0;
-
-        spinnerColors.adapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, colori.map { it.first });
-        spinnerColors.setSelection(if (lastColor != -1) lastColor else 0)
+        val lastColor = colori.indexOf(colori.find { it.colorCode == LiveDatas.getColore() });
 
 
-        spinnerColors.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?, view: View?, position: Int, id: Long,
-            ) {
-                lifecycleScope.launch {
-                    RemoteDAO(view!!.context, coroutineContext).updateColor(colori[position].first)
-                }
-                LiveDatas.setColore(colori[position].second)
+        activeButton = when (lastColor) {
+            0 -> {
+                btnAzzuro
             }
+            1 -> {
+                btnVerde
+            }
+            else -> {
+                btnViola
+            }
+        };
+        activeButton.background = ContextCompat.getDrawable(view.context, R.drawable.selected_circle);
 
-            override fun onNothingSelected(arg0: AdapterView<*>?) {}
+        listenToBtnClick(btnAzzuro, colori[0], view.context);
+        listenToBtnClick(btnVerde, colori[1], view.context);
+        listenToBtnClick(btnViola, colori[2], view.context);
+
+
+        val isDarkTheme = LiveDatas.liveIsDarkTheme.value!!
+        if(isDarkTheme){
+            temaChiaro.isChecked = false;
+            temaScuro.isChecked = true;
+        }else{
+            temaChiaro.isChecked = true;
+            temaScuro.isChecked = false;
         }
 
-        switchTema.isChecked = LiveDatas.liveIsDarkTheme.value!!
-        switchTema.setOnCheckedChangeListener { _, isChecked ->
-            LiveDatas.setIsDarkTheme(isChecked)
+        temaChiaro.setOnClickListener{
+            LiveDatas.updateIsDarkTheme(false, view.context)
+            temaChiaro.isChecked = true;
+            temaScuro.isChecked = false;
+        }
+        temaScuro.setOnClickListener{
+            LiveDatas.updateIsDarkTheme(true, view.context)
+            temaScuro.isChecked = true;
+            temaChiaro.isChecked = false;
+        }
+    }
+
+    private fun listenToBtnClick(button: ImageButton, color: Colori, context: Context) {
+        button.setOnClickListener {
             lifecycleScope.launch {
-                RemoteDAO(view.context, coroutineContext).updateDarkTheme(switchTema.isChecked)
+                RemoteDAO(context, coroutineContext).updateColor(color.colorName)
             }
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
+            LiveDatas.setColore(color.colorCode)
+            button.background =  ContextCompat.getDrawable(context, R.drawable.selected_circle);
+            activeButton.background = ContextCompat.getDrawable(context, R.drawable.circle);
+            activeButton = button;
         }
     }
 
