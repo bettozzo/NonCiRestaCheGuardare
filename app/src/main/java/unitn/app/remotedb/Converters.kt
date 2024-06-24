@@ -11,7 +11,7 @@ class Converters {
     fun stringToColors(data: String?): Colori {
         val gson = Gson()
         if (data == null) {
-            return Colori("Verde", "#008c00")
+            return Colori.getColori()[0];
         }
         val type = object : TypeToken<Colori>() {}.type
         return gson.fromJson<Colori>(data, type)

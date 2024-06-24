@@ -47,6 +47,14 @@
             android:contentDescription="colore azzurro"
             android:scaleX="0.8"
             android:scaleY="0.8" />
+
+        <ImageButton
+            android:id="@+id/btnOcra"
+            style="@style/normalImageButton"
+            android:backgroundTint="#ff9900"
+            android:contentDescription="colore azzurro"
+            android:scaleX="0.8"
+            android:scaleY="0.8" />
     </LinearLayout>
 
     <TextView

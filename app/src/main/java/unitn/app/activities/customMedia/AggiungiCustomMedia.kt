@@ -37,19 +37,19 @@ class AggiungiCustomMedia : AppCompatActivity() {
 
         val colore = LiveDatas.getColore();
         LiveDatas.updateColorsOfButtons(listOf(findViewById(R.id.addMedia)))
-        filmView.setBackgroundColor(Color.parseColor(colore))
+        filmView.setBackgroundColor(Color.parseColor(colore.colorCode))
         filmView.background.alpha = (0.7 * 255).toInt();
         serieView.setBackgroundColor(Color.TRANSPARENT)
 
         var isFilm = true;
         filmView.setOnClickListener {
-            filmView.setBackgroundColor(Color.parseColor(colore))
+            filmView.setBackgroundColor(Color.parseColor(colore.colorCode))
             filmView.background.alpha = (0.7 * 255).toInt();
             serieView.setBackgroundColor(Color.TRANSPARENT)
             isFilm = true;
         }
         serieView.setOnClickListener {
-            serieView.setBackgroundColor(Color.parseColor(colore))
+            serieView.setBackgroundColor(Color.parseColor(colore.colorCode))
             serieView.background.alpha = (0.7 * 255).toInt();
             filmView.setBackgroundColor(Color.TRANSPARENT)
             isFilm = false;

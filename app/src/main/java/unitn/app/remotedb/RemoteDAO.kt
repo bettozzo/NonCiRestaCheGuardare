@@ -315,8 +315,8 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         userDao.insertUser(userid);
         return true;
     }
-    suspend fun updateColor(color: String) {
-        supabase.from("Users").update({ set("coloreTemaPrincipale", color) }) {
+    suspend fun updateColor(color: ColoriName) {
+        supabase.from("Users").update({ set("coloreTemaPrincipale", color.toString()) }) {
             filter {
                 eq("userId", user.userId)
             }

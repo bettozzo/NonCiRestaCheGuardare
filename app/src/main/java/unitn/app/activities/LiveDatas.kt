@@ -10,6 +10,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.runBlocking
 import unitn.app.api.LocalMedia
+import unitn.app.remotedb.Colori
+import unitn.app.remotedb.ColoriName
 import unitn.app.remotedb.RemoteDAO
 
 object LiveDatas {
@@ -41,16 +43,16 @@ object LiveDatas {
     /*--------------------------*/
     /*----------COLORE----------*/
     /*--------------------------*/
-    private var mutLiveColore: MutableLiveData<String> = MutableLiveData()
-    val liveColore: LiveData<String>
+    private var mutLiveColore: MutableLiveData<ColoriName> = MutableLiveData()
+    val liveColore: LiveData<ColoriName>
         get() = mutLiveColore;
 
-    fun setColore(colore: String) {
+    fun setColore(colore: ColoriName) {
         mutLiveColore.value = colore
     }
 
-    fun getColore(): String {
-        return mutLiveColore.value!!;
+    fun getColore(): Colori {
+        return Colori.getColore(mutLiveColore.value!!)
     }
 
     fun updateColorsOfImgButtons(imageButtons: List<ImageButton>) {
@@ -60,11 +62,12 @@ object LiveDatas {
             intArrayOf(-android.R.attr.state_checked), // unchecked
             intArrayOf(android.R.attr.state_pressed)  // pressed
         )
+        val color = Colori.getColore(liveColore.value!!).colorCode;
         val colors = intArrayOf(
-            Color.parseColor(liveColore.value),
-            Color.parseColor(liveColore.value),
-            Color.parseColor(liveColore.value),
-            Color.parseColor(liveColore.value)
+            Color.parseColor(color),
+            Color.parseColor(color),
+            Color.parseColor(color),
+            Color.parseColor(color)
         )
 
         val myList = ColorStateList(states, colors)
@@ -81,11 +84,12 @@ object LiveDatas {
             intArrayOf(-android.R.attr.state_checked), // unchecked
             intArrayOf(android.R.attr.state_pressed)  // pressed
         )
+        val color = Colori.getColore(liveColore.value!!).colorCode;
         val colors = intArrayOf(
-            Color.parseColor(liveColore.value),
-            Color.parseColor(liveColore.value),
-            Color.parseColor(liveColore.value),
-            Color.parseColor(liveColore.value)
+            Color.parseColor(color),
+            Color.parseColor(color),
+            Color.parseColor(color),
+            Color.parseColor(color)
         )
 
         val myList = ColorStateList(states, colors)

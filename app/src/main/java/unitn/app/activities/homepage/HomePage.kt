@@ -23,6 +23,8 @@ import kotlinx.coroutines.launch
 import unitn.app.activities.LiveDatas
 import unitn.app.activities.profilo.Profilo
 import unitn.app.activities.ricerca.Ricerca
+import unitn.app.remotedb.Colori
+import unitn.app.remotedb.ColoriName
 import unitn.app.remotedb.RemoteDAO
 
 
@@ -44,28 +46,19 @@ class HomePage : AppCompatActivity() {
         }
         updateColor();
 
-        LiveDatas.liveColore.observe(this, object : Observer<String> {
-            override fun onChanged(value: String) {
+        LiveDatas.liveColore.observe(this, object : Observer<ColoriName> {
+            override fun onChanged(value: ColoriName) {
                 LiveDatas.updateColorsOfImgButtons(
                     listOf(
                         findViewById(R.id.goToProfile),
                         findViewById(R.id.goToSearchMediaButton)
                     )
                 )
+                val color = Colori.getColore(value)
                 val tab = findViewById<TabLayout>(R.id.pageSelection);
-                tab.setBackgroundColor(Color.parseColor(value))
-                when (value) {
-                    "#2d95eb" -> {
-                        //azzurro
-                        tab.setSelectedTabIndicatorColor(Color.parseColor("#77edff"))
-                    }
-                    "#008c00" -> {
-                        //verde
-                        tab.setSelectedTabIndicatorColor(Color.parseColor("#A8FF2F"))}
-                    "#852deb" -> {
-                        //viola
-                        tab.setSelectedTabIndicatorColor(Color.parseColor("#cf06f9"))}
-                }
+                tab.setBackgroundColor(Color.parseColor(color.colorCode))
+                val colore = Colori.getTabColore(color.colorName);
+                tab.setSelectedTabIndicatorColor(colore)
             }
         })
 
@@ -120,7 +113,7 @@ class HomePage : AppCompatActivity() {
                 applicationContext,
                 coroutineContext
             ).getMainColor()
-            LiveDatas.setColore(newColor.colorCode)
+            LiveDatas.setColore(newColor.colorName)
         }
     }
 }
