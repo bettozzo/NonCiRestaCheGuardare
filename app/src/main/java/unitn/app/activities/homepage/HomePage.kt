@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -88,8 +87,6 @@ class HomePage : AppCompatActivity() {
             val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
             with(sharedPref.edit()) {
                 putInt("currentTab", 0)
-
-                Log.d("tab loaded", "0")
                 apply()
             }
         }
@@ -110,7 +107,6 @@ class HomePage : AppCompatActivity() {
                 val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
                 with(sharedPref.edit()) {
                     putInt("currentTab", tab.position)
-                    Log.d("tab changed", tab.position.toString())
                     apply()
                 }
             }
@@ -121,8 +117,6 @@ class HomePage : AppCompatActivity() {
 
         val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
         val currentTab = sharedPref.getInt("currentTab", 0);
-        Log.d("tab got", currentTab.toString())
-
         viewPager.currentItem = currentTab;
 
         goToSearchButton.setOnClickListener {

@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
@@ -24,33 +25,100 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
     private lateinit var currentMediaBeingQueried: String;
 
     private var mutNoInternet: MutableLiveData<Boolean> = MutableLiveData(false)
-
     val liveNoInternet: LiveData<Boolean>
         get() = mutNoInternet;
 
-    private val mApplication = application;
+
+    private var stopSearch = false;
+
     suspend fun getDetails(mediaTitle: String, apiKey: String): Boolean =
         withContext(Dispatchers.IO) {
             currentMediaBeingQueried = mediaTitle;
             listMedia = emptyList<LocalMedia>().toMutableList()
+            val results = getResults(mediaTitle, apiKey);
+            LiveDatas.emptyRicercaMedia()
+
+            if (results.isEmpty()) {
+                return@withContext false;
+            }
+
             val idFilmInUserList = getAllUserMedia();
+            for ((resMedia, resIsFilm) in results) {
 
-            val apiCallerMedia = Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/")
-                .addConverterFactory(GsonConverterFactory.create()).build()
-                .create(RetrofitAPI::class.java)
+                if (idFilmInUserList.contains(resMedia!!.id)) {
+                    continue;
+                }
+                if (stopSearch) {
+                    stopSearch = false;
+                    return@withContext true;
+                }
+                val media = prepareResults(resMedia, resIsFilm!!, apiKey);
+                //prevents concurrency problems. In case user sends a new request before the previous one is finished
+                if (currentMediaBeingQueried == mediaTitle) {
+                    LiveDatas.addRicercaMedia(media);
+                    listMedia.add(media)
+                }
+            }
+            return@withContext true;
+        }
 
-            var multiCall = apiCallerMedia.getMovieAndSeries(mediaTitle, false, "it", 1, apiKey)
+    private suspend fun prepareResults(
+        media: UnfilteredMediaDetails,
+        isFilm: Boolean,
+        apiKey: String,
+    ): LocalMedia {
+        val id = media.id
+        val sinossi = media.overview
+        val platforms = getMediaPlatform(id, isFilm, apiKey)
+        val poster = getPosterPath(media.poster_path, media.backdrop_path)
+        val (cast, crew) = getCredits(id, isFilm, apiKey);
 
+        val title = if (isFilm) {
+            media.title!!
+        } else {
+            media.name!!
+        }
+        var annoUscita = if (isFilm) {
+            media.release_date!!.split("-")[0]
+        } else {
+            media.first_air_date!!.split("-")[0]
+        }
+        if (annoUscita != "") {
+            annoUscita = " ($annoUscita)"
+        }
+
+        val movie = LocalMedia(
+            id,
+            isFilm,
+            title,
+            platforms,
+            poster,
+            false,
+            sinossi,
+            cast,
+            crew,
+            annoUscita
+        )
+        return movie
+    }
+
+    private fun getResults(
+        mediaTitle: String,
+        apiKey: String,
+    ): MutableList<Pair<UnfilteredMediaDetails?, Boolean?>> {
+        val apiCallerMedia = Retrofit.Builder().baseUrl("https://api.themoviedb.org/3/")
+            .addConverterFactory(GsonConverterFactory.create()).build()
+            .create(RetrofitAPI::class.java)
+
+        var multiCall = apiCallerMedia.getMovieAndSeries(mediaTitle, false, "it", 1, apiKey)
+
+        return runBlocking {
             val (results, totalPages) = getMediaDetails(multiCall)
 
-            for (pag in 2..min(totalPages, 5)) {
+            for (pag in 2..min(totalPages, 4)) {
                 multiCall = apiCallerMedia.getMovieAndSeries(mediaTitle, false, "it", pag, apiKey)
                 results.addAll(getMediaDetails(multiCall).first)
             }
-
-            results.sortBy { it.first.popularity }
-            results.reverse()
-
             val filteredResults = results.map { resultMedia ->
                 if (LiveDatas.liveWatchlist.value?.none { liveResult -> liveResult.mediaId == resultMedia.first.id }!!) {
                     return@map resultMedia;
@@ -59,56 +127,9 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                 }
             }.toMutableList()
             filteredResults.removeAll { it.first == null }
-
-            LiveDatas.emptyRicercaMedia()
-
-            if (filteredResults.isEmpty()) {
-                return@withContext false;
-            }
-
-            for ((media, isFilm) in filteredResults) {
-                val id = media?.id!!
-                if (!idFilmInUserList.contains(id)) {
-                    val title = if (isFilm!!) {
-                        media.title!!
-                    } else {
-                        media.name!!
-                    }
-                    val sinossi = media.overview
-                    var annoUscita = if (isFilm) {
-                        media.release_date!!.split("-")[0]
-                    } else {
-                        media.first_air_date!!.split("-")[0]
-                    }
-                    if (annoUscita != "") {
-                        annoUscita = " ($annoUscita)"
-                    }
-
-                    val platforms = getMediaPlatform(id, isFilm, apiKey)
-                    val poster = getPosterPath(media.poster_path, media.backdrop_path)
-                    val (cast, crew) = getCredits(id, isFilm, apiKey);
-                    val movie = LocalMedia(
-                        id,
-                        isFilm,
-                        title,
-                        platforms,
-                        poster,
-                        false,
-                        sinossi,
-                        cast,
-                        crew,
-                        annoUscita
-                    )
-                    //prevents concurrency problems. In case user sends a new request before the previous one is finished
-                    if (currentMediaBeingQueried == mediaTitle) {
-                        LiveDatas.addRicercaMedia(movie);
-                        listMedia.add(movie)
-                    }
-                }
-            }
-
-            return@withContext true;
+            return@runBlocking filteredResults;
         }
+    }
 
     private suspend fun getCredits(
         id: Int,
@@ -259,6 +280,10 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
 
     private fun failureNoInternet() {
         mutNoInternet.value = true
+    }
+
+    fun stopSearch() {
+        stopSearch = true;
     }
 }
 

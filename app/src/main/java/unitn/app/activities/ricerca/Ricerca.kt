@@ -25,8 +25,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import unitn.app.activities.customMedia.AggiungiCustomMedia
 import unitn.app.activities.LiveDatas
+import unitn.app.activities.customMedia.AggiungiCustomMedia
 import unitn.app.api.LocalMedia
 import unitn.app.api.MediaDetails
 import unitn.app.remotedb.RemoteDAO
@@ -78,18 +78,9 @@ class Ricerca : AppCompatActivity() {
                     }.show()
             }
         }
-        LiveDatas.liveColore.observe(this) {
-            LiveDatas.updateColorsOfImgButtons(
-                listOf(
-                    findViewById(R.id.addCustom)
-                )
-            );
-            LiveDatas.updateColorsOfButtons(
-                listOf(
-                    findViewById(R.id.buttonToSearch),
-                )
-            )
-        }
+        LiveDatas.updateColorsOfImgButtons(listOf(findViewById(R.id.addCustom)));
+        LiveDatas.updateColorsOfButtons(listOf(findViewById(R.id.buttonToSearch)))
+
 
         buttonToSearch.setOnClickListener {
             val title = searchBar.text.toString();
@@ -101,6 +92,7 @@ class Ricerca : AppCompatActivity() {
             searchBar.text.clear()
             searchBar.requestFocus()
             searchBar.showKeyboard();
+            mediaDetails.stopSearch();
         }
 
         searchBar.text = SpannableStringBuilder(LiveDatas.mediaRicercato)
@@ -138,7 +130,7 @@ class Ricerca : AppCompatActivity() {
         val searchBar = findViewById<EditText>(R.id.searchBar)
         val apiKey: String;
         runBlocking {
-             apiKey = RemoteDAO.getTMDBKey();
+            apiKey = RemoteDAO.getTMDBKey();
         }
         //prevents concurrency problems
         if (lastQuery != title) {
@@ -161,7 +153,13 @@ class Ricerca : AppCompatActivity() {
             Toast.makeText(this, "Ricerca appena effettuata", Toast.LENGTH_SHORT).show();
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaDetails.stopSearch();
+    }
 }
+
 
 fun View.hideKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
