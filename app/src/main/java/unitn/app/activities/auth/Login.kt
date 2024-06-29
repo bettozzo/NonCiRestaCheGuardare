@@ -65,7 +65,7 @@ class Login : AppCompatActivity() {
 
         loginButton.setOnClickListener {
             runBlocking {
-                val userid = username.text.toString();
+                val userid = username.text.toString().trim();
                 val isValid = RemoteDAO.getUser(userid) != null;
                 if (isValid) {
                     userDao.deleteEvertyhing();
@@ -85,7 +85,7 @@ class Login : AppCompatActivity() {
 
 
         signInButton.setOnClickListener {
-            val userid = username.text.toString();
+            val userid = username.text.toString().trim();
             val intent = Intent(this@Login, SignUp::class.java)
             intent.putExtra("userid", userid)
             startActivity(intent)
