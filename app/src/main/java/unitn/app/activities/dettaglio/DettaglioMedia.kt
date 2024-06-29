@@ -104,9 +104,7 @@ class DettaglioMedia : AppCompatActivity() {
         val buttonDel = findViewById<ImageButton>(R.id.buttonDelete)
         val buttonSeen = findViewById<ImageButton>(R.id.buttonSeen)
         setButtonProperties(buttonDel, buttonSeen, id)
-        LiveDatas.liveColore.observe(this) {
-            LiveDatas.updateColorsOfImgButtons(listOf(buttonSeen))
-        }
+        LiveDatas.updateColorsOfImgButtons(listOf(buttonSeen))
     }
 
     private fun setButtonProperties(
@@ -117,12 +115,7 @@ class DettaglioMedia : AppCompatActivity() {
         deleteBtn.setOnClickListener {
             val intent = Intent(this@DettaglioMedia, HomePage::class.java)
             lifecycleScope.launch {
-                val remoteDao = RemoteDAO(
-                    applicationContext,
-                    coroutineContext
-                );
-                remoteDao.deleteFromWatchList(mediaID)
-                LiveDatas.removeMedia(mediaID)
+                LiveDatas.setIdToRemove(mediaID);
                 finish()//prevents this activity to be opened again
                 startActivity(intent)
             }
@@ -135,10 +128,8 @@ class DettaglioMedia : AppCompatActivity() {
                     applicationContext,
                     coroutineContext
                 );
-
                 remoteDao.insertToCronologia(mediaID)
-                remoteDao.deleteFromWatchList(mediaID)
-                LiveDatas.removeMedia(mediaID)
+                LiveDatas.setIdToRemove(mediaID);
                 finish()//prevents this activity to be opened again
                 startActivity(intent)
             }
@@ -194,6 +185,7 @@ class DettaglioMedia : AppCompatActivity() {
             platformList.addView(platformView);
         }
     }
+
     fun addPlatform(
         logoPath: String?,
         platformList: LinearLayout,

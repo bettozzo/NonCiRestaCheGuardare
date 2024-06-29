@@ -5,13 +5,20 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.test.R
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import unitn.app.activities.LiveDatas
 import unitn.app.activities.dettaglio.DettaglioMedia
 import unitn.app.api.LocalMedia
+import unitn.app.remotedb.RemoteDAO
 
 class ViewHolderHomepage {
     lateinit var poster: ImageView
@@ -33,18 +40,41 @@ class AdapterHomepage(private var context: Context, private var localMedia: List
         } else {
             itemInGrid = myView.tag as ViewHolderHomepage
         }
-
-        if (localMedia[position].posterPath != null) {
-            showPoster(itemInGrid, localMedia[position])
-        }else {
-            showTitle(itemInGrid, localMedia[position])
+        val media = localMedia[position]
+        if (media.posterPath != null) {
+            showPoster(itemInGrid, media)
+        } else {
+            showTitle(itemInGrid, media)
         }
 
-        myView.setOnClickListener{
+        myView.setOnClickListener {
             val intent = Intent(context, DettaglioMedia::class.java)
-            prepareExtras(intent, localMedia[position]);
+            prepareExtras(intent, media);
             context.startActivity(intent)
         }
+
+        val toRemove = LiveDatas.getIdInListToRemove(media.isFilm) == position;
+
+        if (toRemove) {
+            val animation = AnimationUtils.loadAnimation(context, R.anim.fade_out);
+            animation.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation) {}
+                override fun onAnimationRepeat(animation: Animation) {}
+
+                override fun onAnimationEnd(animation: Animation) {
+                    myView.visibility = View.GONE;
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val remoteDao = RemoteDAO(
+                            context,
+                            coroutineContext
+                        );
+                        remoteDao.deleteFromWatchList(media.mediaId)
+                    }
+                }
+            })
+            myView.startAnimation(animation)
+        }
+
         return myView
     }
 
@@ -52,6 +82,7 @@ class AdapterHomepage(private var context: Context, private var localMedia: List
         itemInGrid.poster.visibility = View.GONE
         itemInGrid.title.text = localMedia.title
     }
+
     private fun showPoster(itemInGrid: ViewHolderHomepage, localMedia: LocalMedia) {
         itemInGrid.title.visibility = View.GONE
         Picasso.get().load(localMedia.posterPath).into(itemInGrid.poster)
@@ -64,7 +95,7 @@ class AdapterHomepage(private var context: Context, private var localMedia: List
         intent.putExtra("isInLocal", localMedia.isLocallySaved)
         intent.putExtra("sinossi", localMedia.sinossi)
 
-        //also update in ./DettaglioMedia.kt
+        //also update in ../dettaglio/DettaglioMedia.kt
         for (platform in localMedia.platform) {
             when (platform.first) {
                 "Netflix" -> {

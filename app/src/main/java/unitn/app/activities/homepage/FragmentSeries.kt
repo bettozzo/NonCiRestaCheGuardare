@@ -27,6 +27,7 @@ class FragmentSeries : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         if (!dataLoaded) {
             LiveDatas.liveWatchlist.observe(viewLifecycleOwner) {
                 val gridViewMedia = view.findViewById<GridView>(R.id.GridViewSeries)

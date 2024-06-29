@@ -14,7 +14,6 @@ class FragmentFilm : Fragment() {
 
     private var root: View? = null;
     private var dataLoaded = false;
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

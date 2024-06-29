@@ -26,7 +26,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="29dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="15dp"
         android:contentDescription="Aggiungi un nuovo media"
         android:src="@drawable/lente_dingrandimento" />
 
@@ -36,9 +36,9 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="29dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="15dp"
         android:contentDescription="Vai a pagina del profilo"
-        android:src="@drawable/user_pfp" />
+        android:src="@drawable/settings" />
 
 
 </RelativeLayout>

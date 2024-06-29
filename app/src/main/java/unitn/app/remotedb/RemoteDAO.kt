@@ -12,8 +12,11 @@ import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
 import io.github.jan.supabase.postgrest.rpc
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import unitn.app.activities.ConverterMedia
+import unitn.app.activities.LiveDatas
 import unitn.app.api.LocalMedia
 import unitn.app.api.MediaDetails
 import unitn.app.localdb.UserDatabase
@@ -84,7 +87,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
             }
         }
 
-        suspend fun getTMDBKey(): String{
+        suspend fun getTMDBKey(): String {
             val columns = Columns.raw(ApiKeys.getStructure())
             val apiKeys = supabase.from("ApiKeys").select(columns = columns) {
                 filter {
@@ -205,6 +208,9 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                 eq("userid", user.userId)
             }
         }
+        CoroutineScope(Dispatchers.Main).launch {
+            LiveDatas.removeMedia(mediaID)
+        }
     }
 
     suspend fun changeIsLocal(mediaId: Int, newState: Boolean) {
@@ -287,15 +293,16 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         return user.coloreTemaPrincipale
     }
 
-    suspend fun getUser(): Users?{
-        return supabase.from("Users").select(columns = Columns.raw(Users.getStructure()) ){
+    suspend fun getUser(): Users? {
+        return supabase.from("Users").select(columns = Columns.raw(Users.getStructure())) {
             filter {
                 eq("userId", user.userId)
             }
         }.decodeSingleOrNull<Users>()
     }
+
     suspend fun updateUser(userid: String, context: Context): Boolean {
-        if(getUser(userid) != null){
+        if (getUser(userid) != null) {
             return false;
         }
 
@@ -315,6 +322,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         userDao.insertUser(userid);
         return true;
     }
+
     suspend fun updateColor(color: ColoriName) {
         supabase.from("Users").update({ set("coloreTemaPrincipale", color.toString()) }) {
             filter {

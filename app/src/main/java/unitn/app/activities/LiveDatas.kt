@@ -108,6 +108,20 @@ object LiveDatas {
     val liveWatchlist: LiveData<List<LocalMedia>>
         get() = mutWatchList;
 
+    private var idToRemove: Int = -1
+    fun getIdInListToRemove(isFilm: Boolean): Int? {
+
+        val found = watchList.filter { it.isFilm == isFilm }.indexOf(watchList.find { it.mediaId == idToRemove });
+        if (found == -1) {
+            return null;
+        }
+        return found
+    }
+
+    fun setIdToRemove(id: Int) {
+        idToRemove = id;
+    }
+
     fun addMedia(media: LocalMedia) {
         if (!watchList.contains(media)) {
             watchList.add(media)

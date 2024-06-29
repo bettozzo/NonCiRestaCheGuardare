@@ -2,10 +2,12 @@ package unitn.app.activities.homepage
 
 import android.annotation.SuppressLint
 import android.app.ActivityOptions
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.example.test.R
@@ -31,7 +34,6 @@ import unitn.app.remotedb.RemoteDAO
 class HomePage : AppCompatActivity() {
 
     private val viewFragAdapter = ViewPagerFragmentAdapter(this);
-    private var currentTab = 0;
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,14 +78,23 @@ class HomePage : AppCompatActivity() {
             }
         }.attach()
 
-        mediaSelected.addOnTabSelectedListener(object : OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                currentTab = tab.position
-            }
+        val extras = intent.extras;
+        if (extras == null) {
+            System.err.println("Bundle is null")
+            return;
+        }
+        val firstTimeLoading = extras.getBoolean("firstTimeLoading", false);
+        if (firstTimeLoading) {
+            val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
+            with(sharedPref.edit()) {
+                putInt("currentTab", 0)
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
-        })
+                Log.d("tab loaded", "0")
+                apply()
+            }
+        }
+
+
     }
 
     override fun onResume() {
@@ -92,6 +103,25 @@ class HomePage : AppCompatActivity() {
         val viewPager = findViewById<ViewPager2>(R.id.pager)
         val goToSearchButton = findViewById<ImageButton>(R.id.goToSearchMediaButton)
         val goToProfileButton = findViewById<ImageButton>(R.id.goToProfile)
+        val mediaSelected = findViewById<TabLayout>(R.id.pageSelection);
+
+        mediaSelected.addOnTabSelectedListener(object : OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
+                with(sharedPref.edit()) {
+                    putInt("currentTab", tab.position)
+                    Log.d("tab changed", tab.position.toString())
+                    apply()
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+
+        val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
+        val currentTab = sharedPref.getInt("currentTab", 0);
+        Log.d("tab got", currentTab.toString())
 
         viewPager.currentItem = currentTab;
 
@@ -104,7 +134,6 @@ class HomePage : AppCompatActivity() {
             val intent = Intent(this@HomePage, Profilo::class.java)
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
         }
-
     }
 
     private fun updateColor() {
@@ -118,4 +147,14 @@ class HomePage : AppCompatActivity() {
     }
 }
 
+class YourViewModel : ViewModel() {
+
+    private var lastTabPosition = 0
+
+    fun onToggleTab(position: Int) {
+        lastTabPosition = position
+    }
+
+    fun getLastTabPosition() = lastTabPosition
+}
 

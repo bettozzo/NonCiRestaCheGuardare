@@ -47,7 +47,6 @@ class Login : AppCompatActivity() {
         val loginButton = findViewById<Button>(R.id.loginButton)
         val signInButton = findViewById<Button>(R.id.signInButton)
 
-
         val userDao = Room.databaseBuilder(
             applicationContext,
             UserDatabase::class.java, "user-db"
@@ -58,8 +57,7 @@ class Login : AppCompatActivity() {
             val isAlreadyAuth = userDao.getUserId() != null
             if (isAlreadyAuth) {
                 val intent = Intent(this@Login, LoadingScreen::class.java)
-                intent.flags =
-                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
             }
         }
@@ -86,7 +84,7 @@ class Login : AppCompatActivity() {
         }
 
 
-        signInButton.setOnClickListener{
+        signInButton.setOnClickListener {
             val userid = username.text.toString();
             val intent = Intent(this@Login, SignUp::class.java)
             intent.putExtra("userid", userid)
