@@ -10,10 +10,13 @@ import androidx.fragment.app.Fragment
 import com.example.test.R
 import unitn.app.activities.LiveDatas
 
+
 class FragmentFilm : Fragment() {
 
     private var root: View? = null;
     private var dataLoaded = false;
+    private var scrolly = 0;
+    private lateinit var adapter: AdapterHomepage;
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -29,17 +32,30 @@ class FragmentFilm : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (!dataLoaded) {
-            LiveDatas.liveWatchlist.observe(viewLifecycleOwner) {
-                val gridViewMedia = view.findViewById<GridView>(R.id.GridViewFilm)
-                val movies = it.filter { it.isFilm };
-                gridViewMedia.adapter = AdapterHomepage(view.context, movies)
-                if (movies.isNotEmpty()) {
-                    view.findViewById<TextView>(R.id.isEmptyText).visibility = View.GONE;
-                } else {
-                    view.findViewById<TextView>(R.id.isEmptyText).visibility = View.VISIBLE;
-                }
+            val gridViewMedia = view.findViewById<GridView>(R.id.GridViewFilm)
+            val movies = LiveDatas.liveWatchlist.value!!.filter { it.isFilm }.toMutableList()
+            adapter = AdapterHomepage(view.context, movies)
+
+            gridViewMedia.adapter = adapter;
+            if (movies.isNotEmpty()) {
+                view.findViewById<TextView>(R.id.isEmptyText).visibility = View.GONE;
+            } else {
+                view.findViewById<TextView>(R.id.isEmptyText).visibility = View.VISIBLE;
             }
             dataLoaded = true;
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val gridViewMedia = view?.findViewById<GridView>(R.id.GridViewFilm)!!
+        scrolly = gridViewMedia.firstVisiblePosition
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val gridViewMedia = view?.findViewById<GridView>(R.id.GridViewFilm)!!
+        gridViewMedia.smoothScrollToPosition(scrolly)
+        adapter.notifyDataSetChanged();
     }
 }

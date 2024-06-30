@@ -14,7 +14,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.example.test.R
@@ -67,6 +66,7 @@ class HomePage : AppCompatActivity() {
         val viewPager = findViewById<ViewPager2>(R.id.pager)
         viewPager.adapter = viewFragAdapter;
 
+
         TabLayoutMediator(mediaSelected, viewPager) { tab, position ->
             if (position == 0) {
                 tab.text = "Films";
@@ -90,17 +90,15 @@ class HomePage : AppCompatActivity() {
                 apply()
             }
         }
-
-
     }
 
     override fun onResume() {
         super.onResume()
-
         val viewPager = findViewById<ViewPager2>(R.id.pager)
         val goToSearchButton = findViewById<ImageButton>(R.id.goToSearchMediaButton)
         val goToProfileButton = findViewById<ImageButton>(R.id.goToProfile)
         val mediaSelected = findViewById<TabLayout>(R.id.pageSelection);
+
 
         mediaSelected.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
@@ -139,16 +137,5 @@ class HomePage : AppCompatActivity() {
             LiveDatas.setColore(newColor.colorName)
         }
     }
+
 }
-
-class YourViewModel : ViewModel() {
-
-    private var lastTabPosition = 0
-
-    fun onToggleTab(position: Int) {
-        lastTabPosition = position
-    }
-
-    fun getLastTabPosition() = lastTabPosition
-}
-

@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import unitn.app.activities.ConverterMedia
 import unitn.app.activities.LiveDatas
+import unitn.app.activities.homepage.AdapterHomepage
 import unitn.app.api.LocalMedia
 import unitn.app.api.MediaDetails
 import unitn.app.localdb.UserDatabase
@@ -201,7 +202,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         return mediaInString != "[]"
     }
 
-    suspend fun deleteFromWatchList(mediaID: Int) {
+    suspend fun deleteFromWatchList(mediaID: Int, adapterHomepage: AdapterHomepage) {
         supabase.from("watchlist").delete {
             filter {
                 eq("mediaid", mediaID)

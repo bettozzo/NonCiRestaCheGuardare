@@ -118,8 +118,8 @@ object LiveDatas {
         return found
     }
 
-    fun setIdToRemove(id: Int) {
-        idToRemove = id;
+    fun setIdToRemove(id: Int?) {
+        idToRemove = id ?: -1;
     }
 
     fun addMedia(media: LocalMedia) {

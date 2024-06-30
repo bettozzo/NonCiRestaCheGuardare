@@ -6,7 +6,6 @@ import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
@@ -25,7 +24,10 @@ class ViewHolderHomepage {
     lateinit var title: TextView
 }
 
-class AdapterHomepage(private var context: Context, private var localMedia: List<LocalMedia>) :
+class AdapterHomepage(
+    private var context: Context,
+    private var listMedia: MutableList<LocalMedia>,
+) :
     BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val itemInGrid: ViewHolderHomepage
@@ -40,7 +42,7 @@ class AdapterHomepage(private var context: Context, private var localMedia: List
         } else {
             itemInGrid = myView.tag as ViewHolderHomepage
         }
-        val media = localMedia[position]
+        val media = listMedia[position]
         if (media.posterPath != null) {
             showPoster(itemInGrid, media)
         } else {
@@ -54,28 +56,37 @@ class AdapterHomepage(private var context: Context, private var localMedia: List
         }
 
         val toRemove = LiveDatas.getIdInListToRemove(media.isFilm) == position;
-
         if (toRemove) {
-            val animation = AnimationUtils.loadAnimation(context, R.anim.fade_out);
-            animation.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(animation: Animation) {}
-                override fun onAnimationRepeat(animation: Animation) {}
-
-                override fun onAnimationEnd(animation: Animation) {
-                    myView.visibility = View.GONE;
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val remoteDao = RemoteDAO(
-                            context,
-                            coroutineContext
-                        );
-                        remoteDao.deleteFromWatchList(media.mediaId)
-                    }
-                }
-            })
-            myView.startAnimation(animation)
+            setAnimation(media, myView)
         }
 
         return myView
+    }
+
+    private fun setAnimation(media: LocalMedia, myView: View) {
+        val animationManager = Animations(context);
+//        val animation = animationManager.moveOut();
+        val animation = animationManager.getRandomAnimation();
+
+        animation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation) {}
+            override fun onAnimationRepeat(animation: Animation) {}
+
+            override fun onAnimationEnd(animation: Animation) {
+                myView.animation.cancel();
+                LiveDatas.setIdToRemove(null);
+                listMedia.remove(media);
+                notifyDataSetChanged();
+                CoroutineScope(Dispatchers.IO).launch {
+                    val remoteDao = RemoteDAO(
+                        context,
+                        coroutineContext
+                    );
+                    remoteDao.deleteFromWatchList(media.mediaId, this@AdapterHomepage)
+                }
+            }
+        })
+        myView.startAnimation(animation)
     }
 
     private fun showTitle(itemInGrid: ViewHolderHomepage, localMedia: LocalMedia) {
@@ -119,7 +130,7 @@ class AdapterHomepage(private var context: Context, private var localMedia: List
 
 
     override fun getItem(p0: Int): Any {
-        return localMedia[p0]
+        return listMedia[p0]
     }
 
     override fun getItemId(p0: Int): Long {
@@ -127,7 +138,7 @@ class AdapterHomepage(private var context: Context, private var localMedia: List
     }
 
     override fun getCount(): Int {
-        return localMedia.size
+        return listMedia.size
     }
 }
 

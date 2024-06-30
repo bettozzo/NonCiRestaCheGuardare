@@ -3,7 +3,6 @@ package unitn.app.activities.dettaglio
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
-import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
@@ -26,7 +25,6 @@ import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import unitn.app.activities.LiveDatas
-import unitn.app.activities.homepage.HomePage
 import unitn.app.remotedb.RemoteDAO
 
 
@@ -113,16 +111,11 @@ class DettaglioMedia : AppCompatActivity() {
         mediaID: Int,
     ) {
         deleteBtn.setOnClickListener {
-            val intent = Intent(this@DettaglioMedia, HomePage::class.java)
-            lifecycleScope.launch {
                 LiveDatas.setIdToRemove(mediaID);
-                finish()//prevents this activity to be opened again
-                startActivity(intent)
-            }
+                finish()
         }
 
         seenBtn.setOnClickListener {
-            val intent = Intent(this@DettaglioMedia, HomePage::class.java)
             lifecycleScope.launch {
                 val remoteDao = RemoteDAO(
                     applicationContext,
@@ -130,8 +123,7 @@ class DettaglioMedia : AppCompatActivity() {
                 );
                 remoteDao.insertToCronologia(mediaID)
                 LiveDatas.setIdToRemove(mediaID);
-                finish()//prevents this activity to be opened again
-                startActivity(intent)
+                finish();
             }
         }
     }
@@ -186,7 +178,7 @@ class DettaglioMedia : AppCompatActivity() {
         }
     }
 
-    fun addPlatform(
+    private fun addPlatform(
         logoPath: String?,
         platformList: LinearLayout,
         applicationContext: Context,
@@ -197,7 +189,7 @@ class DettaglioMedia : AppCompatActivity() {
         platformList.addView(platformView);
     }
 
-    fun setTitleProperties(titoloFilm: TextView, extras: Bundle) {
+    private fun setTitleProperties(titoloFilm: TextView, extras: Bundle) {
         titoloFilm.text = extras.getString("titoloFilm")
         titoloFilm.ellipsize = TextUtils.TruncateAt.MARQUEE;
         titoloFilm.marqueeRepeatLimit = -1;
