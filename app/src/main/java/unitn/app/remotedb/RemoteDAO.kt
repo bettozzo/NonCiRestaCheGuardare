@@ -98,6 +98,11 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
 
             return apiKeys.value;
         }
+
+        suspend fun needsUpdate(): Boolean {
+            val rightVersion = 0;
+            return supabase.from("versionInfo").select().decodeSingle<VersionInfo>().version != rightVersion;
+        }
     }
 
     /*--------------------------*/
@@ -423,6 +428,8 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                 }
             }
     }
+
+
 }
 
 

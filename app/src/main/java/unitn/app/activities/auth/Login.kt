@@ -4,8 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.RelativeLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -43,6 +46,22 @@ class Login : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+
+        var needsUpdate: Boolean;
+        runBlocking {
+            needsUpdate = RemoteDAO.needsUpdate()
+        }
+
+        if (needsUpdate) {
+            val normal = findViewById<RelativeLayout>(R.id.main)
+            val updateAlert = findViewById<TextView>(R.id.needUpdate)
+            normal.visibility = View.GONE;
+            updateAlert.visibility = View.VISIBLE;
+            return;
+        }
+
+
         val username = findViewById<EditText>(R.id.username)
         val loginButton = findViewById<Button>(R.id.loginButton)
         val signInButton = findViewById<Button>(R.id.signInButton)
