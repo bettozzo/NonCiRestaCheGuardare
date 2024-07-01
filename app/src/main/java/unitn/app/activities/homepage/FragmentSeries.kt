@@ -13,9 +13,7 @@ import unitn.app.activities.LiveDatas
 class FragmentSeries : Fragment() {
 
     private var root: View? = null;
-    private var dataLoaded = false;
     private var scrolly = 0;
-    private lateinit var adapter: AdapterHomepage;
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -30,18 +28,14 @@ class FragmentSeries : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (!dataLoaded) {
-            val gridViewMedia = view.findViewById<GridView>(R.id.GridViewSeries)
-            val series = LiveDatas.liveWatchlist.value!!.filter { !it.isFilm }.toMutableList()
-            adapter = AdapterHomepage(view.context, series)
+        val gridViewMedia = view.findViewById<GridView>(R.id.GridViewSeries)
+        val series = LiveDatas.liveWatchlist.value!!.filter { !it.isFilm }.toMutableList()
+        gridViewMedia.adapter = AdapterHomepage(view.context, series)
 
-            gridViewMedia.adapter = adapter;
-            if (series.isNotEmpty()) {
-                view.findViewById<TextView>(R.id.isEmptyText).visibility = View.GONE;
-            } else {
-                view.findViewById<TextView>(R.id.isEmptyText).visibility = View.VISIBLE;
-            }
-            dataLoaded = true;
+        if (series.isNotEmpty()) {
+            view.findViewById<TextView>(R.id.isEmptyText).visibility = View.GONE;
+        } else {
+            view.findViewById<TextView>(R.id.isEmptyText).visibility = View.VISIBLE;
         }
     }
 
@@ -56,6 +50,7 @@ class FragmentSeries : Fragment() {
         super.onResume()
         val gridViewMedia = view?.findViewById<GridView>(R.id.GridViewSeries)!!
         gridViewMedia.smoothScrollToPosition(scrolly)
-        adapter.notifyDataSetChanged();
+        val series = LiveDatas.liveWatchlist.value!!.filter { !it.isFilm }
+        (gridViewMedia.adapter as AdapterHomepage).customNotifyDataSetIsChanged(series);
     }
 }

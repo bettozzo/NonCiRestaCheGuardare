@@ -14,9 +14,7 @@ import unitn.app.activities.LiveDatas
 class FragmentFilm : Fragment() {
 
     private var root: View? = null;
-    private var dataLoaded = false;
     private var scrolly = 0;
-    private lateinit var adapter: AdapterHomepage;
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,18 +29,14 @@ class FragmentFilm : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (!dataLoaded) {
-            val gridViewMedia = view.findViewById<GridView>(R.id.GridViewFilm)
-            val movies = LiveDatas.liveWatchlist.value!!.filter { it.isFilm }.toMutableList()
-            adapter = AdapterHomepage(view.context, movies)
-
-            gridViewMedia.adapter = adapter;
-            if (movies.isNotEmpty()) {
-                view.findViewById<TextView>(R.id.isEmptyText).visibility = View.GONE;
-            } else {
-                view.findViewById<TextView>(R.id.isEmptyText).visibility = View.VISIBLE;
-            }
-            dataLoaded = true;
+        val gridViewMedia = view.findViewById<GridView>(R.id.GridViewFilm)
+        val movies = LiveDatas.liveWatchlist.value!!.filter { it.isFilm }.toMutableList()
+        gridViewMedia.adapter = AdapterHomepage(view.context, movies);
+        gridViewMedia.smoothScrollToPosition(scrolly)
+        if (movies.isNotEmpty()) {
+            view.findViewById<TextView>(R.id.isEmptyText).visibility = View.GONE;
+        } else {
+            view.findViewById<TextView>(R.id.isEmptyText).visibility = View.VISIBLE;
         }
     }
 
@@ -56,6 +50,8 @@ class FragmentFilm : Fragment() {
         super.onResume()
         val gridViewMedia = view?.findViewById<GridView>(R.id.GridViewFilm)!!
         gridViewMedia.smoothScrollToPosition(scrolly)
-        adapter.notifyDataSetChanged();
+
+        val movies = LiveDatas.liveWatchlist.value!!.filter { it.isFilm }
+        (gridViewMedia.adapter as AdapterHomepage).customNotifyDataSetIsChanged(movies);
     }
 }

@@ -140,5 +140,11 @@ class AdapterHomepage(
     override fun getCount(): Int {
         return listMedia.size
     }
+
+    fun customNotifyDataSetIsChanged(newListMedia: List<LocalMedia>){
+        listMedia = newListMedia.toMutableList();
+        notifyDataSetChanged();
+    }
+
 }
 

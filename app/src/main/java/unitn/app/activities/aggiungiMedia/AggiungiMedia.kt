@@ -151,7 +151,6 @@ class AggiungiMedia : AppCompatActivity() {
                             sinossi
                         );
                     remoteDao.insertToWatchlist(localMedia, this@AggiungiMedia)
-                    LiveDatas.addMedia(localMedia)
                     LiveDatas.removeRicercaMedia(localMedia)
                 } else {
                     Toast.makeText(applicationContext, "Media già presente", Toast.LENGTH_SHORT)

@@ -193,7 +193,9 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
 
         if (!isInWatchList(media.mediaId)) {
             supabase.from("watchlist").insert(InsertWatchListParams(user.userId, media.mediaId))
+            LiveDatas.addMedia(media)
         }
+
     }
 
 
