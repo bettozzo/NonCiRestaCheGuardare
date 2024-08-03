@@ -64,7 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/listaPiattaformeUser"
-        android:text="Ma lo puoi trovare su:"
+        android:text="Lo puoi trovare su:"
         android:textColor="@color/GrigioScuro" />
 
     <LinearLayout

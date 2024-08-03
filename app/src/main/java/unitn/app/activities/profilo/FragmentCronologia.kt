@@ -92,12 +92,12 @@ class FragmentCronologia : Fragment() {
             dettaglioFilm.text = if (inPercentuale && totale != 0) {
                 String.format("%.1f", (filmVisti.toFloat() / totale.toFloat()) * 100) + "%"
             } else {
-                "$filmVisti"
+                "$filmVisti/$totaleFilm"
             }
             dettaglioSerie.text = if (inPercentuale && totale != 0) {
                 String.format("%.1f", (serieViste.toFloat() / totale.toFloat()) * 100) + "%"
             } else {
-                "$serieViste"
+                "$serieViste/$totaleSerie"
             }
 
             headerPercentualeVisti.text = if (inPercentuale) {

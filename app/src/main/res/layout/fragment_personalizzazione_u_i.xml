@@ -82,14 +82,14 @@
             android:layout_height="23dp"
             android:layout_weight="0.5"
             android:checked="true"
-            android:text="Giorno" />
+            android:text="Chiaro" />
 
         <CheckBox
             android:id="@+id/temaScuro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Notte" />
+            android:text="Scuro" />
 
     </LinearLayout>
 </RelativeLayout>
