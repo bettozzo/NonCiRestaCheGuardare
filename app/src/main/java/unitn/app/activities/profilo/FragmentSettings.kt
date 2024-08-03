@@ -25,11 +25,8 @@ import unitn.app.remotedb.RemoteDAO
 
 
 class FragmentSettings(private val username: String) : Fragment() {
-    constructor() : this("boh") {
-    }
 
     private var root: View? = null
-
 
     override fun onCreateView(
         inflater: LayoutInflater,

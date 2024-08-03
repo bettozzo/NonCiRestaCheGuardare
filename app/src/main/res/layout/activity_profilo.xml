@@ -26,7 +26,6 @@
         android:layout_below="@id/titolo"/>
 
     <androidx.viewpager2.widget.ViewPager2
-        style="@style/viewPagerStyle"
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

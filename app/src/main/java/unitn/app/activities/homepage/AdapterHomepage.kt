@@ -42,6 +42,7 @@ class AdapterHomepage(
         } else {
             itemInGrid = myView.tag as ViewHolderHomepage
         }
+
         val media = listMedia[position]
         if (media.posterPath != null) {
             showPoster(itemInGrid, media)

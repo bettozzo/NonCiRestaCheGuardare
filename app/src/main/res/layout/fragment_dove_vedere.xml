@@ -1,0 +1,88 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="unitn.app.activities.dettaglio.FragmentDoveVedere"
+    tools:ignore="HardcodedText">
+
+    <LinearLayout
+        android:id="@+id/infoProvider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/DoveVederloText"
+            style="@style/Header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Disponibilità"
+            android:textSize="34sp" />
+
+        <TextView
+            android:id="@+id/infoProviderText"
+            style="@style/normalText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-6sp"
+            android:text="Fonte: JustWatch"
+            android:textColor="#B78A8A8A"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/piattaformeUser"
+        style="@style/Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/infoProvider"
+        android:text="Sulle tue piattaforme" />
+
+    <LinearLayout
+        android:id="@+id/listaPiattaformeUser"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_below="@+id/piattaformeUser"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/normalText"
+            android:id="@+id/alertNoPiattaforme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Non disponibile 😔" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/altrePiattaforme"
+        style="@style/normalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/listaPiattaformeUser"
+        android:text="Ma lo puoi trovare su:"
+        android:textColor="@color/GrigioScuro" />
+
+    <LinearLayout
+        android:id="@+id/listaAltrePiattaforme"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_below="@+id/altrePiattaforme"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switchLocal"
+        style="@style/Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/listaAltrePiattaforme"
+        android:layout_marginTop="20dp"
+        android:text="In possesso          " />
+</RelativeLayout>

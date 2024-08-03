@@ -70,9 +70,6 @@
         <item name="tabTextColor">@color/normalText</item>
     </style>
 
-    <style name="viewPagerStyle">
-        <item name="android:background">@color/black</item>
-    </style>
 
     <style name="SCBSwitch">
         <item name="android:textColor">@color/normalText</item>

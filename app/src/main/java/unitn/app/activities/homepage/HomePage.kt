@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.example.test.R
@@ -25,7 +24,6 @@ import unitn.app.activities.LiveDatas
 import unitn.app.activities.profilo.Profilo
 import unitn.app.activities.ricerca.Ricerca
 import unitn.app.remotedb.Colori
-import unitn.app.remotedb.ColoriName
 import unitn.app.remotedb.RemoteDAO
 
 
@@ -45,22 +43,6 @@ class HomePage : AppCompatActivity() {
             insets
         }
         updateColor();
-
-        LiveDatas.liveColore.observe(this, object : Observer<ColoriName> {
-            override fun onChanged(value: ColoriName) {
-                LiveDatas.updateColorsOfImgButtons(
-                    listOf(
-                        findViewById(R.id.goToProfile),
-                        findViewById(R.id.goToSearchMediaButton)
-                    )
-                )
-                val color = Colori.getColore(value)
-                val tab = findViewById<TabLayout>(R.id.pageSelection);
-                tab.setBackgroundColor(Color.parseColor(color.colorCode))
-                val colore = Colori.getTabColore(color.colorName);
-                tab.setSelectedTabIndicatorColor(colore)
-            }
-        })
 
         val mediaSelected = findViewById<TabLayout>(R.id.pageSelection);
         val viewPager = findViewById<ViewPager2>(R.id.pager)
@@ -136,6 +118,13 @@ class HomePage : AppCompatActivity() {
             ).getMainColor()
             LiveDatas.setColore(newColor.colorName)
         }
+        LiveDatas.updateColorsOfImgButtons(
+            listOf(findViewById(R.id.goToProfile), findViewById(R.id.goToSearchMediaButton))
+        )
+        val color = LiveDatas.getColore()
+        val tab = findViewById<TabLayout>(R.id.pageSelection);
+        tab.setBackgroundColor(Color.parseColor(color.colorCode))
+        val coloreTab = Colori.getTabColore(color.colorName);
+        tab.setSelectedTabIndicatorColor(coloreTab)
     }
-
 }

@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,18 +10,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:numColumns="3"
-        android:stretchMode="columnWidth" >
+        android:stretchMode="columnWidth">
 
     </GridView>
-
 
     <TextView
         android:id="@+id/isEmptyText"
         style="@style/Header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:layout_gravity="center"
-        android:text="La lista è vuota.\nAggiungi qualche serie!"
-        android:alpha="0.9"/>
+        android:alpha="0.9"
+        android:text="La lista è vuota.\nAggiungi qualche serie!" />
 
-</FrameLayout>
+</RelativeLayout>

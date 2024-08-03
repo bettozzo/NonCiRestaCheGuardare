@@ -7,22 +7,19 @@
     tools:context="unitn.app.activities.homepage.HomePage">
 
     <com.google.android.material.tabs.TabLayout
-        style="@style/normalTabLayout"
-        android:id="@+id/pageSelection"/>
+        android:id="@+id/pageSelection"
+        style="@style/normalTabLayout" />
 
 
     <androidx.viewpager2.widget.ViewPager2
-        style="@style/viewPagerStyle"
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/pageSelection"/>
-
-
+        android:layout_below="@+id/pageSelection" />
 
     <ImageButton
-        style="@style/normalImageButton"
         android:id="@+id/goToSearchMediaButton"
+        style="@style/normalImageButton"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="29dp"
@@ -31,8 +28,8 @@
         android:src="@drawable/lente_dingrandimento" />
 
     <ImageButton
-        style="@style/normalImageButton"
         android:id="@+id/goToProfile"
+        style="@style/normalImageButton"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="29dp"

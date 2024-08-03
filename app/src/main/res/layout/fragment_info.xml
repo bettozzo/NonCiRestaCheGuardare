@@ -1,0 +1,106 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        tools:context="unitn.app.activities.dettaglio.FragmentInfo"
+        tools:ignore="HardcodedText">
+
+        <ImageView
+            android:id="@+id/poster"
+            android:layout_width="170dp"
+            android:layout_height="260dp"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="Poster Image"
+            tools:srcCompat="@drawable/missing_poster" />
+
+        <LinearLayout
+            android:id="@+id/InfoDurata"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/poster"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Durata:  "
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/durataText"
+                style="@style/normalText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="100 minuti"
+                android:textAlignment="textStart" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/InfoGenere"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/InfoDurata"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Genere:  "
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/genereText"
+                style="@style/normalText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="Sui generis"
+                android:textAlignment="textStart" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LayoutInfoFilm"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/InfoGenere"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+            <TextView
+                style="@style/Header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sinossi"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/sinossiText"
+                style="@style/normalText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="@string/lorem_ipsum_1"
+                android:textAlignment="textStart" />
+        </LinearLayout>
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            android:layout_below="@id/LayoutInfoFilm" />
+    </RelativeLayout>
+</ScrollView>

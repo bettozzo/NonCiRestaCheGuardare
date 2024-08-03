@@ -70,8 +70,4 @@
         <item name="tabInlineLabel">true</item>
         <item name="tabTextColor">@color/normalText</item>
     </style>
-
-    <style name="viewPagerStyle"/>
-
-
 </resources>
