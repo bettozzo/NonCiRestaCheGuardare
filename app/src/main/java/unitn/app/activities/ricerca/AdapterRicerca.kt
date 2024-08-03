@@ -62,6 +62,7 @@ class AdapterSearch(private var context: Context, private var localMedia: List<L
     }
 
 
+
     private fun prepareExtras(intent: Intent, localMedia: LocalMedia) {
         intent.putExtra("id", localMedia.mediaId)
         intent.putExtra("titoloMedia", localMedia.title)

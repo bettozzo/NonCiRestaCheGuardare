@@ -6,6 +6,7 @@ androidxRoomCompiler = "2.6.1"
 ankoDesign = "0.10.5"
 compiler = "1.1.1"
 compilerVersion = "1.0.0"
+glide = "4.10.0"
 gradle = "7.0.4"
 kotlin = "1.9.0"
 coreKtx = "1.13.0"
@@ -42,6 +43,7 @@ compiler = { module = "android.arch.persistence.room:compiler", version.ref = "c
 compiler-v100 = { module = "android.arch.persistence.room:compiler", version.ref = "compilerVersion" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofitVersion" }
 databinding-compiler = { module = "com.android.databinding:compiler", version.ref = "androidCompiler" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
