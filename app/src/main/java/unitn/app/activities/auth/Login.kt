@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -13,6 +14,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.text.italic
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.room.Room
@@ -49,8 +51,9 @@ class Login : AppCompatActivity() {
 
 
         var needsUpdate: Boolean;
+        val currentVersion = 0;
         runBlocking {
-            needsUpdate = RemoteDAO.needsUpdate()
+            needsUpdate = RemoteDAO.getRightVersionApp() != currentVersion
         }
 
         if (needsUpdate) {
@@ -58,6 +61,8 @@ class Login : AppCompatActivity() {
             val updateAlert = findViewById<TextView>(R.id.needUpdate)
             normal.visibility = View.GONE;
             updateAlert.visibility = View.VISIBLE;
+            updateAlert.text =
+                SpannableStringBuilder("L'App deve essere aggiornata.\n").italic { append("Versione attuale: $currentVersion") }
             return;
         }
 

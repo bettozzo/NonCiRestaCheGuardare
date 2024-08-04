@@ -67,7 +67,7 @@
         android:layout_centerVertical="true"
         android:gravity="center"
         android:visibility="gone"
-        android:text="App deve essere aggiornata"
+        android:text="L'App deve essere aggiornata alla versione: X"
         android:textSize="50sp"
         android:textStyle="bold" />
 
