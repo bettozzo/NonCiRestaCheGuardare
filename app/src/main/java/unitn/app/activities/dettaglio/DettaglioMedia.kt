@@ -64,11 +64,22 @@ class DettaglioMedia : AppCompatActivity() {
         viewPager.adapter = viewFragAdapter;
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            when (position) {
-                0 -> tab.text = "INFO";
-                1 -> tab.text = "STREAMING";
-                2 -> tab.text = "NOTE";
+            if(extras.getBoolean("isFilm")){
+                when (position) {
+                    0 -> tab.text = "INFO";
+                    1 -> tab.text = "STREAMING";
+                    2 -> tab.text = "NOTE";
+
+                }
+            }else{
+                when (position) {
+                    0 -> tab.text = "INFO";
+                    1 -> tab.text = "PROGRESSO";
+                    2 -> tab.text = "STREAMING";
+                    3 -> tab.text = "NOTE";
+                }
             }
+
         }.attach()
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {

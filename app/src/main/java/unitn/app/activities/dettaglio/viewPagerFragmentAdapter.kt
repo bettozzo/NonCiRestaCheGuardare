@@ -10,18 +10,35 @@ class ViewPagerFragmentAdapter(fragmentActivity: FragmentActivity, extras: Bundl
     private val info = FragmentInfo(extras);
     private val doveVedere = FragmentDoveVedere(extras);
     private val sezioneNote = FragmentSezioneNote();
+    private val segnaposto = FragmentSegnaposto();
 
+    private val isFilm = extras.getBoolean("isFilm")
     override fun getItemCount(): Int {
-        return 3
+        return if (isFilm) {
+            3
+        } else {
+            4;
+        }
     }
 
     override fun createFragment(position: Int): Fragment {
-        when (position) {
-            0 -> return info
-            1 -> return doveVedere
-            2 -> return sezioneNote
+        if (isFilm) {
+            when (position) {
+                0 -> return info
+                1 -> return doveVedere
+                2 -> return sezioneNote
+            }
+        } else {
+            when (position) {
+                0 -> return info
+                1 -> return segnaposto
+                2 -> return doveVedere
+                3 -> return sezioneNote
+            }
         }
         return info
     }
+
+
 
 }

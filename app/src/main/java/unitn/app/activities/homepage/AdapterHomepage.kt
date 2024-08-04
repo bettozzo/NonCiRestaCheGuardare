@@ -106,6 +106,7 @@ class AdapterHomepage(
         intent.putExtra("poster", localMedia.posterPath)
         intent.putExtra("isInLocal", localMedia.isLocallySaved)
         intent.putExtra("sinossi", localMedia.sinossi)
+        intent.putExtra("isFilm", localMedia.isFilm)
 
         //also update in ../dettaglio/DettaglioMedia.kt
         for (platform in localMedia.platform) {

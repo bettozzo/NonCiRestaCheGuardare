@@ -1,0 +1,98 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
+    tools:context="unitn.app.activities.dettaglio.FragmentSegnaposto"
+    tools:ignore="HardcodedText, Autofill,LabelFor">
+
+
+    <TextView
+        android:id="@+id/header"
+        style="@style/Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="Aggiorna il progresso"
+        android:textSize="30sp" />
+
+    <RelativeLayout
+        android:id="@+id/stagioneLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header"
+        android:layout_marginHorizontal="80dp"
+        android:layout_marginTop="30dp">
+
+        <TextView
+            style="@style/normalText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:text="STAGIONE:" />
+
+        <EditText
+            android:id="@+id/numeroStagione"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:gravity="center"
+            android:inputType="number"
+            android:lines="1"
+            android:paddingHorizontal="3dp"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:text="1" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/stagioneLayout"
+        android:layout_marginStart="80dp"
+        android:layout_marginEnd="34dp"
+        android:layout_marginTop="40dp">
+
+        <TextView
+            style="@style/normalText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:text="EPISODIO:" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/numeroEpisodio"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:inputType="number"
+                android:lines="1"
+                android:paddingHorizontal="3dp"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:text="1" />
+
+            <ImageButton
+                android:id="@+id/btnAumenta"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/plus_one" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>
