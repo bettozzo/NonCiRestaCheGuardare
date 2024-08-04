@@ -59,6 +59,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
 
     }
 
+    //functions that don't require the user to be logged in
     companion object {
         private val supabase = createSupabaseClient(
             supabaseUrl = "https://gxyzupxvwiuhyjtbbwmb.supabase.co",
@@ -126,7 +127,8 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                 maybePiattaforme,
                 m.poster_path,
                 m.is_local,
-                m.sinossi
+                m.sinossi,
+                note = m.note
             )
             results.add(localMedia);
         }
@@ -227,6 +229,16 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                 eq("mediaid", mediaId)
             }
         }
+    }
+
+    suspend fun updateNote(mediaId: Int, newNote: String) {
+        supabase.from("watchlist").update({ set("note", newNote) }) {
+            filter {
+                eq("userid", user.userId)
+                eq("mediaid", mediaId)
+            }
+        }
+        LiveDatas.updateNote(mediaId, newNote);
     }
 
     /*--------------------------*/

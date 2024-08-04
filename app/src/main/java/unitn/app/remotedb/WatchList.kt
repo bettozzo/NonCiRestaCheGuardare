@@ -8,6 +8,7 @@ data class WatchList(
     val userid: Users,
     val mediaid: Media,
     val is_local: Boolean,
+    val note: String?,
 ) {
     companion object {
         fun getStructure(): String {
@@ -16,7 +17,8 @@ data class WatchList(
                     Users.getStructure() + ")," +
                     "mediaid(" +
                     Media.getStructure() + ")," +
-                    "is_local"
+                    "is_local,"+
+                    "note"
         }
     }
 }

@@ -141,8 +141,19 @@ object LiveDatas {
 
     fun tickIsLocal(mediaid: Int) {
         val media = watchList.find { it.mediaId == mediaid }!!
-        val index = watchList.indexOf(media)
+        val index = watchList.indexOf(media);
+
         media.isLocallySaved = !media.isLocallySaved;
+
+        watchList[index] = media;
+        mutWatchList.postValue(watchList);
+    }
+
+    fun updateNote(mediaid: Int, newNote: String) {
+        val media = watchList.find { it.mediaId == mediaid }!!
+        val index = watchList.indexOf(media);
+
+        media.note = newNote;
 
         watchList[index] = media;
         mutWatchList.postValue(watchList);

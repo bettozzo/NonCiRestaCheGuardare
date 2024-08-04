@@ -21,9 +21,18 @@
         android:autofillHints="name"
         android:background="@color/Grigio"
         android:gravity="top|start"
-        android:hint="Sinossi (opzionale)"
+        android:hint="Annotati le tue note"
+        android:paddingHorizontal="5dp"
         android:inputType="textMultiLine"
         android:lines="4"
         android:scrollbars="vertical" />
+
+    <Button
+        android:id="@+id/buttonSaveNote"
+        style="@style/normalButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:layout_below="@id/note"
+        android:text="Salva"/>
 
 </RelativeLayout>

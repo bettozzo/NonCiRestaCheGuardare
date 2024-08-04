@@ -38,9 +38,9 @@ class AdapterSearch(private var context: Context, private var localMedia: List<L
         }
 
         if (localMedia[position].posterPath != null) {
-            showPoster(itemInGrid, localMedia[position]);
+            showPoster(itemInGrid, localMedia[position].posterPath!!);
         } else {
-            showTitle(itemInGrid, localMedia[position]);
+            showTitle(itemInGrid, localMedia[position].title);
         }
 
         myView.setOnClickListener {
@@ -51,14 +51,14 @@ class AdapterSearch(private var context: Context, private var localMedia: List<L
         return myView
     }
 
-    private fun showTitle(itemInGrid: ViewHolderSearch, localMedia: LocalMedia) {
+    private fun showTitle(itemInGrid: ViewHolderSearch, title: String) {
         itemInGrid.poster.visibility = View.GONE
-        itemInGrid.title.text = localMedia.title
+        itemInGrid.title.text = title
     }
 
-    private fun showPoster(itemInGrid: ViewHolderSearch, localMedia: LocalMedia) {
+    private fun showPoster(itemInGrid: ViewHolderSearch, posterPath: String) {
         itemInGrid.title.visibility = View.GONE
-        Picasso.get().load(localMedia.posterPath).into(itemInGrid.poster);
+        Picasso.get().load(posterPath).into(itemInGrid.poster);
     }
 
 

@@ -9,7 +9,7 @@ class ViewPagerFragmentAdapter(fragmentActivity: FragmentActivity, extras: Bundl
     FragmentStateAdapter(fragmentActivity) {
     private val info = FragmentInfo(extras);
     private val doveVedere = FragmentDoveVedere(extras);
-    private val sezioneNote = FragmentSezioneNote();
+    private val sezioneNote = FragmentSezioneNote(extras.getString("note"), extras.getInt("id"));
     private val segnaposto = FragmentSegnaposto();
 
     private val isFilm = extras.getBoolean("isFilm")

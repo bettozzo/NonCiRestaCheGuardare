@@ -11,6 +11,7 @@ data class LocalMedia(
     val cast: List<Pair<String, String>> = emptyList(),
     val crew: List<Pair<String, String>> = emptyList(),
     val periodoUscita: String = "",
+    var note: String? = null,
     val databaseID: Int = 0,
 ) {
     override fun toString(): String {

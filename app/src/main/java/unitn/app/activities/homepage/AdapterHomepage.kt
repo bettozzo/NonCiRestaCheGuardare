@@ -45,9 +45,9 @@ class AdapterHomepage(
 
         val media = listMedia[position]
         if (media.posterPath != null) {
-            showPoster(itemInGrid, media)
+            showPoster(itemInGrid, media.posterPath)
         } else {
-            showTitle(itemInGrid, media)
+            showTitle(itemInGrid, media.title)
         }
 
         myView.setOnClickListener {
@@ -90,14 +90,14 @@ class AdapterHomepage(
         myView.startAnimation(animation)
     }
 
-    private fun showTitle(itemInGrid: ViewHolderHomepage, localMedia: LocalMedia) {
+    private fun showTitle(itemInGrid: ViewHolderHomepage, title: String) {
         itemInGrid.poster.visibility = View.GONE
-        itemInGrid.title.text = localMedia.title
+        itemInGrid.title.text = title
     }
 
-    private fun showPoster(itemInGrid: ViewHolderHomepage, localMedia: LocalMedia) {
+    private fun showPoster(itemInGrid: ViewHolderHomepage, posterPath: String) {
         itemInGrid.title.visibility = View.GONE
-        Picasso.get().load(localMedia.posterPath).into(itemInGrid.poster)
+        Picasso.get().load(posterPath).into(itemInGrid.poster)
     }
 
     private fun prepareExtras(intent: Intent, localMedia: LocalMedia) {
@@ -107,6 +107,7 @@ class AdapterHomepage(
         intent.putExtra("isInLocal", localMedia.isLocallySaved)
         intent.putExtra("sinossi", localMedia.sinossi)
         intent.putExtra("isFilm", localMedia.isFilm)
+        intent.putExtra("note", localMedia.note)
 
         //also update in ../dettaglio/DettaglioMedia.kt
         for (platform in localMedia.platform) {

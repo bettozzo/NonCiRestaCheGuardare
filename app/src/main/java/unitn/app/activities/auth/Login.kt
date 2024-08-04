@@ -51,7 +51,7 @@ class Login : AppCompatActivity() {
 
 
         var needsUpdate: Boolean;
-        val currentVersion = 0;
+        val currentVersion = 1;
         runBlocking {
             needsUpdate = RemoteDAO.getRightVersionApp() != currentVersion
         }

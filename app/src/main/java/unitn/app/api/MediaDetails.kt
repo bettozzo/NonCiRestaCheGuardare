@@ -97,7 +97,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
             sinossi,
             cast,
             crew,
-            annoUscita
+            annoUscita,
         )
         return movie
     }

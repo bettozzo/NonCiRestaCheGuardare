@@ -34,6 +34,7 @@ data class AllDetailsMedia(
     val nome: String?,
     val logo_path: String?,
     val lastupdate: String?,
+    val note: String?
 ) {
     companion object {
         fun getStructure(): String {
@@ -46,7 +47,8 @@ data class AllDetailsMedia(
                     "is_local," +
                     "nome," +
                     "logo_path,"+
-                    "lastupdate"
+                    "lastupdate,"+
+                    "note"
         }
     }
 }
