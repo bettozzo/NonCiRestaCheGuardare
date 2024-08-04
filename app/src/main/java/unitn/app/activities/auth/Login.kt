@@ -66,7 +66,6 @@ class Login : AppCompatActivity() {
             return;
         }
 
-
         val username = findViewById<EditText>(R.id.username)
         val loginButton = findViewById<Button>(R.id.loginButton)
         val signInButton = findViewById<Button>(R.id.signInButton)

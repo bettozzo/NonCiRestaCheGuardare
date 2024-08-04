@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.test.R
@@ -52,10 +53,43 @@ class FragmentInfo(private val extras: Bundle) : Fragment() {
             }
         }
 
+        //durata
+        val durataText = view.findViewById<TextView>(R.id.durataText)
+        val durata = extras.getInt("durata")
+        if(durata > 0) {
+            durataText.text = durata.toString()
+        }else{
+            durataText.visibility = View.GONE;
+            view.findViewById<LinearLayout>(R.id.infoDurata).visibility = View.GONE
+        }
+
+        //anno uscita
+        val annoUscitaText = view.findViewById<TextView>(R.id.annoUscitaText)
+        val annoUscita = extras.getString("annoUscita")
+        if(annoUscita != null) {
+            annoUscitaText.text = annoUscita
+        }else{
+            annoUscitaText.visibility = View.GONE;
+            view.findViewById<LinearLayout>(R.id.infoAnno).visibility = View.GONE
+        }
+
+
+        //genere
+        val genereText = view.findViewById<TextView>(R.id.genereText)
+        val generi = extras.getString("generi")
+        if(generi != null) {
+            genereText.text = generi.split(",").toString()
+        }else{
+            genereText.visibility = View.GONE;
+            view.findViewById<LinearLayout>(R.id.infoGenere).visibility = View.GONE
+        }
+
+
         //sinossi
         val sinossiView = view.findViewById<TextView>(R.id.sinossiText)
         val sinossi = extras.getString("sinossi", "no sinossi");
         sinossiView.text = sinossi;
         sinossiView.movementMethod = ScrollingMovementMethod();
+
     }
 }

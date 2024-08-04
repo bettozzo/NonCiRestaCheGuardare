@@ -108,6 +108,9 @@ class AdapterHomepage(
         intent.putExtra("sinossi", localMedia.sinossi)
         intent.putExtra("isFilm", localMedia.isFilm)
         intent.putExtra("note", localMedia.note)
+        intent.putExtra("generi", localMedia.generi)
+        intent.putExtra("annoUscita", localMedia.periodoPubblicazione)
+        intent.putExtra("durata", localMedia.durata)
 
         //also update in ../dettaglio/DettaglioMedia.kt
         for (platform in localMedia.platform) {
@@ -144,7 +147,7 @@ class AdapterHomepage(
         return listMedia.size
     }
 
-    fun customNotifyDataSetIsChanged(newListMedia: List<LocalMedia>){
+    fun customNotifyDataSetIsChanged(newListMedia: List<LocalMedia>) {
         listMedia = newListMedia.toMutableList();
         notifyDataSetChanged();
     }

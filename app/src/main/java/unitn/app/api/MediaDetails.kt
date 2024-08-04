@@ -87,6 +87,8 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
             annoUscita = " ($annoUscita)"
         }
 
+        val generi = Genres.getGenres(media.genre_ids)
+
         val movie = LocalMedia(
             id,
             isFilm,
@@ -95,9 +97,11 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
             poster,
             false,
             sinossi,
+            annoUscita,
+            generi,
+            12345,
             cast,
             crew,
-            annoUscita,
         )
         return movie
     }

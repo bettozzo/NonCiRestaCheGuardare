@@ -8,9 +8,11 @@ data class LocalMedia(
     val posterPath: String?,
     var isLocallySaved: Boolean,
     val sinossi: String?,
+    val periodoPubblicazione: String?,
+    val generi: String?,
+    val durata: Int?,
     val cast: List<Pair<String, String>> = emptyList(),
     val crew: List<Pair<String, String>> = emptyList(),
-    val periodoUscita: String = "",
     var note: String? = null,
     val databaseID: Int = 0,
 ) {

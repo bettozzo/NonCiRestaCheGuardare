@@ -119,7 +119,6 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         for (m in media) {
             val sameIdOnes = media.filter { it.mediaid == m.mediaid }
             val maybePiattaforme = sameIdOnes.map { Pair(it.nome, it.logo_path) }.filterNotNull()
-
             val localMedia = LocalMedia(
                 m.mediaid,
                 m.is_film,
@@ -128,6 +127,9 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                 m.poster_path,
                 m.is_local,
                 m.sinossi,
+                m.annouscita,
+                m.generi,
+                m.durata,
                 note = m.note
             )
             results.add(localMedia);

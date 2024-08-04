@@ -54,9 +54,11 @@ class AggiungiMedia : AppCompatActivity() {
         val isFilm = extras.getBoolean("isFilm");
         val platforms = Converters().stringToPlatform(extras.getString("platforms"));
         val sinossi = extras.getString("sinossi", "NO Sinossi");
+        val periodoPubblicazione = extras.getString("annoUscita");
+        val generi = extras.getString("generi");
+        val durata = extras.getInt("durata");
         val cast = Converters().stringToPlatform(extras.getString("cast"));
         val crew = Converters().stringToPlatform(extras.getString("crew"));
-        val annoUscita = extras.getString("annoUscita");
 
         //titolo
         val titoloMedia = findViewById<TextView>(R.id.titoloFilm);
@@ -71,7 +73,7 @@ class AggiungiMedia : AppCompatActivity() {
         }
         //Anno Uscita
         val annoUscitaView = findViewById<TextView>(R.id.AnnoUscita)
-        annoUscitaView.text = annoUscita;
+        annoUscitaView.text = periodoPubblicazione;
         //poster
         if (poster != null) {
             Picasso.get().load(poster).into(findViewById<ImageView>(R.id.poster))
@@ -148,7 +150,10 @@ class AggiungiMedia : AppCompatActivity() {
                             platforms,
                             poster,
                             false,
-                            sinossi
+                            sinossi,
+                            periodoPubblicazione,
+                            generi,
+                            durata
                         );
                     remoteDao.insertToWatchlist(localMedia, this@AggiungiMedia)
                     LiveDatas.removeRicercaMedia(localMedia)

@@ -9,6 +9,9 @@ data class Media(
     val titolo: String,
     val poster_path: String?,
     val sinossi: String,
+    val generi: String?,
+    val annoUscita: String?,
+    val durata: Int?,
 ) {
     companion object {
         fun getStructure(): String {
@@ -16,7 +19,10 @@ data class Media(
                     "is_film," +
                     "titolo," +
                     "poster_path," +
-                    "sinossi"
+                    "sinossi," +
+                    "generi," +
+                    "annoUscita," +
+                    "durata"
         }
     }
 }
@@ -34,7 +40,10 @@ data class AllDetailsMedia(
     val nome: String?,
     val logo_path: String?,
     val lastupdate: String?,
-    val note: String?
+    val note: String?,
+    val generi: String?,
+    val annouscita: String?,
+    val durata: Int?,
 ) {
     companion object {
         fun getStructure(): String {
@@ -43,12 +52,15 @@ data class AllDetailsMedia(
                     "is_film," +
                     "titolo," +
                     "poster_path," +
-                    "sinossi,"+
+                    "sinossi," +
                     "is_local," +
                     "nome," +
-                    "logo_path,"+
-                    "lastupdate,"+
-                    "note"
+                    "logo_path," +
+                    "lastupdate," +
+                    "note," +
+                    "generi," +
+                    "annouscita," +
+                    "durata"
         }
     }
 }

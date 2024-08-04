@@ -80,6 +80,7 @@ class AggiungiCustomMedia : AppCompatActivity() {
                         posterView.text.toString()
                     }
 
+                //TODO aggiungere campi per avere info, al posto dei null
                 val localMedia =
                     LocalMedia(
                         id,
@@ -88,7 +89,8 @@ class AggiungiCustomMedia : AppCompatActivity() {
                         emptyList(),
                         poster,
                         false,
-                        sinossiView.text.toString()
+                        sinossiView.text.toString(),
+                        null, null, null
                     );
                 remoteDao.insertToWatchlist(localMedia, this@AggiungiCustomMedia)
                 LiveDatas.addMedia(localMedia)
