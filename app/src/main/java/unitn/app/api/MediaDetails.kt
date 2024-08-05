@@ -1,6 +1,7 @@
 package unitn.app.api
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -72,20 +73,13 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
         val platforms = getMediaPlatform(id, isFilm, apiKey)
         val poster = getPosterPath(media.poster_path, media.backdrop_path)
         val (cast, crew) = getCredits(id, isFilm, apiKey);
-
+        val (durata, annoUscita) = getDurataEAnnoUscita(id, isFilm, apiKey);
         val title = if (isFilm) {
             media.title!!
         } else {
             media.name!!
         }
-        var annoUscita = if (isFilm) {
-            media.release_date!!.split("-")[0]
-        } else {
-            media.first_air_date!!.split("-")[0]
-        }
-        if (annoUscita != "") {
-            annoUscita = " ($annoUscita)"
-        }
+
 
         val generi = Genres.getGenres(media.genre_ids)
 
@@ -99,12 +93,13 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
             sinossi,
             annoUscita,
             generi,
-            12345,
+            durata,
             cast,
             crew,
         )
         return movie
     }
+
 
     private fun getResults(
         mediaTitle: String,
@@ -132,6 +127,73 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
             }.toMutableList()
             filteredResults.removeAll { it.first == null }
             return@runBlocking filteredResults;
+        }
+    }
+
+    private suspend fun getDurataEAnnoUscita(
+        id: Int,
+        isFilm: Boolean,
+        apiKey: String,
+    ): Pair<String, String> {
+        val mBaseUrl = if (isFilm) {
+            "https://api.themoviedb.org/3/movie/"
+        } else {
+            "https://api.themoviedb.org/3/tv/"
+        }
+        val apiCallerPlatforms =
+            Retrofit.Builder().baseUrl(mBaseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(RetrofitAPI::class.java)
+
+
+        if (isFilm) {
+            return suspendCoroutine { continuation ->
+                apiCallerPlatforms.getDetailsOnMovies(id, "it", apiKey)
+                    ?.enqueue(object : Callback<ResDetailsMovie?> {
+                        override fun onResponse(
+                            call: Call<ResDetailsMovie?>,
+                            response: Response<ResDetailsMovie?>,
+                        ) {
+                            if (!response.isSuccessful) throw IOException("Unexpected code $response")
+                            val res = response.body()!!;
+                            val durata = res.runtime.toString();
+                            val annoUscita = res.release_date.toString().split("-")[0];
+                            continuation.resume(Pair(durata, annoUscita))
+                        }
+
+                        override fun onFailure(call: Call<ResDetailsMovie?>, t: Throwable) {
+                            Log.d("Errore API movieDetailCall", t.toString())
+                            failureNoInternet();
+                        }
+                    })
+            }
+        } else {
+            return suspendCoroutine { continuation ->
+                apiCallerPlatforms.getDetailsOnTvSeries(id, "it", apiKey)
+                    ?.enqueue(object : Callback<ResDetailsTvSeries?> {
+                        override fun onResponse(
+                            call: Call<ResDetailsTvSeries?>,
+                            response: Response<ResDetailsTvSeries?>,
+                        ) {
+                            if (!response.isSuccessful) throw IOException("Unexpected code $response")
+                            val res = response.body()!!;
+                            val durata =
+                                res.number_of_seasons.toString() + " - " + res.number_of_episodes.toString();
+                            val periodoUsicta = if (res.status != "Ended") {
+                                 res.first_air_date.split("-")[0] + " - ?"
+                            }else{
+                                res.first_air_date.split("-")[0] + " - " + res.last_air_date.split("-")[0]
+                            }
+                            continuation.resume(Pair(durata, periodoUsicta))
+                        }
+
+                        override fun onFailure(call: Call<ResDetailsTvSeries?>, t: Throwable) {
+                            Log.d("Errore API serieDetailCall", t.toString())
+                            failureNoInternet();
+                        }
+                    })
+            }
         }
     }
 
@@ -181,6 +243,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                 }
 
                 override fun onFailure(call: Call<CreditsResults?>, t: Throwable) {
+                    Log.d("Errore API", t.toString())
                     failureNoInternet();
                 }
             })
@@ -221,6 +284,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                 }
 
                 override fun onFailure(call: Call<MediaResultsFromAPI?>, t: Throwable) {
+                    Log.d("Errore API", t.toString())
                     failureNoInternet();
                 }
             })
@@ -276,6 +340,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                 }
 
                 override fun onFailure(call: Call<StreamingResult?>, t: Throwable) {
+                    Log.d("Errore API", t.toString())
                     failureNoInternet();
                 }
             })

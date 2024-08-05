@@ -11,7 +11,7 @@ data class Media(
     val sinossi: String,
     val generi: String?,
     val annoUscita: String?,
-    val durata: Int?,
+    val durata: String?,
 ) {
     companion object {
         fun getStructure(): String {
@@ -43,7 +43,7 @@ data class AllDetailsMedia(
     val note: String?,
     val generi: String?,
     val annouscita: String?,
-    val durata: Int?,
+    val durata: String?,
 ) {
     companion object {
         fun getStructure(): String {

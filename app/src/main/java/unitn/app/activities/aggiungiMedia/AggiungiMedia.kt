@@ -54,9 +54,9 @@ class AggiungiMedia : AppCompatActivity() {
         val isFilm = extras.getBoolean("isFilm");
         val platforms = Converters().stringToPlatform(extras.getString("platforms"));
         val sinossi = extras.getString("sinossi", "NO Sinossi");
-        val periodoPubblicazione = extras.getString("annoUscita");
+        val annoUscita = extras.getString("annoUscita");
         val generi = extras.getString("generi");
-        val durata = extras.getInt("durata");
+        val durata = extras.getString("durata");
         val cast = Converters().stringToPlatform(extras.getString("cast"));
         val crew = Converters().stringToPlatform(extras.getString("crew"));
 
@@ -73,7 +73,7 @@ class AggiungiMedia : AppCompatActivity() {
         }
         //Anno Uscita
         val annoUscitaView = findViewById<TextView>(R.id.AnnoUscita)
-        annoUscitaView.text = periodoPubblicazione;
+        annoUscitaView.text = annoUscita;
         //poster
         if (poster != null) {
             Picasso.get().load(poster).into(findViewById<ImageView>(R.id.poster))
@@ -151,7 +151,7 @@ class AggiungiMedia : AppCompatActivity() {
                             poster,
                             false,
                             sinossi,
-                            periodoPubblicazione,
+                            annoUscita,
                             generi,
                             durata
                         );

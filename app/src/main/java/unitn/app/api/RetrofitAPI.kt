@@ -16,6 +16,21 @@ interface RetrofitAPI {
         @Query("api_key") api_key: String,
     ): Call<MediaResultsFromAPI?>?
 
+
+    @GET("{movie_id}?")
+    fun getDetailsOnMovies(
+        @Path("movie_id") movie_id: Int,
+        @Query("language") language: String,
+        @Query("api_key") api_key: String,
+    ): Call<ResDetailsMovie?>?
+    @GET("{series_id}?")
+    fun getDetailsOnTvSeries(
+        @Path("series_id") series_id: Int,
+        @Query("language") language: String,
+        @Query("api_key") api_key: String,
+    ): Call<ResDetailsTvSeries?>?
+
+
     @GET("providers?")
     fun getPlatform(@Query("api_key") api_key: String): Call<StreamingResult?>?
 

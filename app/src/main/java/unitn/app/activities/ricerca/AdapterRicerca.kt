@@ -72,7 +72,9 @@ class AdapterSearch(private var context: Context, private var localMedia: List<L
         intent.putExtra("sinossi", localMedia.sinossi)
         intent.putExtra("cast", Converters().platformToString(localMedia.cast))
         intent.putExtra("crew", Converters().platformToString(localMedia.crew))
-        intent.putExtra("annoUscita", localMedia.periodoPubblicazione)
+        intent.putExtra("generi", localMedia.generi)
+        intent.putExtra("annoUscita", localMedia.annoUscita)
+        intent.putExtra("durata", localMedia.durata)
     }
 
     override fun getItem(p0: Int): Any {

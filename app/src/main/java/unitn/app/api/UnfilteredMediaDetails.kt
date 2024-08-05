@@ -1,7 +1,7 @@
 package unitn.app.api
 
 data class UnfilteredMediaDetails(
-    var adult: Boolean,
+    val adult: Boolean,
     val media_type: String,
     var backdrop_path: String?,
     val genre_ids: List<Int>?,

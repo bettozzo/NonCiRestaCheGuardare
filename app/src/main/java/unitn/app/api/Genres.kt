@@ -12,9 +12,10 @@ object Genres {
         listId.forEach { idDaCercare ->
             val genereTrovato = listOfGeneres.find { it.id == idDaCercare};
             val genere = genereTrovato?.name ?: "errore"
-            results.append(genere).append(",")
+            results.append(genere).append(", ")
         }
-        return results.toString();
+
+        return results.removeSuffix(",").toString();
     }
 
     private fun initData(): List<GenereStructure> {

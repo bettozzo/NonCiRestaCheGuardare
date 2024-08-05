@@ -109,7 +109,7 @@ class AdapterHomepage(
         intent.putExtra("isFilm", localMedia.isFilm)
         intent.putExtra("note", localMedia.note)
         intent.putExtra("generi", localMedia.generi)
-        intent.putExtra("annoUscita", localMedia.periodoPubblicazione)
+        intent.putExtra("annoUscita", localMedia.annoUscita)
         intent.putExtra("durata", localMedia.durata)
 
         //also update in ../dettaglio/DettaglioMedia.kt

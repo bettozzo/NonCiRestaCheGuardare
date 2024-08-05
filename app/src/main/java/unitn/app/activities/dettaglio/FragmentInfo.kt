@@ -55,10 +55,19 @@ class FragmentInfo(private val extras: Bundle) : Fragment() {
 
         //durata
         val durataText = view.findViewById<TextView>(R.id.durataText)
-        val durata = extras.getInt("durata")
-        if(durata > 0) {
-            durataText.text = durata.toString()
-        }else{
+        val durata = extras.getString("durata")
+        val isFilm = extras.getBoolean("isFilm")
+        if (durata != null) {
+            if (isFilm) {
+                durataText.text = StringBuilder(durata.toString()).append(" minuti").toString()
+            } else {
+                val numeroStagioni = durata.split(" - ")[0]
+                val numeroEpisodi = durata.split(" - ")[1]
+                val txt = StringBuilder("Stagioni: ").append(numeroStagioni).append("\nTot. Episodi: ")
+                    .append(numeroEpisodi).append("\n")
+                durataText.text = txt.toString()
+            }
+        } else {
             durataText.visibility = View.GONE;
             view.findViewById<LinearLayout>(R.id.infoDurata).visibility = View.GONE
         }
@@ -66,9 +75,9 @@ class FragmentInfo(private val extras: Bundle) : Fragment() {
         //anno uscita
         val annoUscitaText = view.findViewById<TextView>(R.id.annoUscitaText)
         val annoUscita = extras.getString("annoUscita")
-        if(annoUscita != null) {
+        if (annoUscita != null) {
             annoUscitaText.text = annoUscita
-        }else{
+        } else {
             annoUscitaText.visibility = View.GONE;
             view.findViewById<LinearLayout>(R.id.infoAnno).visibility = View.GONE
         }
@@ -76,10 +85,15 @@ class FragmentInfo(private val extras: Bundle) : Fragment() {
 
         //genere
         val genereText = view.findViewById<TextView>(R.id.genereText)
-        val generi = extras.getString("generi")
-        if(generi != null) {
-            genereText.text = generi.split(",").toString()
-        }else{
+        val generi = extras.getString("generi", "")
+        if (generi != "") {
+            val listaGeneri = generi.split(", ");
+            val txt = StringBuilder();
+            for (genere in listaGeneri) {
+                txt.append(genere).append("\n")
+            }
+            genereText.text = txt.toString()
+        } else {
             genereText.visibility = View.GONE;
             view.findViewById<LinearLayout>(R.id.infoGenere).visibility = View.GONE
         }

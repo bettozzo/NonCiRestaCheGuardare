@@ -10,20 +10,14 @@ import unitn.app.remotedb.RemoteDAO
 
 object ConverterMedia {
     fun toRemote(media: LocalMedia): Media {
-        var generi: StringBuilder? = StringBuilder();
-        if (media.generi != null) {
-            media.generi.forEach { generi?.append(it)?.append(",") }
-        } else {
-            generi = null;
-        }
         return Media(
             media.mediaId,
             media.isFilm,
             media.title,
             media.posterPath,
             media.sinossi!!,
-            generi.toString(),
-            media.periodoPubblicazione,
+            media.generi,
+            media.annoUscita,
             media.durata
         )
     }

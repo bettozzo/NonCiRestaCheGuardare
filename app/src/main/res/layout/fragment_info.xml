@@ -21,7 +21,7 @@
         <LinearLayout
             android:id="@+id/infoDurata"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@id/poster"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
@@ -73,7 +73,7 @@
         <LinearLayout
             android:id="@+id/infoGenere"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@id/infoAnno"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
@@ -102,7 +102,6 @@
             android:layout_height="match_parent"
             android:layout_below="@id/infoGenere"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
             android:orientation="vertical">
 
             <TextView
