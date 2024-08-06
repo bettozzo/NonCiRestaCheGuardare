@@ -1,14 +1,17 @@
 <h1 align="center">NON CI RESTA CHE GUARDARE </h1>
 
-L’app **Non ci Resta che Guardare** serve a studenti ed a utenti che vogliono vedersi un **BEL** (scusate la presunzione) film di tanto in tanto.
+**Non ci Resta che Guardare** è un progetto pensato per utenti che vogliono vedersi un **BEL** (scusate la presunzione) film di tanto in tanto.<br>
+Il progetto ha sia un'app(questa repo) sia una versione web ([repo qui](https://github.com/bettozzo/nrg)).
 
-Il progetto ha le seguenti funzionalità:
+L'app permette all'utente di avere una watchlist, separando i film dalle serie TV e con la possibilità di salvarsi delle informazioni aggiuntive.
+
+# Project roadmap
 
 - [x] Watchlist
   - [x] Separa i film dalle serie TV
   - [x] Mostra informazioni sul film/serie
   - [x] Mostra su quali piattaforme si può vedere il film/serie
-  - [ ] Ha sezione note per ogni entry
+  - [x] Ha sezione note per ogni entry
   - [ ] Possibilità di filtrare e/o ordinare contenuti
 - [x] Cronologia
 - [ ] Recensioni e/o valutazioni sui contenuti visti
@@ -30,6 +33,7 @@ Per poter buildare il progetto, serve:
 
 # Built with
 
+- [TMDB - The Movie Database](https://www.themoviedb.org/?language=it-IT) - Ottenere tutte le informazioni su film e serie TV
 - [Supabase](https://supabase.com/) - Database remoto: gratis e opensource, compatibile sia con Kotlin che con JavaScript.
 - [Retrofit](https://square.github.io/retrofit/) - Trasforma chiamate API HTTP in interfacce Kotlin
 - [Picasso](https://square.github.io/picasso/) - Caricare immagini da URL

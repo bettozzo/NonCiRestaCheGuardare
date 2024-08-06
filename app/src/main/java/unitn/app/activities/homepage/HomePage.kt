@@ -42,7 +42,6 @@ class HomePage : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        updateColor();
 
         val mediaSelected = findViewById<TabLayout>(R.id.pageSelection);
         val viewPager = findViewById<ViewPager2>(R.id.pager)
@@ -76,6 +75,8 @@ class HomePage : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
+        updateColor();
         val viewPager = findViewById<ViewPager2>(R.id.pager)
         val goToSearchButton = findViewById<ImageButton>(R.id.goToSearchMediaButton)
         val goToProfileButton = findViewById<ImageButton>(R.id.goToProfile)

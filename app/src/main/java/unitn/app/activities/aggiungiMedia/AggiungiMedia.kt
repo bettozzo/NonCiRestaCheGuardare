@@ -41,7 +41,6 @@ class AggiungiMedia : AppCompatActivity() {
         }
 
         //extras from: ../ricerca/AdapterRicerca.kt
-        //extras from: ../profilo/FragmentCronologia.kt
         val extras = intent.extras;
         if (extras == null) {
             System.err.println("Bundle is null")

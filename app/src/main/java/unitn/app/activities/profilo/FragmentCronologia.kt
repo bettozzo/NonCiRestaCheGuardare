@@ -2,7 +2,6 @@ package unitn.app.activities.profilo
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,16 +10,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.test.R
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
-import unitn.app.activities.ConverterMedia
 import unitn.app.activities.LiveDatas
-import unitn.app.activities.aggiungiMedia.AggiungiMedia
-import unitn.app.localdb.Converters
 import unitn.app.remotedb.RemoteDAO
 
 class FragmentCronologia : Fragment() {
@@ -115,30 +110,12 @@ class FragmentCronologia : Fragment() {
             val cronologia = RemoteDAO(view.context, coroutineContext).getCronologia()
             for ((media, data) in cronologia) {
                 val viewItem = inflater.inflate(R.layout.item_cronologia, lista, false);
-
                 Picasso.get().load(media.poster_path).placeholder(R.drawable.missing_poster)
                     .into(viewItem.findViewById<ImageView>(R.id.poster))
                 viewItem.findViewById<TextView>(R.id.titoloFilm).text = media.titolo
                 val dataYMD = data.split("-")
                 val dataDMY = dataYMD[2] + "/" + dataYMD[1] + "/" + dataYMD[0]
                 viewItem.findViewById<TextView>(R.id.data).text = dataDMY
-                viewItem.setOnClickListener {
-                    val localMedia = ConverterMedia.toLocal(
-                        viewItem.context,
-                        media,
-                        false,
-                        activity as AppCompatActivity
-                    )
-                    val intent = Intent(viewItem.context, AggiungiMedia::class.java)
-                    intent.putExtra("id", media.mediaID)
-                    intent.putExtra("titoloMedia", media.titolo)
-                    intent.putExtra("poster", media.poster_path)
-                    intent.putExtra("isFilm", media.is_film)
-                    intent.putExtra("sinossi", media.sinossi)
-                    intent.putExtra("platforms", Converters().platformToString(localMedia.platform))
-                    startActivity(intent)
-
-                }
                 lista.addView(viewItem)
             }
         }
