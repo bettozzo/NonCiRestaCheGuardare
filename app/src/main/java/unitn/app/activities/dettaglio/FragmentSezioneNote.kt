@@ -52,5 +52,11 @@ class FragmentSezioneNote(private val note: String?, private val mediaId: Int) :
                 Toast.makeText(requireContext(), "Nota salvata correttamente", Toast.LENGTH_SHORT).show();
             }
         }
+        noteView.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                noteView.hideKeyboard();
+            }
+        }
     }
+
 }

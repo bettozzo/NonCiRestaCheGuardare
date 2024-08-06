@@ -15,7 +15,7 @@ object Genres {
             results.append(genere).append(", ")
         }
 
-        return results.removeSuffix(",").toString();
+        return results.removeSuffix(", ").toString();
     }
 
     private fun initData(): List<GenereStructure> {

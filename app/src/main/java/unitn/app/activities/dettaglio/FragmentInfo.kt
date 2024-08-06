@@ -106,4 +106,9 @@ class FragmentInfo(private val extras: Bundle) : Fragment() {
         sinossiView.movementMethod = ScrollingMovementMethod();
 
     }
+
+    override fun onResume() {
+        super.onResume()
+        root?.requestLayout()
+    }
 }

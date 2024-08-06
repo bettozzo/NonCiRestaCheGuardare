@@ -1,14 +1,14 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    tools:context="unitn.app.activities.dettaglio.FragmentInfo"
+    tools:ignore="HardcodedText">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        tools:context="unitn.app.activities.dettaglio.FragmentInfo"
-        tools:ignore="HardcodedText">
+        android:layout_marginTop="10dp">
 
         <ImageView
             android:id="@+id/poster"

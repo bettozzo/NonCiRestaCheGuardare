@@ -58,20 +58,19 @@ class DettaglioMedia : AppCompatActivity() {
         setButtonProperties(buttonDel, buttonSeen, id)
 
 
+        val isFilm = extras.getBoolean("isFilm");
         val viewFragAdapter = ViewPagerFragmentAdapter(this, extras);
         val tabLayout = findViewById<TabLayout>(R.id.pageSelection);
         val viewPager = findViewById<ViewPager2>(R.id.pager)
         viewPager.adapter = viewFragAdapter;
-
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            if(extras.getBoolean("isFilm")){
+            if (isFilm) {
                 when (position) {
                     0 -> tab.text = "INFO";
                     1 -> tab.text = "STREAMING";
                     2 -> tab.text = "NOTE";
-
                 }
-            }else{
+            } else {
                 when (position) {
                     0 -> tab.text = "INFO";
                     1 -> tab.text = "PROGRESSO";
@@ -79,9 +78,7 @@ class DettaglioMedia : AppCompatActivity() {
                     3 -> tab.text = "NOTE";
                 }
             }
-
         }.attach()
-
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 currentTab = tab.position
@@ -129,6 +126,7 @@ class DettaglioMedia : AppCompatActivity() {
         titoloFilm.setSingleLine(true);
         titoloFilm.setSelected(true);
     }
+
 }
 
 
