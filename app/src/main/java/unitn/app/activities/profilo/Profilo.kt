@@ -4,26 +4,23 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.widget.ImageButton
+import android.text.method.LinkMovementMethod
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.room.Room
-import androidx.viewpager2.widget.ViewPager2
 import com.example.test.R
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.runBlocking
-import unitn.app.activities.LiveDatas
-import unitn.app.activities.homepage.HomePage
+import unitn.app.activities.auth.Login
 import unitn.app.localdb.UserDatabase
+import unitn.app.remotedb.RemoteDAO
 
 
 class Profilo : AppCompatActivity() {
-
-    private var currentTab = 0;
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -37,12 +34,7 @@ class Profilo : AppCompatActivity() {
         }
 
         val textNomeUtente = findViewById<TextView>(R.id.titolo)
-        val buttonSave = findViewById<ImageButton>(R.id.buttonSave)
 
-        //Change colors
-        LiveDatas.liveColore.observe(this) {
-            LiveDatas.updateColorsOfImgButtons(listOf(buttonSave))
-        }
         val username: String;
         runBlocking {
             val userDao = Room.databaseBuilder(
@@ -56,42 +48,85 @@ class Profilo : AppCompatActivity() {
         //nome
         textNomeUtente.text = "Ciao, $username!"
 
-        //button to save
-        buttonSave.setOnClickListener {
-            startActivity(Intent(this@Profilo, HomePage::class.java))
-            finish()
-        }
 
-        val viewFragAdapter = ViewPagerFragmentAdapter(this, username);
-        val mediaSelected = findViewById<TabLayout>(R.id.pageSelection);
-        val viewPager = findViewById<ViewPager2>(R.id.pager)
-        viewPager.adapter = viewFragAdapter;
+        val selezioneTema = findViewById<LinearLayout>(R.id.GoToSelezioneTema)
+        val account = findViewById<LinearLayout>(R.id.GoToAccount)
+        val cronologia = findViewById<LinearLayout>(R.id.GoToCronologia)
+        val statistiche = findViewById<LinearLayout>(R.id.GoToStatistiche)
 
-        TabLayoutMediator(mediaSelected, viewPager) { tab, position ->
-            when (position) {
-                0 -> {
-                    tab.text = "INFO";
-                }
-                1 -> {
-                    tab.text = "TEMA";
-                }
-                2 -> {
-                    tab.text = "ACCOUNT";
-                }
-                3 -> {
-                    tab.text = "STORICO";
-                }
-            }
-        }.attach()
+        selezioneTema.onClickGoToActivity(ProfiloSelezioneTema::class.java)
+        account.onClickGoToActivity(ProfiloAccount::class.java)
+        cronologia.onClickGoToActivity(ProfiloCronologia::class.java)
+        statistiche.onClickGoToActivity(ProfiloStatistiche::class.java)
 
-        mediaSelected.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                currentTab = tab.position
-            }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
-        })
+
+
+        //url sito
+        val urlSito = findViewById<TextView>(R.id.URLsito)
+        urlSito.movementMethod = LinkMovementMethod.getInstance()
+
+
+        //button log off
+        val btnLogOff = findViewById<LinearLayout>(R.id.buttonLogOff)
+        setLogOffButton(btnLogOff);
+
+        //button delete account
+        val btnDelete = findViewById<LinearLayout>(R.id.buttonDeleteAccount)
+        setDeleteAccount(btnDelete);
     }
 
+    private fun<T: Any> LinearLayout.onClickGoToActivity(target: Class<T>){
+        this.setOnClickListener {
+            val intent = Intent(this@Profilo,target );
+            startActivity(intent)
+        }
+    }
+    private fun setDeleteAccount(button: LinearLayout) {
+        button.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+
+            with(builder)
+            {
+                setTitle("CANCELLA ACCOUNT")
+                setMessage("Sei sicuro di voler cancellare l'account?\nTutti i dati andranno persi in maniera irreversibile")
+                setPositiveButton(android.R.string.ok) { _, _ ->
+                    runBlocking {
+                        val localDao = Room.databaseBuilder(
+                            context,
+                            UserDatabase::class.java, "user-db"
+                        ).fallbackToDestructiveMigration()
+                            .build().userDao()
+                        val userId = localDao.getUserId()!!;
+                        localDao.deleteEvertyhing();
+                        RemoteDAO.deleteUser(userId);
+                        val intent = Intent(context, Login::class.java)
+                        intent.flags =
+                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        finish();
+                        startActivity(intent)
+                    }
+                }
+                setNegativeButton(android.R.string.cancel, null)
+                show()
+            }
+        }
+    }
+
+    private fun setLogOffButton(button: LinearLayout) {
+        button.setOnClickListener {
+            runBlocking {
+                Room.databaseBuilder(
+                    this@Profilo,
+                    UserDatabase::class.java, "user-db"
+                ).fallbackToDestructiveMigration()
+                    .build().userDao().deleteEvertyhing()
+            }
+            val intent = Intent(this, Login::class.java)
+            intent.flags =
+                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            finish();
+            startActivity(intent)
+        }
+    }
 }

@@ -1,37 +1,38 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="unitn.app.activities.profilo.FragmentCronologia"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context="unitn.app.activities.profilo.ProfiloStatistiche"
     tools:ignore="HardcodedText">
 
+    <TextView
+        android:id="@+id/statisticheHeader"
+        style="@style/Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Statistiche" />
+
     <RelativeLayout
+        android:id="@+id/percentualeVisione"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fillViewport="true">
+        android:layout_marginHorizontal="20dp">
 
         <RelativeLayout
-            android:layout_marginVertical="10dp"
-            android:id="@+id/completamentoLista"
+            android:id="@+id/spazioHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="10dp"
-            android:paddingEnd="30dp">
-
-            <TextView
-                android:id="@+id/statisticheHeader"
-                style="@style/Header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="Statistiche" />
+            android:layout_marginTop="10dp">
 
             <TextView
                 android:id="@+id/percentualeVisti"
                 style="@style/normalText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/statisticheHeader"
                 android:layout_alignParentStart="true"
                 android:text="Percentuale visti" />
 
@@ -39,68 +40,63 @@
                 android:id="@+id/percentualeVistiTotale"
                 style="@style/normalText"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/statisticheHeader"
                 android:layout_alignParentEnd="true"
                 android:text="Totale %"
                 android:textStyle="bold" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/spazioFilm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spazioHeader"
+            android:layout_marginTop="10dp">
 
             <TextView
                 android:id="@+id/percentualeVistiFilm"
                 style="@style/normalText"
                 android:layout_width="wrap_content"
-                android:textColor="@color/GrigioScuro"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/percentualeVisti"
                 android:layout_alignParentStart="true"
-                android:text="Divisi in film" />
+                android:text="Divisi in film"
+                android:textColor="@color/GrigioScuro" />
 
             <TextView
                 android:id="@+id/percentualeVistiFilmTotale"
                 style="@style/normalText"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/percentualeVistiTotale"
                 android:layout_alignParentEnd="true"
-                android:textColor="@color/GrigioScuro"
                 android:text="Film %"
+                android:textColor="@color/GrigioScuro"
                 android:textStyle="bold" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/spazioSerie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spazioFilm"
+            android:layout_marginTop="10dp">
 
             <TextView
                 android:id="@+id/percentualeVistiSerieTV"
                 style="@style/normalText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/percentualeVistiFilm"
-                android:textColor="@color/GrigioScuro"
                 android:layout_alignParentStart="true"
-                android:text="Divisi in serie TV" />
+                android:text="Divisi in serie TV"
+                android:textColor="@color/GrigioScuro" />
 
             <TextView
                 android:id="@+id/percentualeVistiSerieTVTotale"
                 style="@style/normalText"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/percentualeVistiFilmTotale"
                 android:layout_alignParentEnd="true"
                 android:text="SerieTV %"
                 android:textColor="@color/GrigioScuro"
                 android:textStyle="bold" />
         </RelativeLayout>
-
-        <TextView
-            android:id="@+id/cronologiaHeader"
-            style="@style/Header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/completamentoLista"
-            android:layout_centerHorizontal="true"
-            android:text="Cronologia" />
-
-        <LinearLayout
-            android:id="@+id/cronologiaLista"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/cronologiaHeader"
-            android:layout_marginBottom="70dp"
-            android:orientation="vertical" />
-
     </RelativeLayout>
-</ScrollView>
+</LinearLayout>
