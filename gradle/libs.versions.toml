@@ -19,6 +19,7 @@ lifecycleRuntimeKtx = "2.7.0"
 material = "1.10.0"
 activity = "1.8.0"
 constraintlayout = "2.1.4"
+mpandroidchart = "v3.1.0"
 picasso = "(insert latest version)"
 picassoVersion = "2.5.2"
 retrofitVersion = "2.9.0"
@@ -53,6 +54,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
 picasso = { module = "com.squareup.picasso:picasso", version.ref = "picasso" }
 picasso-v252 = { module = "com.squareup.picasso:picasso", version.ref = "picassoVersion" }
 picasso-v28 = { module = "com.squareup.picasso:picasso", version.ref = "squareupPicasso" }

@@ -1,20 +1,40 @@
 package unitn.app.activities.profilo
 
 import android.annotation.SuppressLint
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
 import com.example.test.R
-import kotlinx.coroutines.launch
+import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.PercentFormatter
+import kotlinx.coroutines.runBlocking
 import unitn.app.activities.LiveDatas
 import unitn.app.remotedb.RemoteDAO
 
 class ProfiloStatistiche : AppCompatActivity() {
+
+
+    private var filmVisti = 0;
+    private var serieViste = 0;
+    private var filmDaVedere = 0;
+    private var serieDaVedere = 0;
+
+    private var totaleFilm = 0;
+    private var totaleSerie = 0;
+    private var totaleVisti = 0;
+    private var totaleDaVedere = 0;
+    private var totale = 0;
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -25,20 +45,36 @@ class ProfiloStatistiche : AppCompatActivity() {
             insets
         }
 
+        initDati();
 
-        val testoPercentuale = findViewById<RelativeLayout>(R.id.percentualeVisione)
         //completismo
-        var inPercentuale = true;
-        setCompletamento(inPercentuale)
-        testoPercentuale.setOnClickListener {
-            inPercentuale = !inPercentuale
-            setCompletamento(inPercentuale)
-        }
+        setCompletamento()
 
+        //grafico a torta
+        setPieCharInfo()
     }
+
+    private fun initDati() {
+        runBlocking {
+            val remoteDao = RemoteDAO(
+                this@ProfiloStatistiche, coroutineContext
+            );
+            val cronologia = remoteDao.getCronologia()
+            filmVisti = cronologia.count { it.first.is_film }
+            serieViste = cronologia.count { !it.first.is_film }
+            filmDaVedere = LiveDatas.liveWatchlist.value?.count { it.isFilm } ?: 0
+            serieDaVedere = LiveDatas.liveWatchlist.value?.count { !it.isFilm } ?: 0
+
+            totaleFilm = filmVisti + filmDaVedere;
+            totaleSerie = serieViste + serieDaVedere;
+            totaleVisti = filmVisti + serieViste;
+            totaleDaVedere = filmDaVedere + serieDaVedere;
+            totale = totaleVisti + totaleDaVedere
+        }
+    }
+
     @SuppressLint("SetTextI18n", "DefaultLocale")
     private fun setCompletamento(
-        inPercentuale: Boolean,
     ) {
 
         val headerPercentualeVisti = findViewById<TextView>(R.id.percentualeVisti)
@@ -46,46 +82,63 @@ class ProfiloStatistiche : AppCompatActivity() {
         val dettaglioFilm = findViewById<TextView>(R.id.percentualeVistiFilmTotale)
         val dettaglioSerie = findViewById<TextView>(R.id.percentualeVistiSerieTVTotale)
 
+        vistiGenerico.text = "$totaleVisti/$totale"
+        dettaglioFilm.text = "$filmVisti/$totaleFilm"
+        dettaglioSerie.text = "$serieViste/$totaleSerie"
+        headerPercentualeVisti.text = "Numero visti"
+    }
 
-        lifecycleScope.launch {
-            val remoteDao = RemoteDAO(
-                this@ProfiloStatistiche, coroutineContext
-            );
-            val cronologia = remoteDao.getCronologia()
+    private fun setPieCharInfo() {
+        val pieChart = findViewById<PieChart>(R.id.pieChart)
 
-            val filmVisti = cronologia.count { it.first.is_film }
-            val serieViste = cronologia.count { !it.first.is_film }
-            val filmDaVedere = LiveDatas.liveWatchlist.value?.count { it.isFilm } ?: 0
-            val serieDaVedere = LiveDatas.liveWatchlist.value?.count { !it.isFilm } ?: 0
+        pieChart.setUsePercentValues(true)
+        pieChart.description.isEnabled = false
 
-            val totaleFilm = filmVisti + filmDaVedere;
-            val totaleSerie = serieViste + serieDaVedere;
-            val totaleVisti = filmVisti + serieViste;
-            val totaleDaVedere = filmDaVedere + serieDaVedere;
-            val totale = totaleVisti + totaleDaVedere
 
-            vistiGenerico.text = if (inPercentuale && totale != 0) {
-                String.format("%.1f", (totaleVisti.toFloat() / totale.toFloat()) * 100) + "%"
-            } else {
-                "$totaleVisti/$totale"
-            }
+        pieChart.setTransparentCircleColor(Color.WHITE)
+        pieChart.setTransparentCircleAlpha(110)
 
-            dettaglioFilm.text = if (inPercentuale && totale != 0) {
-                String.format("%.1f", (filmVisti.toFloat() / totale.toFloat()) * 100) + "%"
-            } else {
-                "$filmVisti/$totaleFilm"
-            }
-            dettaglioSerie.text = if (inPercentuale && totale != 0) {
-                String.format("%.1f", (serieViste.toFloat() / totale.toFloat()) * 100) + "%"
-            } else {
-                "$serieViste/$totaleSerie"
-            }
 
-            headerPercentualeVisti.text = if (inPercentuale) {
-                "Percentuale visti"
-            } else {
-                "Numero visti"
-            }
+        pieChart.isDrawHoleEnabled = true
+        if(LiveDatas.liveIsDarkTheme.value!!) {
+            pieChart.setHoleColor(Color.DKGRAY)
+        }else{
+            pieChart.setHoleColor(Color.WHITE)
         }
+        pieChart.holeRadius = 50f
+        pieChart.transparentCircleRadius = 55f
+        pieChart.setDrawCenterText(true)
+        pieChart.isHighlightPerTapEnabled = true
+        pieChart.animateY(1400, Easing.EaseInOutQuad)
+        pieChart.legend.isEnabled = false
+        pieChart.setEntryLabelColor(Color.WHITE)
+        pieChart.setEntryLabelTextSize(12f)
+
+
+        val entries: ArrayList<PieEntry> = ArrayList()
+        entries.add(PieEntry(filmVisti.toFloat(), "Film"))
+        entries.add(PieEntry(serieViste.toFloat(), "Serie"))
+        entries.add(PieEntry(totaleDaVedere.toFloat(), "Da vedere"))
+        val dataSet = PieDataSet(entries, "Film vs Serie viste")
+
+        val data = PieData(dataSet)
+        data.setValueFormatter(PercentFormatter())
+        data.setValueTextSize(15f)
+        data.setValueTypeface(Typeface.DEFAULT_BOLD)
+        data.setValueTextColor(Color.WHITE)
+        pieChart.setData(data)
+
+
+        dataSet.sliceSpace = 3f
+
+        val colors: ArrayList<Int> = ArrayList()
+        colors.add(resources.getColor(R.color.Azzurro))
+        colors.add(resources.getColor(R.color.Verde))
+        colors.add(resources.getColor(R.color.GrigioScuro))
+        dataSet.colors = colors
+
+        // loading chart
+        pieChart.highlightValues(null)
+        pieChart.invalidate()
     }
 }

@@ -99,4 +99,10 @@
                 android:textStyle="bold" />
         </RelativeLayout>
     </RelativeLayout>
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/pieChart"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="50dp" />
 </LinearLayout>

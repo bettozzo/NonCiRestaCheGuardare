@@ -65,6 +65,9 @@ dependencies {
     //carica immagine con picasso
     implementation libs.picasso.v28
 
+    //Grafico a torta
+    implementation(libs.mpandroidchart)
+
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
