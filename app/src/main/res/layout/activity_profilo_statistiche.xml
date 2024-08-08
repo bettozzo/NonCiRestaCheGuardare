@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:text="Percentuale visti" />
+                android:text="Numero Visti" />
 
             <TextView
                 android:id="@+id/percentualeVistiTotale"
@@ -59,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:text="Divisi in film"
+                android:text="Film visti"
                 android:textColor="@color/GrigioScuro" />
 
             <TextView
@@ -86,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:text="Divisi in serie TV"
+                android:text="Serie TV viste"
                 android:textColor="@color/GrigioScuro" />
 
             <TextView

@@ -73,11 +73,17 @@ class DettaglioMedia : AppCompatActivity() {
                     2 -> tab.text = "NOTE";
                 }
             } else {
+                //TODO scommenttare quando si aggiunge tab progresso
+//                when (position) {
+//                    0 -> tab.text = "INFO";
+//                    1 -> tab.text = "PROGRESSO";
+//                    2 -> tab.text = "STREAMING";
+//                    3 -> tab.text = "NOTE";
+//                }
                 when (position) {
                     0 -> tab.text = "INFO";
-                    1 -> tab.text = "PROGRESSO";
-                    2 -> tab.text = "STREAMING";
-                    3 -> tab.text = "NOTE";
+                    1 -> tab.text = "STREAMING";
+                    2 -> tab.text = "NOTE";
                 }
             }
         }.attach()

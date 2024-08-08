@@ -17,7 +17,8 @@ class ViewPagerFragmentAdapter(fragmentActivity: FragmentActivity, extras: Bundl
         return if (isFilm) {
             3
         } else {
-            4;
+//            4;//TODO scommentare quando si aggiunge TAB progresso
+            3
         }
     }
 
@@ -29,11 +30,17 @@ class ViewPagerFragmentAdapter(fragmentActivity: FragmentActivity, extras: Bundl
                 2 -> return sezioneNote
             }
         } else {
+            //TODO scommentare quando si aggiunge TAB progresso
+//            when (position) {
+//                0 -> return info
+//                1 -> return segnaposto
+//                2 -> return doveVedere
+//                3 -> return sezioneNote
+//            }
             when (position) {
                 0 -> return info
-                1 -> return segnaposto
-                2 -> return doveVedere
-                3 -> return sezioneNote
+                1 -> return doveVedere
+                2 -> return sezioneNote
             }
         }
         return info

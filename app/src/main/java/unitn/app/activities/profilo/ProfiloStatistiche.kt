@@ -76,8 +76,6 @@ class ProfiloStatistiche : AppCompatActivity() {
     @SuppressLint("SetTextI18n", "DefaultLocale")
     private fun setCompletamento(
     ) {
-
-        val headerPercentualeVisti = findViewById<TextView>(R.id.percentualeVisti)
         val vistiGenerico = findViewById<TextView>(R.id.percentualeVistiTotale)
         val dettaglioFilm = findViewById<TextView>(R.id.percentualeVistiFilmTotale)
         val dettaglioSerie = findViewById<TextView>(R.id.percentualeVistiSerieTVTotale)
@@ -85,7 +83,6 @@ class ProfiloStatistiche : AppCompatActivity() {
         vistiGenerico.text = "$totaleVisti/$totale"
         dettaglioFilm.text = "$filmVisti/$totaleFilm"
         dettaglioSerie.text = "$serieViste/$totaleSerie"
-        headerPercentualeVisti.text = "Numero visti"
     }
 
     private fun setPieCharInfo() {
