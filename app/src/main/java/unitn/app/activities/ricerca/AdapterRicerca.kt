@@ -27,7 +27,7 @@ class AdapterSearch(private var context: Context, private var localMedia: List<L
         var myView = convertView
         if (myView == null) {
             val mInflater = (context as Activity).layoutInflater
-            myView = mInflater.inflate(R.layout.item_grid, parent, false)
+            myView = mInflater.inflate(R.layout.item_grid_media, parent, false)
 
             itemInGrid = ViewHolderSearch()
             itemInGrid.poster = myView!!.findViewById(R.id.imageView)!!

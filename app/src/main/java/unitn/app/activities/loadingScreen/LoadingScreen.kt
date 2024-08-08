@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.MutableLiveData
 import com.example.test.R
 import kotlinx.coroutines.runBlocking
 import unitn.app.activities.LiveDatas
@@ -17,7 +16,6 @@ import unitn.app.remotedb.RemoteDAO
 import kotlin.coroutines.coroutineContext
 
 class LoadingScreen : AppCompatActivity() {
-    private var isFinished: MutableLiveData<Boolean> = MutableLiveData(false)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -27,16 +25,13 @@ class LoadingScreen : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+//        lifecycleScope.launch {
         runBlocking {
             syncDataDB()
-        }
-        isFinished.observe(this) {
-            if (it) {
-                val intent = Intent(this@LoadingScreen, HomePage::class.java);
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                intent.putExtra("firstTimeLoading", true);
-                startActivity(intent)
-            }
+            val intent = Intent(this@LoadingScreen, HomePage::class.java);
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            intent.putExtra("firstTimeLoading", true);
+            startActivity(intent)
         }
 
     }
@@ -60,13 +55,10 @@ class LoadingScreen : AppCompatActivity() {
         val medias = remoteDao.getAllMediaDetails();
 
         if (medias.isEmpty()) {
-            isFinished.value = true;
             return;
         }
         medias.map {
             LiveDatas.addMedia(it)
         }
-
-        isFinished.value = true;
     }
 }

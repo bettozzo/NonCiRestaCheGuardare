@@ -43,14 +43,12 @@
             android:layout_height="40dp"
             android:text="Rai Play" />
 
-
         <CheckBox
             android:id="@+id/disneyPlusBox"
             style="@style/normalText"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:text="Disney Plus" />
-
 
         <CheckBox
             android:id="@+id/crunchyrollBox"

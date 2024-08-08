@@ -5,9 +5,11 @@ import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -54,7 +56,7 @@ class DettaglioMedia : AppCompatActivity() {
 
         //buttons
         val buttonDel = findViewById<ImageButton>(R.id.buttonDelete)
-        val buttonSeen = findViewById<ImageButton>(R.id.buttonSeen)
+        val buttonSeen = findViewById<Button>(R.id.buttonSeen)
         setButtonProperties(buttonDel, buttonSeen, id)
 
 
@@ -89,7 +91,7 @@ class DettaglioMedia : AppCompatActivity() {
         })
 
         //use correct colors
-        LiveDatas.updateColorsOfImgButtons(listOf(buttonSeen))
+        LiveDatas.updateColorsOfButtons(listOf(buttonSeen))
         val color = LiveDatas.getColore();
         tabLayout.setBackgroundColor(Color.parseColor(color.colorCode))
         val colore = Colori.getTabColore(color.colorName);
@@ -98,12 +100,21 @@ class DettaglioMedia : AppCompatActivity() {
 
     private fun setButtonProperties(
         deleteBtn: ImageButton,
-        seenBtn: ImageButton,
+        seenBtn: Button,
         mediaID: Int,
     ) {
         deleteBtn.setOnClickListener {
-            LiveDatas.setIdToRemove(mediaID);
-            finish()
+            val builder = AlertDialog.Builder(this@DettaglioMedia)
+            with(builder) {
+                setTitle("Sei sicuro?")
+                setMessage("Sicuro di voler rimuovere questo titolo dalla lista?")
+                setPositiveButton(android.R.string.ok) { _, _ ->
+                    LiveDatas.setIdToRemove(mediaID);
+                    finish()
+                }
+                setNegativeButton(android.R.string.cancel, null)
+                show()
+            }
         }
 
         seenBtn.setOnClickListener {

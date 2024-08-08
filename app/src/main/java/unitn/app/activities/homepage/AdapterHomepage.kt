@@ -34,7 +34,7 @@ class AdapterHomepage(
         var myView = convertView
         if (myView == null) {
             val mInflater = (context as Activity).layoutInflater
-            myView = mInflater.inflate(R.layout.item_grid, parent, false)
+            myView = mInflater.inflate(R.layout.item_grid_media, parent, false)
             itemInGrid = ViewHolderHomepage()
             itemInGrid.poster = myView!!.findViewById(R.id.imageView)!!
             itemInGrid.title = myView.findViewById(R.id.textView)!!
