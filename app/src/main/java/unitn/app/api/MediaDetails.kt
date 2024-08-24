@@ -178,14 +178,29 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                         ) {
                             if (!response.isSuccessful) throw IOException("Unexpected code $response")
                             val res = response.body()!!;
+
+                            Log.d("debugg", res.toString())
                             val durata =
                                 res.number_of_seasons.toString() + " - " + res.number_of_episodes.toString();
-                            val periodoUsicta = if (res.status != "Ended") {
-                                 res.first_air_date.split("-")[0] + " - ?"
-                            }else{
-                                res.first_air_date.split("-")[0] + " - " + res.last_air_date.split("-")[0]
+
+                            val firstDate = res.first_air_date;
+                            val lastDate = res.last_air_date;
+
+                            if(firstDate == null || lastDate == null){
+                                continuation.resume(Pair(durata, ""))
                             }
-                            continuation.resume(Pair(durata, periodoUsicta))
+                            else {
+                                val periodoUsicta = StringBuilder();
+                                periodoUsicta.append(firstDate.split("-")[0])
+                                periodoUsicta.append(" - ")
+
+                                if (res.status == "Ended") {
+                                    periodoUsicta.append(lastDate.split("-")[0])
+                                } else {
+                                    periodoUsicta.append("?")
+                                }
+                                continuation.resume(Pair(durata, periodoUsicta.toString()))
+                            }
                         }
 
                         override fun onFailure(call: Call<ResDetailsTvSeries?>, t: Throwable) {
