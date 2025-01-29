@@ -1,11 +1,16 @@
 package unitn.app.api
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import retrofit2.Call
@@ -23,43 +28,76 @@ import kotlin.math.min
 class MediaDetails(application: Application) : AndroidViewModel(application) {
 
     private var listMedia = emptyList<LocalMedia>().toMutableList()
-    private lateinit var currentMediaBeingQueried: String;
+    private var currentMediaBeingQueried: String = "";
 
     private var mutNoInternet: MutableLiveData<Boolean> = MutableLiveData(false)
     val liveNoInternet: LiveData<Boolean>
         get() = mutNoInternet;
 
 
-    private var stopSearch = false;
-
-    suspend fun getDetails(mediaTitle: String, apiKey: String): Boolean =
+    suspend fun getDetails(mediaTitle: String, apiKey: String, context: Context): Boolean =
         withContext(Dispatchers.IO) {
+
+            //prevents concurrency problems. In case user sends a new request before the previous one is finished
+            while (currentMediaBeingQueried != "") {
+                Thread.sleep(100)
+            }
             currentMediaBeingQueried = mediaTitle;
             listMedia = emptyList<LocalMedia>().toMutableList()
-            val results = getResults(mediaTitle, apiKey);
-            LiveDatas.emptyRicercaMedia()
+
+            LiveDatas.emptyRicercaMedia();
+            val idFilmInUserList = getAllUserMedia();
+            val results = getResults(mediaTitle, apiKey).filter { (resMedia, _) ->
+                !idFilmInUserList.contains(resMedia!!.id)
+            };
 
             if (results.isEmpty()) {
+                currentMediaBeingQueried = "";
                 return@withContext false;
             }
 
-            val idFilmInUserList = getAllUserMedia();
-            for ((resMedia, resIsFilm) in results) {
+            withContext(Dispatchers.Main) {
+                Toast.makeText(
+                    context,
+                    "Trovati " + results.size + " risultati.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
 
-                if (idFilmInUserList.contains(resMedia!!.id)) {
-                    continue;
+            //lavora in parallelo su diversi media ottenuri dalla chiamata API.
+            //Suddivide in totale in numeri più piccoli di lavoro in modo da mostrarli più velocemente all'utente
+            val listJobsMedia = emptyList<Job>().toMutableList();
+            val size = results.size;
+            var incrementSize = 5;
+            var index = 0;
+            val tmpListMedia = emptyList<LocalMedia?>().toMutableList()
+            while (index < size) {
+                tmpListMedia.clear();
+                listJobsMedia.clear();
+                for (i in index..min(index + incrementSize, size - 1)) {
+                    val (resMedia, resIsFilm) = results[i];
+                    tmpListMedia.add(null);
+                    val job = launch {
+                        val media = prepareResults(resMedia!!, resIsFilm!!, apiKey);
+                            tmpListMedia[i - index] = media;
+                    }
+                    listJobsMedia.add(job)
                 }
-                if (stopSearch) {
-                    stopSearch = false;
-                    return@withContext true;
-                }
-                val media = prepareResults(resMedia, resIsFilm!!, apiKey);
-                //prevents concurrency problems. In case user sends a new request before the previous one is finished
-                if (currentMediaBeingQueried == mediaTitle) {
+                listJobsMedia.joinAll();
+                index += incrementSize + 1;
+                incrementSize += 10;
+
+                for (media in tmpListMedia) {
+                    listMedia.add(media!!);
                     LiveDatas.addRicercaMedia(media);
-                    listMedia.add(media)
                 }
             }
+
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, "Finito!!", Toast.LENGTH_SHORT).show()
+            }
+
+            currentMediaBeingQueried = "";
             return@withContext true;
         }
 
@@ -97,7 +135,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
             cast,
             crew,
         )
-        return movie
+        return movie;
     }
 
 
@@ -114,6 +152,7 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
         return runBlocking {
             val (results, totalPages) = getMediaDetails(multiCall)
 
+            //pagina 1 già processata alla prima chiamata. Da quella ottengo il numero di pagine totali.
             for (pag in 2..min(totalPages, 4)) {
                 multiCall = apiCallerMedia.getMovieAndSeries(mediaTitle, false, "it", pag, apiKey)
                 results.addAll(getMediaDetails(multiCall).first)
@@ -186,10 +225,9 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                             val firstDate = res.first_air_date;
                             val lastDate = res.last_air_date;
 
-                            if(firstDate == null || lastDate == null){
+                            if (firstDate == null || lastDate == null) {
                                 continuation.resume(Pair(durata, ""))
-                            }
-                            else {
+                            } else {
                                 val periodoUsicta = StringBuilder();
                                 periodoUsicta.append(firstDate.split("-")[0])
                                 periodoUsicta.append(" - ")
@@ -366,9 +404,6 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
         mutNoInternet.value = true
     }
 
-    fun stopSearch() {
-        stopSearch = true;
-    }
 }
 
 

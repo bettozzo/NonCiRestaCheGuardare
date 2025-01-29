@@ -84,7 +84,8 @@ class Ricerca : AppCompatActivity() {
 
         buttonToSearch.setOnClickListener {
             val title = searchBar.text.toString();
-            callAPI(title, lastTitleQueried)
+            callAPI(title, lastTitleQueried);
+            adapter.notifyDataSetChanged();
             lastTitleQueried = title;
         }
 
@@ -92,7 +93,6 @@ class Ricerca : AppCompatActivity() {
             searchBar.text.clear()
             searchBar.requestFocus()
             searchBar.showKeyboard();
-            mediaDetails.stopSearch();
         }
 
         searchBar.text = SpannableStringBuilder(LiveDatas.mediaRicercato)
@@ -135,7 +135,7 @@ class Ricerca : AppCompatActivity() {
         //prevents concurrency problems
         if (lastQuery != title) {
             CoroutineScope(Dispatchers.IO).launch {
-                val foundSomething = mediaDetails.getDetails(title, apiKey);
+                val foundSomething = mediaDetails.getDetails(title, apiKey, applicationContext);
                 runOnUiThread {
                     if (!foundSomething) {
                         AlertDialog.Builder(this@Ricerca)
@@ -154,10 +154,6 @@ class Ricerca : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        mediaDetails.stopSearch();
-    }
 }
 
 

@@ -268,7 +268,6 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         appCompatActivity: AppCompatActivity,
     ) {
         val columns = Columns.raw(DoveVedereMedia.getStructure())
-        val today = LocalDate.now()
         val doveVedereMedia = supabase.from("DoveVedereMedia").select(columns = columns) {
             filter {
                 eq("mediaID", mediaID)
@@ -276,10 +275,11 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         }.decodeList<DoveVedereMedia>()
         val lastUpdates = doveVedereMedia.map { LocalDate.parse(it.lastUpdate) }
         for (lastUpdate in lastUpdates) {
-            val monthAfterUpdate = lastUpdate.plusMonths(1)
-            if (today.isAfter(monthAfterUpdate)) {
+            val today = LocalDate.now();
+            val expirationDate = lastUpdate.plusDays(1);
+            if (today.isAfter(expirationDate)) {
                 val media = getMedia(mediaID)!!
-                deleteDoveVedereMedia(mediaID)
+                deleteDoveVedereMedia(mediaID);
                 val mediaDetails = ViewModelProvider(appCompatActivity)[MediaDetails::class.java];
                 val platforms = mediaDetails.getMediaPlatform(
                     mediaID,
@@ -287,7 +287,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                     apiKeyTMDB
                 )
                 for (piattaforma in platforms) {
-                    insertPiattaforma(piattaforma.first, mediaID)
+                    insertPiattaforma(piattaforma.first, mediaID);
                 }
             }
         }
