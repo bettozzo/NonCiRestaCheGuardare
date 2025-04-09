@@ -5,15 +5,16 @@ import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.graphics.Color
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.test.R
 import com.google.android.material.tabs.TabLayout
@@ -21,6 +22,7 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
 import unitn.app.activities.LiveDatas
+import unitn.app.activities.feed.Feed
 import unitn.app.activities.profilo.Profilo
 import unitn.app.activities.ricerca.Ricerca
 import unitn.app.remotedb.Colori
@@ -31,21 +33,33 @@ class HomePage : AppCompatActivity() {
 
     private val viewFragAdapter = ViewPagerFragmentAdapter(this);
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint("MissingInflatedId", "SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_homepage)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+        super.onCreate(savedInstanceState);
+        enableEdgeToEdge();
+        setContentView(R.layout.activity_homepage);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            insets;
+        }
+        val extras = intent.extras;
+        if (extras == null) {
+            System.err.println("Bundle is null");
+            return;
         }
 
         val mediaSelected = findViewById<TabLayout>(R.id.pageSelection);
-        val viewPager = findViewById<ViewPager2>(R.id.pager)
+        val viewPager = findViewById<ViewPager2>(R.id.pager);
+        viewPager.reduceDragSensitivity(1);
         viewPager.adapter = viewFragAdapter;
+
+        val feedButton = findViewById<ImageButton>(R.id.feed);
+        feedButton.setOnClickListener {
+            val intent = Intent(this, Feed::class.java);
+            startActivity(intent);
+        }
 
 
         TabLayoutMediator(mediaSelected, viewPager) { tab, position ->
@@ -58,11 +72,7 @@ class HomePage : AppCompatActivity() {
             }
         }.attach()
 
-        val extras = intent.extras;
-        if (extras == null) {
-            System.err.println("Bundle is null")
-            return;
-        }
+
         val firstTimeLoading = extras.getBoolean("firstTimeLoading", false);
         if (firstTimeLoading) {
             val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
@@ -124,8 +134,19 @@ class HomePage : AppCompatActivity() {
         )
         val color = LiveDatas.getColore()
         val tab = findViewById<TabLayout>(R.id.pageSelection);
-        tab.setBackgroundColor(Color.parseColor(color.colorCode))
+        tab.setBackgroundColor(color.colorCode.toColorInt())
         val coloreTab = Colori.getTabColore(color.colorName);
         tab.setSelectedTabIndicatorColor(coloreTab)
+    }
+
+    private fun ViewPager2.reduceDragSensitivity(f: Int = 4) {
+        val recyclerViewField = ViewPager2::class.java.getDeclaredField("mRecyclerView")
+        recyclerViewField.isAccessible = true
+        val recyclerView = recyclerViewField.get(this) as RecyclerView
+
+        val touchSlopField = RecyclerView::class.java.getDeclaredField("mTouchSlop")
+        touchSlopField.isAccessible = true
+        val touchSlop = touchSlopField.get(recyclerView) as Int
+        touchSlopField.set(recyclerView, touchSlop * f)       // "8" was obtained experimentally
     }
 }

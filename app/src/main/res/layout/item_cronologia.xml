@@ -1,36 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/posterAndInfo"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp"
+    tools:ignore="HardcodedText"
     android:orientation="horizontal">
 
 
     <ImageView
         android:id="@+id/poster"
-        android:layout_width="70dp"
-        android:layout_height="100dp"
+        android:layout_width="60dp"
+        android:layout_height="90dp"
         android:contentDescription="Poster Image"
         android:src="@drawable/missing_poster" />
 
 
-    <TextView
-        android:id="@+id/titoloFilm"
-        style="@style/normalText"
-        android:layout_width="160dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="10dp"
-        android:paddingEnd="10dp"
-        android:text="FF.SS. cioè' ... che mi hai portato a fare sopra posillipo se non mi vuoi più bene?"
-        android:textAlignment="textStart" />
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/data"
-        style="@style/normalText"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:breakStrategy="simple"
-        android:text="data"
-        android:textAlignment="center" />
+        <TextView
+            android:id="@+id/titoloFilm"
+            style="@style/normalText"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="textStart"
+            android:layout_marginStart="3dp"
+            android:paddingEnd="5dp"
+            android:text="FF.SS. cioè' ... che mi hai portato a fare sopra"
+            tools:ignore="RtlSymmetry" />
+
+    </LinearLayout>
+    <!--"FF.SS. cioè' ... che mi hai portato a fare sopra posillipo se non mi vuoi più bene?-->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <RatingBar
+        android:id="@+id/rating"
+        style="@style/customRatingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:isIndicator="true"
+        android:numStars="5"
+        android:layout_marginEnd="5dp"
+        android:rating="5" />
+
+    <Button
+        android:visibility="gone"
+        style="@style/normalButton"
+        android:id="@+id/nonRecensito"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginRight="5dp"
+        android:text="Recensisci" />
 </LinearLayout>

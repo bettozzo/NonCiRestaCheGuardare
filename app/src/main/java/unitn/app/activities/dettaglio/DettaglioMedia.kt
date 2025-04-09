@@ -1,8 +1,8 @@
 package unitn.app.activities.dettaglio
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Button
@@ -11,26 +11,23 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.toColorInt
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.example.test.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.coroutines.launch
 import unitn.app.activities.LiveDatas
+import unitn.app.activities.segnaComeVisto.SegnaComeVisto
 import unitn.app.remotedb.Colori
-import unitn.app.remotedb.RemoteDAO
 
 
 class DettaglioMedia : AppCompatActivity() {
 
-    private var currentTab = 1;
-
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint("MissingInflatedId", "SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_dettaglio_media)
@@ -40,7 +37,7 @@ class DettaglioMedia : AppCompatActivity() {
             insets
         }
 
-        //extras from ../homepage/AdapterHomepage.kt
+        //extras from ../homepage/AdapterHomepage.kt e ../feed/Feed.kt
         val extras = intent.extras;
         if (extras == null) {
             System.err.println("Bundle is null")
@@ -52,12 +49,12 @@ class DettaglioMedia : AppCompatActivity() {
 
         //titolo
         val titoloFilm = findViewById<TextView>(R.id.titoloFilm);
-        setTitleProperties(titoloFilm, extras)
+        setTitleProperties(titoloFilm, extras.getString("titoloFilm"))
 
         //buttons
         val buttonDel = findViewById<ImageButton>(R.id.buttonDelete)
         val buttonSeen = findViewById<Button>(R.id.buttonSeen)
-        setButtonProperties(buttonDel, buttonSeen, id)
+        setButtonProperties(buttonDel, buttonSeen, id, extras.getString("titoloFilm"))
 
 
         val isFilm = extras.getBoolean("isFilm");
@@ -87,19 +84,11 @@ class DettaglioMedia : AppCompatActivity() {
                 }
             }
         }.attach()
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                currentTab = tab.position
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
-        })
 
         //use correct colors
         LiveDatas.updateColorsOfButtons(listOf(buttonSeen))
         val color = LiveDatas.getColore();
-        tabLayout.setBackgroundColor(Color.parseColor(color.colorCode))
+        tabLayout.setBackgroundColor(color.colorCode.toColorInt())
         val colore = Colori.getTabColore(color.colorName);
         tabLayout.setSelectedTabIndicatorColor(colore)
     }
@@ -108,6 +97,7 @@ class DettaglioMedia : AppCompatActivity() {
         deleteBtn: ImageButton,
         seenBtn: Button,
         mediaID: Int,
+        titoloFilm: String?,
     ) {
         deleteBtn.setOnClickListener {
             val builder = AlertDialog.Builder(this@DettaglioMedia)
@@ -124,30 +114,21 @@ class DettaglioMedia : AppCompatActivity() {
         }
 
         seenBtn.setOnClickListener {
-            lifecycleScope.launch {
-                val remoteDao = RemoteDAO(
-                    applicationContext,
-                    coroutineContext
-                );
-                remoteDao.insertToCronologia(mediaID)
-                LiveDatas.setIdToRemove(mediaID);
-                finish();
-            }
+            val intent = Intent(this, SegnaComeVisto::class.java)
+            intent.putExtra("isNewRating", true);
+            intent.putExtra("mediaID", mediaID);
+            intent.putExtra("titoloFilm", titoloFilm);
+            startActivity(intent);
+            finish()
         }
     }
 
-    private fun setTitleProperties(titoloFilm: TextView, extras: Bundle) {
-        titoloFilm.text = extras.getString("titoloFilm")
+    private fun setTitleProperties(titoloFilm: TextView, titolo: String?) {
+        titoloFilm.text = titolo;
         titoloFilm.ellipsize = TextUtils.TruncateAt.MARQUEE;
         titoloFilm.marqueeRepeatLimit = -1;
-        titoloFilm.setSingleLine(true);
-        titoloFilm.setSelected(true);
+        titoloFilm.isSingleLine = true;
+        titoloFilm.isSelected = true;
     }
 
 }
-
-
-
-
-
-

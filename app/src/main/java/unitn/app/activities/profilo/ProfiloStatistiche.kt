@@ -60,8 +60,8 @@ class ProfiloStatistiche : AppCompatActivity() {
                 this@ProfiloStatistiche, coroutineContext
             );
             val cronologia = remoteDao.getCronologia()
-            filmVisti = cronologia.count { it.first.is_film }
-            serieViste = cronologia.count { !it.first.is_film }
+            filmVisti = cronologia.count { it.media.is_film }
+            serieViste = cronologia.count { !it.media.is_film }
             filmDaVedere = LiveDatas.liveWatchlist.value?.count { it.isFilm } ?: 0
             serieDaVedere = LiveDatas.liveWatchlist.value?.count { !it.isFilm } ?: 0
 
@@ -97,9 +97,9 @@ class ProfiloStatistiche : AppCompatActivity() {
 
 
         pieChart.isDrawHoleEnabled = true
-        if(LiveDatas.liveIsDarkTheme.value!!) {
+        if (LiveDatas.liveIsDarkTheme.value!!) {
             pieChart.setHoleColor(Color.DKGRAY)
-        }else{
+        } else {
             pieChart.setHoleColor(Color.WHITE)
         }
         pieChart.holeRadius = 50f

@@ -22,7 +22,6 @@ import unitn.app.api.LocalMedia
 import unitn.app.api.MediaDetails
 import unitn.app.localdb.UserDatabase
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import kotlin.coroutines.CoroutineContext
 
 
@@ -105,37 +104,6 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         }
     }
 
-    /*--------------------------*/
-    /*-----Custom functions-----*/
-    /*--------------------------*/
-
-    suspend fun getAllMediaDetails(): List<LocalMedia> {
-        val media = supabase.postgrest.rpc("get_full_details_media") {
-            filter {
-                eq("userid", user.userId)
-            }
-        }.decodeList<AllDetailsMedia>()
-        val results = mutableListOf<LocalMedia>();
-        for (m in media) {
-            val sameIdOnes = media.filter { it.mediaid == m.mediaid }
-            val maybePiattaforme = sameIdOnes.map { Pair(it.nome, it.logo_path) }.filterNotNull()
-            val localMedia = LocalMedia(
-                m.mediaid,
-                m.is_film,
-                m.titolo,
-                maybePiattaforme,
-                m.poster_path,
-                m.is_local,
-                m.sinossi,
-                m.annouscita,
-                m.generi,
-                m.durata,
-                note = m.note
-            )
-            results.add(localMedia);
-        }
-        return results.toSet().toList();
-    }
 
     private fun <T, U> List<Pair<T?, U?>>.filterNotNull() =
         mapNotNull { it.takeIf { it.first != null && it.second != null } as? Pair<T, U> }
@@ -183,6 +151,35 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
     /*--------------------------*/
     /*---------Watchlist--------*/
     /*--------------------------*/
+
+    suspend fun getAllMediaDetails(): List<LocalMedia> {
+        val media = supabase.postgrest.rpc("get_full_details_media") {
+            filter {
+                eq("userid", user.userId)
+            }
+        }.decodeList<AllDetailsMedia>()
+        val results = mutableListOf<LocalMedia>();
+        for (m in media) {
+            val sameIdOnes = media.filter { it.mediaid == m.mediaid }
+            val maybePiattaforme = sameIdOnes.map { Pair(it.nome, it.logo_path) }.filterNotNull()
+            val localMedia = LocalMedia(
+                m.mediaid,
+                m.is_film,
+                m.titolo,
+                maybePiattaforme,
+                m.poster_path,
+                m.is_local,
+                m.sinossi,
+                m.annouscita,
+                m.generi,
+                m.durata,
+                note = m.note
+            )
+            results.add(localMedia);
+        }
+        return results.toSet().toList();
+    }
+
     suspend fun insertToWatchlist(media: LocalMedia, appCompatActivity: AppCompatActivity) {
         if (!isMediaPresent(media.mediaId)) {
             insertMedia(ConverterMedia.toRemote(media))
@@ -199,6 +196,29 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
             LiveDatas.addMedia(media)
         }
 
+    }
+
+    suspend fun getEveryWatchlist(count: Long = 50): List<CronologiaMedia> {
+        val columns = Columns.raw(WatchList.getStructure())
+        val recentlyInsertedInWatchlist = supabase.from("watchlist").select(columns = columns) {
+            order(column = "data_aggiunta", order = Order.DESCENDING)
+            limit(count = count)
+            filter {
+                neq("userid", "test");
+            }
+        }
+            .decodeList<WatchList>()
+
+        val listUsersMedia =
+            recentlyInsertedInWatchlist.map {
+                CronologiaMedia(
+                    it.userid,
+                    it.mediaid,
+                    it.data_aggiunta,
+                    null, null, null
+                );
+            }
+        return listUsersMedia
     }
 
 
@@ -314,13 +334,6 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         return user.coloreTemaPrincipale
     }
 
-    suspend fun getUser(): Users? {
-        return supabase.from("Users").select(columns = Columns.raw(Users.getStructure())) {
-            filter {
-                eq("userId", user.userId)
-            }
-        }.decodeSingleOrNull<Users>()
-    }
 
     suspend fun updateUser(userid: String, context: Context): Boolean {
         if (getUser(userid) != null) {
@@ -371,29 +384,139 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
     /*--------------------------*/
     /*--------Cronologia--------*/
     /*--------------------------*/
-    suspend fun getCronologia(): List<Pair<Media, String>> {
-        return supabase.from("CronologiaMedia")
+    suspend fun getCronologia(): List<CronologiaConRating> {
+        val cronologia = supabase.from("CronologiaMedia")
             .select(columns = Columns.raw(CronologiaMedia.getStructure())) {
                 filter {
                     eq("userid", user.userId)
                 }
                 order(column = "dataVisione", order = Order.DESCENDING)
-            }.decodeList<CronologiaMedia>().map { Pair(it.mediaId, it.dataVisione) }
+            }.decodeList<CronologiaMedia>();
+        val filteredCronologia = cronologia.map {
+            CronologiaConRating(
+                it.mediaId,
+                it.dataVisione,
+                it.rating,
+                it.maxRating,
+                it.recensione
+            )
+        }
+        return filteredCronologia;
     }
 
-    suspend fun insertToCronologia(mediaId: Int) {
-        val today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+    suspend fun getEveryCronologia(count: Long = 50): List<CronologiaMedia> {
+        val cronologia = supabase.from("CronologiaMedia")
+            .select(columns = Columns.raw(CronologiaMedia.getStructure())) {
+                order(column = "dataVisione", order = Order.DESCENDING)
+                limit(count = count)
+                filter {
+                    neq("userid", "test");
+                }
+            }.decodeList<CronologiaMedia>();
+
+        return cronologia
+
+    }
+
+
+    suspend fun getCronologiaOfMedia(mediaId: Int): List<CronologiaConRating> {
+        val cronologia = supabase.from("CronologiaMedia")
+            .select(columns = Columns.raw(CronologiaMedia.getStructure())) {
+                filter {
+                    eq("userid", user.userId)
+                    eq("mediaId", mediaId)
+                }
+                order(column = "dataVisione", order = Order.DESCENDING)
+            }.decodeList<CronologiaMedia>();
+        val filteredCronologia = cronologia.map {
+            CronologiaConRating(
+                it.mediaId,
+                it.dataVisione,
+                it.rating,
+                it.maxRating,
+                it.recensione
+            )
+        }
+        return filteredCronologia;
+    }
+
+    suspend fun getAllRatingsOfMedia(mediaId: Int): List<Pair<Users, CronologiaConRating>> {
+        val cronologia = supabase.from("CronologiaMedia")
+            .select(columns = Columns.raw(CronologiaMedia.getStructure())) {
+                filter {
+                    eq("mediaId", mediaId)
+                }
+                order(column = "dataVisione", order = Order.DESCENDING)
+            }.decodeList<CronologiaMedia>();
+        val ratingsMedia = cronologia.map {
+            Pair(
+                it.userid,
+                CronologiaConRating(
+                    it.mediaId,
+                    it.dataVisione,
+                    it.rating,
+                    it.maxRating,
+                    it.recensione
+                )
+            )
+        }
+        return ratingsMedia;
+    }
+
+    suspend fun insertToCronologia(
+        mediaId: Int,
+        dataVisione: String,
+        rating: Float,
+        maxRating: Float,
+        recensione: String,
+    ) {
         val alreadyPresent = supabase.from("CronologiaMedia")
             .select(columns = Columns.raw(CronologiaMedia.getStructure())) {
                 filter {
                     eq("userid", user.userId)
                     eq("mediaId", mediaId)
-                    eq("dataVisione", today)
+                    eq("dataVisione", dataVisione)
                 }
             }.decodeSingleOrNull<CronologiaMedia>() != null;
         if (!alreadyPresent) {
             supabase.from("CronologiaMedia")
-                .insert(InsertCronologiaMediaParams(user.userId, mediaId))
+                .insert(
+                    InsertCronologiaMediaParams(
+                        user.userId,
+                        mediaId,
+                        dataVisione,
+                        rating,
+                        maxRating,
+                        recensione
+                    )
+                );
+        }
+    }
+
+    suspend fun updateRating(
+        mediaId: Int,
+        vecchiaDataVisione: String,
+        dataVisione: String,
+        rating: Float,
+        maxRating: Float,
+        recensione: String,
+    ) {
+
+        supabase.from("CronologiaMedia").update(
+            {
+                listOf(
+                    set("dataVisione", dataVisione),
+                    set("rating", rating),
+                    set("maxRating", maxRating),
+                    set("recensione", recensione),
+                )
+            }
+        ) {
+            filter {
+                eq("userid", user.userId)
+                eq("mediaId", mediaId)
+                eq("dataVisione", vecchiaDataVisione)
+            }
         }
     }
 
@@ -443,11 +566,4 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
                 }
             }
     }
-
-
 }
-
-
-
-
-

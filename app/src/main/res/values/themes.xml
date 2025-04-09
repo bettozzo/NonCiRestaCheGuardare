@@ -1,6 +1,6 @@
 <resources>
-    <style name="Base.Theme.Test" parent="Theme.Material3.DayNight.NoActionBar">
-    </style>
+
+    <style name="Base.Theme.Test" parent="Theme.Material3.DayNight.NoActionBar"></style>
 
     <style name="HeaderTitolo">
         <item name="android:textColor">@color/titoloText</item>
@@ -69,5 +69,11 @@
         <item name="tabIndicatorHeight">4dp</item>
         <item name="tabInlineLabel">true</item>
         <item name="tabTextColor">@color/normalText</item>
+    </style>
+
+    <style name="customRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/ratingstars</item>
+        <item name="android:minHeight">22dip</item>
+        <item name="android:maxHeight">22dip</item>
     </style>
 </resources>

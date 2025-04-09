@@ -16,6 +16,18 @@
         android:theme="@style/Base.Theme.Test"
         tools:targetApi="31">
         <activity
+            android:name="unitn.app.activities.feed.Feed"
+            android:exported="false" />
+        <activity
+            android:name="unitn.app.activities.ratings.ModificaRecensione"
+            android:exported="false" />
+        <activity
+            android:name="unitn.app.activities.ratings.DettaglioMedia"
+            android:exported="false" />
+        <activity
+            android:name="unitn.app.activities.segnaComeVisto.SegnaComeVisto"
+            android:exported="false" />
+        <activity
             android:name="unitn.app.activities.profilo.ProfiloStatistiche"
             android:exported="false" />
         <activity

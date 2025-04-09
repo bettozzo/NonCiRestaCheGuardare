@@ -1,0 +1,78 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="HardcodedText">
+
+    <TextView
+        android:id="@+id/usernameRecensione"
+        style="@style/Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="User of the Name" />
+
+    <TextView
+        android:id="@+id/dataVisione"
+        style="@style/normalText"
+        android:textColor="@color/GrigioScuro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-8dp"
+        android:text="01/01/1970" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/Header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:text="Valutazione" />
+
+        <RatingBar
+            android:id="@+id/rating"
+            style="@style/customRatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:rating="2.5" />
+
+        <TextView
+            style="@style/normalText"
+            android:id="@+id/nonRecensito"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="Non recensita" />
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/recensione"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="name"
+        android:background="@color/Grigio"
+        android:gravity="top|start"
+        android:hint="Recensione (opzionale)"
+        android:minLines="5"
+        android:layout_marginTop="10dp"
+        android:paddingHorizontal="5dp"
+        android:scrollbars="vertical" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginVertical="10dp"
+        android:background="#DC292929" />
+</LinearLayout>

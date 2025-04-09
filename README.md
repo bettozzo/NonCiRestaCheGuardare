@@ -30,6 +30,7 @@ Per usare quest'app, serve un dispositivo android (Od un emulatore) con `SDK >= 
 Per poter buildare il progetto, serve:
 
 - [Android studio](https://developer.android.com/?hl=it)
+- JDK 17
 
 # Built with
 

@@ -6,7 +6,10 @@ import kotlinx.serialization.Serializable
 data class CronologiaMedia(
     val userid: Users,
     val mediaId: Media,
-    val dataVisione: String
+    val dataVisione: String,
+    val rating: Float?,
+    val maxRating: Float?,
+    val recensione: String?
 ) {
     companion object {
         fun getStructure(): String {
@@ -15,13 +18,28 @@ data class CronologiaMedia(
                     "mediaId(" +
                     Media.getStructure() +
                     "), " +
-                    "dataVisione";
+                    "dataVisione," +
+                    "rating," +
+                    "maxRating," +
+                    "recensione";
         }
     }
 }
+
+data class CronologiaConRating(
+    val media: Media,
+    val dataVisione: String,
+    val rating: Float?,
+    val maxRating: Float?,
+    val recensione: String?,
+)
 
 @Serializable
 data class InsertCronologiaMediaParams(
     val userid: String,
     val mediaId: Int,
+    val dataVisione: String,
+    val rating: Float,
+    val maxRating: Float,
+    val recensione: String
 )

@@ -63,8 +63,9 @@ class FragmentInfo(private val extras: Bundle) : Fragment() {
             } else {
                 val numeroStagioni = durata.split(" - ")[0]
                 val numeroEpisodi = durata.split(" - ")[1]
-                val txt = StringBuilder("Stagioni: ").append(numeroStagioni).append("\nTot. Episodi: ")
-                    .append(numeroEpisodi).append("\n")
+                val txt =
+                    StringBuilder("Stagioni: ").append(numeroStagioni).append("\nTot. Episodi: ")
+                        .append(numeroEpisodi).append("\n")
                 durataText.text = txt.toString()
             }
         } else {

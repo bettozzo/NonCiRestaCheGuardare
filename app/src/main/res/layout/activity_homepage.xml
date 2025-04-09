@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    tools:ignore="HardcodedText"
     android:layout_height="match_parent"
+    tools:ignore="HardcodedText"
     tools:context="unitn.app.activities.homepage.HomePage">
 
     <com.google.android.material.tabs.TabLayout
@@ -15,8 +15,19 @@
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/pageSelection" />
+
+
+    <ImageButton
+        android:id="@+id/goToProfile"
+        style="@style/normalImageButton"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="29dp"
+        android:layout_marginBottom="15dp"
+        android:contentDescription="Vai a pagina del profilo"
+        android:src="@drawable/settings" />
 
     <ImageButton
         android:id="@+id/goToSearchMediaButton"
@@ -29,14 +40,13 @@
         android:src="@drawable/lente_dingrandimento" />
 
     <ImageButton
-        android:id="@+id/goToProfile"
+        android:id="@+id/feed"
         style="@style/normalImageButton"
-        android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="29dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="15dp"
-        android:contentDescription="Vai a pagina del profilo"
-        android:src="@drawable/settings" />
+        android:contentDescription="Vai al feed"
+        android:src="@drawable/feed_icon" />
 
 
 </RelativeLayout>

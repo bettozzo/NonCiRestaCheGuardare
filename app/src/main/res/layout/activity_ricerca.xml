@@ -21,7 +21,7 @@
             android:lines="1"
             android:inputType="text"
             android:autofillHints="name"
-            android:hint="Titolo"/>
+            android:hint="Titolo" />
 
         <ImageButton
             android:id="@+id/buttonDeleteQuery"
