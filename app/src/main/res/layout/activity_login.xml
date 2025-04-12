@@ -59,16 +59,28 @@
             android:text="Crea Account" />
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/needUpdate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:gravity="center"
+    <LinearLayout
         android:visibility="gone"
-        android:text="L'App deve essere aggiornata alla versione: X"
-        android:textSize="50sp"
-        android:textStyle="bold" />
+        android:id="@+id/updateInfo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="L'app deve essere aggiornata alla versione:"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/versionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="X.Y.Z"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 </RelativeLayout>

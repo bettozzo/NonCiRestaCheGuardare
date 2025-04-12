@@ -20,33 +20,41 @@
 
 
     <ImageButton
-        android:id="@+id/goToProfile"
-        style="@style/normalImageButton"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="29dp"
-        android:layout_marginBottom="15dp"
-        android:contentDescription="Vai a pagina del profilo"
-        android:src="@drawable/settings" />
-
-    <ImageButton
         android:id="@+id/goToSearchMediaButton"
         style="@style/normalImageButton"
+        android:layout_above="@+id/quickMenu"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="29dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="13dp"
         android:contentDescription="Aggiungi un nuovo media"
         android:src="@drawable/lente_dingrandimento" />
 
-    <ImageButton
-        android:id="@+id/feed"
-        style="@style/normalImageButton"
+    <LinearLayout
+        android:id="@+id/quickMenu"
+        android:layout_height="40dp"
+        android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="15dp"
-        android:contentDescription="Vai al feed"
-        android:src="@drawable/feed_icon" />
+        android:background="@color/Verde"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+        android:divider="@drawable/divider"
+        android:dividerPadding="5dp">
+
+        <TextView
+            android:id="@+id/opzioni"
+            style="@style/normalText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Profilo" />
 
 
+        <TextView
+            android:id="@+id/feed"
+            style="@style/normalText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Attività recenti" />
+    </LinearLayout>
 </RelativeLayout>

@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.widget.ImageButton
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -55,7 +57,7 @@ class HomePage : AppCompatActivity() {
         viewPager.reduceDragSensitivity(1);
         viewPager.adapter = viewFragAdapter;
 
-        val feedButton = findViewById<ImageButton>(R.id.feed);
+        val feedButton = findViewById<TextView>(R.id.feed);
         feedButton.setOnClickListener {
             val intent = Intent(this, Feed::class.java);
             startActivity(intent);
@@ -89,8 +91,13 @@ class HomePage : AppCompatActivity() {
         updateColor();
         val viewPager = findViewById<ViewPager2>(R.id.pager)
         val goToSearchButton = findViewById<ImageButton>(R.id.goToSearchMediaButton)
-        val goToProfileButton = findViewById<ImageButton>(R.id.goToProfile)
+        val goToProfileButton = findViewById<TextView>(R.id.opzioni)
         val mediaSelected = findViewById<TabLayout>(R.id.pageSelection);
+        val feedButton = findViewById<TextView>(R.id.feed);
+        feedButton.setOnClickListener {
+            val intent = Intent(this, Feed::class.java);
+            startActivity(intent);
+        }
 
 
         mediaSelected.addOnTabSelectedListener(object : OnTabSelectedListener {
@@ -129,14 +136,17 @@ class HomePage : AppCompatActivity() {
             ).getMainColor()
             LiveDatas.setColore(newColor.colorName)
         }
-        LiveDatas.updateColorsOfImgButtons(
-            listOf(findViewById(R.id.goToProfile), findViewById(R.id.goToSearchMediaButton))
-        )
+        LiveDatas.updateColorsOfImgButtons(listOf(findViewById(R.id.goToSearchMediaButton)))
+
         val color = LiveDatas.getColore()
         val tab = findViewById<TabLayout>(R.id.pageSelection);
         tab.setBackgroundColor(color.colorCode.toColorInt())
         val coloreTab = Colori.getTabColore(color.colorName);
         tab.setSelectedTabIndicatorColor(coloreTab)
+
+
+        val menu = findViewById<LinearLayout>(R.id.quickMenu);
+        menu.setBackgroundColor(color.colorCode.toColorInt());
     }
 
     private fun ViewPager2.reduceDragSensitivity(f: Int = 4) {

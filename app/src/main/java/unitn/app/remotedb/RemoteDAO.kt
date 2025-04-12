@@ -21,7 +21,10 @@ import unitn.app.activities.homepage.AdapterHomepage
 import unitn.app.api.LocalMedia
 import unitn.app.api.MediaDetails
 import unitn.app.localdb.UserDatabase
+import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.util.Date
+import java.util.Locale
 import kotlin.coroutines.CoroutineContext
 
 
@@ -99,8 +102,8 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
             return apiKeys.value;
         }
 
-        suspend fun getRightVersionApp(): Int {
-            return supabase.from("versionInfo").select().decodeSingle<VersionInfo>().version;
+        suspend fun getRightVersionApp(): VersionInfo {
+            return supabase.from("versionInfo").select().decodeSingle<VersionInfo>();
         }
     }
 
@@ -192,17 +195,24 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         maybeReloadDoveVedereMedia(media.mediaId, appCompatActivity)
 
         if (!isInWatchList(media.mediaId)) {
-            supabase.from("watchlist").insert(InsertWatchListParams(user.userId, media.mediaId))
+
+            val sdfDate = SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss",
+                Locale.getDefault()
+            )
+            val currentDate = sdfDate.format(Date())
+            supabase.from("watchlist")
+                .insert(InsertWatchListParams(user.userId, media.mediaId, currentDate))
             LiveDatas.addMedia(media)
         }
 
     }
 
-    suspend fun getEveryWatchlist(count: Long = 50): List<CronologiaMedia> {
+    suspend fun getEveryWatchlist(count: Int = 50): List<CronologiaMedia> {
         val columns = Columns.raw(WatchList.getStructure())
         val recentlyInsertedInWatchlist = supabase.from("watchlist").select(columns = columns) {
             order(column = "data_aggiunta", order = Order.DESCENDING)
-            limit(count = count)
+            limit(count = count.toLong())
             filter {
                 neq("userid", "test");
             }
@@ -384,9 +394,12 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
     /*--------------------------*/
     /*--------Cronologia--------*/
     /*--------------------------*/
-    suspend fun getCronologia(): List<CronologiaConRating> {
+    suspend fun getCronologia(count: Int = -1): List<CronologiaConRating> {
         val cronologia = supabase.from("CronologiaMedia")
             .select(columns = Columns.raw(CronologiaMedia.getStructure())) {
+                if (count != -1) {
+                    limit(count = count.toLong())
+                }
                 filter {
                     eq("userid", user.userId)
                 }
@@ -404,11 +417,11 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
         return filteredCronologia;
     }
 
-    suspend fun getEveryCronologia(count: Long = 50): List<CronologiaMedia> {
+    suspend fun getEveryCronologia(count: Int = 50): List<CronologiaMedia> {
         val cronologia = supabase.from("CronologiaMedia")
             .select(columns = Columns.raw(CronologiaMedia.getStructure())) {
                 order(column = "dataVisione", order = Order.DESCENDING)
-                limit(count = count)
+                limit(count = count.toLong())
                 filter {
                     neq("userid", "test");
                 }
@@ -445,6 +458,7 @@ class RemoteDAO(mContext: Context, override val coroutineContext: CoroutineConte
             .select(columns = Columns.raw(CronologiaMedia.getStructure())) {
                 filter {
                     eq("mediaId", mediaId)
+                    neq("userid", "test")
                 }
                 order(column = "dataVisione", order = Order.DESCENDING)
             }.decodeList<CronologiaMedia>();

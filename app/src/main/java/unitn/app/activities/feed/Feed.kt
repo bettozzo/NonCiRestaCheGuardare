@@ -51,15 +51,21 @@ class Feed : AppCompatActivity() {
 
         val feed = mutableListOf<Pair<String, CronologiaMedia>>();
         runBlocking {
+            val quantity = 40;
             val remoteDao = RemoteDAO(this@Feed, coroutineContext);
-            val watchList = remoteDao.getEveryWatchlist(50).map { Pair("watchlist", it) };
-            val cronologia = remoteDao.getEveryCronologia(50).map { Pair("cronologia", it) };
+            val watchList = remoteDao.getEveryWatchlist(quantity).map { Pair("watchlist", it) };
+            val cronologia = remoteDao.getEveryCronologia(quantity).map { Pair("cronologia", it) };
             val sortedFeed = (watchList + cronologia)
                 .sortedByDescending { it.second.dataVisione }
-                .take(50);
+                .take(quantity);
             feed.addAll(sortedFeed);
         }
+        Thread {
+            populateFeed(feed);
+        }.start();
+    }
 
+    private fun populateFeed(feed: List<Pair<String, CronologiaMedia>>) {
         val feedView = findViewById<LinearLayout>(R.id.main);
         val inflater = LayoutInflater.from(this@Feed);
         var lastTimePeriodSeparator = "";
@@ -69,7 +75,9 @@ class Feed : AppCompatActivity() {
                 val separatoreView =
                     inflater.inflate(R.layout.item_soft_separatore_data, feedView, false);
                 separatoreView.findViewById<TextView>(R.id.data).text = lastTimePeriodSeparator;
-                feedView.addView(separatoreView);
+                runOnUiThread {
+                    feedView.addView(separatoreView);
+                }
             }
             val viewItem: View;
             if (origine == "watchlist") {
@@ -108,10 +116,14 @@ class Feed : AppCompatActivity() {
                     val intent =
                         Intent(this, DettaglioMedia::class.java)
                     intent.putExtra("mediaId", mediaConInfo.mediaId.mediaID)
+                    intent.putExtra("titoloMedia", mediaConInfo.mediaId.titolo)
+                    intent.putExtra("tab", 1)
                     startActivity(intent)
                 }
             }
-            feedView.addView(viewItem);
+            runOnUiThread {
+                feedView.addView(viewItem);
+            }
         }
     }
 
@@ -124,7 +136,6 @@ class Feed : AppCompatActivity() {
 
         val usernameView = viewItem.findViewById<TextView>(R.id.info);
         val posterView = viewItem.findViewById<ImageView>(R.id.poster);
-//            val actionImage = viewItem.findViewById<ImageView>(R.id.actionImage);
 
         val infoBuilder = SpannableStringBuilder();
         infoBuilder.bold { append(userId) }
@@ -132,8 +143,10 @@ class Feed : AppCompatActivity() {
             .append(titolo);
         usernameView.text = infoBuilder;
 
-        Picasso.get().load(posterPath).placeholder(R.drawable.missing_poster)
-            .into(posterView)
+        runOnUiThread {
+            Picasso.get().load(posterPath).placeholder(R.drawable.missing_poster)
+                .into(posterView);
+        }
 
 
         viewItem.setBackgroundColor(ContextCompat.getColor(this, R.color.Grigio));
@@ -152,7 +165,6 @@ class Feed : AppCompatActivity() {
         val usernameView = viewItem.findViewById<TextView>(R.id.info);
         val posterView = viewItem.findViewById<ImageView>(R.id.poster);
         val ratingBar = viewItem.findViewById<RatingBar>(R.id.rating);
-//            val actionImage = viewItem.findViewById<ImageView>(R.id.actionImage);
 
         val infoBuilder = SpannableStringBuilder();
         infoBuilder.bold { append(userId) }
@@ -160,16 +172,11 @@ class Feed : AppCompatActivity() {
             .append(titolo);
         usernameView.text = infoBuilder;
 
-        Picasso.get().load(posterPath).placeholder(R.drawable.missing_poster)
-            .into(posterView)
+        runOnUiThread {
+            Picasso.get().load(posterPath).placeholder(R.drawable.missing_poster)
+                .into(posterView);
+        }
 
-//            Picasso.get()
-//                .load(if (origine == "watchlist") R.drawable.cross else R.drawable.checkmark)
-//                .placeholder(R.drawable.settings)
-//                .into(actionImage)
-//            if (origine == "watchlist") {
-//                actionImage.rotation = 45F
-//            }
 
         viewItem.setBackgroundColor(ContextCompat.getColor(this, R.color.Verde));
         viewItem.background.alpha = (0.4 * 255).toInt();

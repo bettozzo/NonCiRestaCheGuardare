@@ -1,7 +1,6 @@
 package unitn.app.activities.segnaComeVisto
 
 import android.app.DatePickerDialog
-import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.text.TextUtils
@@ -16,12 +15,12 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.test.R
 import kotlinx.coroutines.runBlocking
 import unitn.app.activities.LiveDatas
-import unitn.app.activities.homepage.HomePage
 import unitn.app.remotedb.RemoteDAO
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -41,10 +40,11 @@ class SegnaComeVisto : AppCompatActivity() {
             System.err.println("Bundle is null");
             return;
         }
-        //extras from ../dettaglio
+        //extras from ../dettaglio o ../ratings
+        val isNewRating = extras.getBoolean("isNewRating");
         val mediaID = extras.getInt("mediaID");
         val titoloFilm = extras.getString("titoloFilm");
-        val dataVisione = extras.getString("dataVisione");
+        var dataVisione = extras.getString("dataVisione");
         val rating = extras.getFloat("rating");
         val maxRating = extras.getFloat("maxRating");
         val recensione = extras.getString("recensione");
@@ -55,17 +55,32 @@ class SegnaComeVisto : AppCompatActivity() {
         val recensioneView = findViewById<EditText>(R.id.recensione);
         val buttonConfirm = findViewById<Button>(R.id.buttonSeen);
 
+
         //titolo
         setTitleProperties(titoloFilmView, titoloFilm);
 
         //data
         if (dataVisione == null) {
-            dataVisioneView.text = today().replace("-", "/");
+            dataVisioneView.text = formatToShowDate(today());
+            dataVisione = dataVisioneView.text.toString();
         } else {
-            dataVisioneView.text = dataVisione.split("-").reversed().joinToString("/");
+            dataVisioneView.text = formatToShowDate(dataVisione);
         }
-        val dataVisioneInitialValue =
-            dataVisioneView.text.toString().split("/").reversed().joinToString("-");
+        val splittedData = dataVisione.split(" ")
+        val date: String;
+        val time: String?;
+        if (splittedData.size == 1) {
+            date = splittedData[0]
+            time = null;
+        } else if (splittedData.size == 2) {
+            date = splittedData[0];
+            time = splittedData[1];
+        } else {
+            date = "Error";
+            time = "Error"
+        }
+
+        val dataVisioneInitialValue = formatToSaveDate(date, time);
 
         dataVisioneView.setOnClickListener { showDatePicker(dataVisioneView) };
 
@@ -81,8 +96,8 @@ class SegnaComeVisto : AppCompatActivity() {
 
         //button to confirm
         LiveDatas.updateColorsOfButtons(listOf(buttonConfirm))
-        buttonConfirm.setOnClickListener {
-            if (extras.getBoolean("isNewRating")) {
+        if (isNewRating) {
+            buttonConfirm.setOnClickListener {
                 segnaComeVisto(
                     mediaID,
                     dataVisioneView.text.toString(),
@@ -90,13 +105,11 @@ class SegnaComeVisto : AppCompatActivity() {
                     ratingBar.numStars.toFloat(),
                     recensioneView.text.toString()
                 );
-
-                finishAffinity();
-                val intent = Intent(this, HomePage::class.java);
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK;
-                startActivity(intent);
                 finish();
-            } else {
+            }
+        } else {
+            buttonConfirm.text = "Conferma le modifiche";
+            buttonConfirm.setOnClickListener {
                 updateRating(
                     mediaID,
                     dataVisioneInitialValue,
@@ -110,6 +123,7 @@ class SegnaComeVisto : AppCompatActivity() {
         }
     }
 
+
     private fun segnaComeVisto(
         mediaID: Int,
         dataVisione: String,
@@ -117,14 +131,16 @@ class SegnaComeVisto : AppCompatActivity() {
         maxRating: Float,
         recensione: String,
     ) {
+
         runBlocking {
             val remoteDao = RemoteDAO(
                 applicationContext,
                 coroutineContext
             );
+            val timeToSave = formatToSaveDate(dataVisione, null);
             remoteDao.insertToCronologia(
                 mediaID,
-                dataVisione.replace("/", "-").split("-").reversed().joinToString("-"),
+                timeToSave,
                 rating,
                 maxRating,
                 recensione
@@ -146,10 +162,13 @@ class SegnaComeVisto : AppCompatActivity() {
                 applicationContext,
                 coroutineContext
             );
+            val date = dataVisione.split(" ")[0];
+            val time = vecchiaDataVisione.split(" ")[1];
+            val timeToSave = formatToSaveDate(date, time);
             remoteDao.updateRating(
                 mediaID,
                 vecchiaDataVisione,
-                dataVisione.replace("/", "-").split("-").reversed().joinToString("-"),
+                timeToSave,
                 rating,
                 maxRating,
                 recensione
@@ -186,5 +205,22 @@ class SegnaComeVisto : AppCompatActivity() {
         titoloFilm.marqueeRepeatLimit = -1;
         titoloFilm.isSingleLine = true;
         titoloFilm.isSelected = true;
+    }
+
+    private fun formatToShowDate(dataDaFromattare: String): String {
+        val data = dataDaFromattare.split(" ")[0];
+        return data.split("-").reversed().joinToString("/")
+    }
+
+    private fun formatToSaveDate(dataDaFormattare: String, tempoDaFormattare: String?): String {
+        val time: String;
+        if (tempoDaFormattare == null) {
+            val sdfDate = SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+            time = sdfDate.format(Date());
+        } else {
+            time = tempoDaFormattare;
+        }
+        val date = dataDaFormattare.replace("/", "-").split("-").reversed().joinToString("-");
+        return "$date $time";
     }
 }

@@ -36,14 +36,14 @@ class DettaglioMedia : AppCompatActivity() {
             insets
         }
 
-        //extras from ../profilo/ProfiloCronologia.kt
+        //extras from ../profilo/ProfiloCronologia.kt  e ../feed/Feed.kt
         val extras = intent.extras;
         if (extras == null) {
             System.err.println("Bundle is null")
             return;
         }
 
-        val titolo = findViewById<TextView>(R.id.titoloFilm);
+        val titoloView = findViewById<TextView>(R.id.titoloFilm);
         val tabLayout = findViewById<TabLayout>(R.id.pageSelection);
         val viewPager = findViewById<ViewPager2>(R.id.pager);
 
@@ -58,10 +58,11 @@ class DettaglioMedia : AppCompatActivity() {
             );
         }
 
-        titolo.text = cronologia[0].media.titolo;
+        titoloView.text = extras.getString("titoloMedia");
         val viewFragAdapter = ViewPagerFragmentAdapter(this, cronologia, ratingsMedia);
         viewPager.adapter = viewFragAdapter;
         viewPager.reduceDragSensitivity(1);
+        viewPager.currentItem = intent.getIntExtra("tab", 0);
 
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->

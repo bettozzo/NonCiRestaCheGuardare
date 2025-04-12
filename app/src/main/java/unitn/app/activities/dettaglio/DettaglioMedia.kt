@@ -37,7 +37,7 @@ class DettaglioMedia : AppCompatActivity() {
             insets
         }
 
-        //extras from ../homepage/AdapterHomepage.kt e ../feed/Feed.kt
+        //extras from ../homepage/AdapterHomepage.kt
         val extras = intent.extras;
         if (extras == null) {
             System.err.println("Bundle is null")

@@ -52,14 +52,14 @@ class FragmentRecensioneUser(private val cronologia: List<CronologiaConRating>) 
             }
             recensioneView.text = mediaVisto.recensione;
 
-            dataVisioneView.text = mediaVisto.dataVisione.split("-").reversed().joinToString("/");
+            dataVisioneView.text = formatToShowDate(mediaVisto.dataVisione);
 
             editButtonView.setOnClickListener {
                 val intent = Intent(context, SegnaComeVisto::class.java)
                 intent.putExtra("isNewRating", false);
                 intent.putExtra("mediaID", mediaVisto.media.mediaID);
                 intent.putExtra("titoloFilm", mediaVisto.media.titolo);
-                intent.putExtra("dataVisione", mediaVisto.dataVisione);
+                intent.putExtra("dataVisione", formatToShowDate(mediaVisto.dataVisione));
                 intent.putExtra("rating", mediaVisto.rating);
                 intent.putExtra("maxRating", mediaVisto.maxRating);
                 intent.putExtra("recensione", mediaVisto.recensione);
@@ -75,4 +75,11 @@ class FragmentRecensioneUser(private val cronologia: List<CronologiaConRating>) 
         super.onResume()
         root?.requestLayout()
     }
+
+
+    private fun formatToShowDate(dataDaFromattare: String): String {
+        val data = dataDaFromattare.split("T")[0];
+        return data.split("-").reversed().joinToString("/")
+    }
+
 }

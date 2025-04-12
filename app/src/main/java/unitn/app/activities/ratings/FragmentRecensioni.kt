@@ -49,9 +49,13 @@ class FragmentRecensioni(private val ratingsMedia: List<Pair<Users, CronologiaCo
                 nonRecensitoView.visibility = View.VISIBLE;
                 ratingBar.visibility = View.GONE;
             }
-            recensioneView.text = mediaVisto.recensione;
+            if (mediaVisto.recensione != null) {
+                recensioneView.text = mediaVisto.recensione;
+            } else {
+                recensioneView.hint = "Nessuna recensione :(";
+            }
 
-            dataVisioneView.text = mediaVisto.dataVisione.split("-").reversed().joinToString("/");
+            dataVisioneView.text = formatToShowDate(mediaVisto.dataVisione);
             lista.addView(viewItem);
         }
     }
@@ -60,4 +64,10 @@ class FragmentRecensioni(private val ratingsMedia: List<Pair<Users, CronologiaCo
         super.onResume()
         root?.requestLayout()
     }
+
+    private fun formatToShowDate(dataDaFromattare: String): String {
+        val data = dataDaFromattare.split("T")[0];
+        return data.split("-").reversed().joinToString("/")
+    }
+
 }

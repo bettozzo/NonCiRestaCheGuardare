@@ -79,9 +79,9 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                     tmpListMedia.add(null);
                     val job = launch {
                         val media = prepareResults(resMedia!!, resIsFilm!!, apiKey);
-                            tmpListMedia[i - index] = media;
+                        tmpListMedia[i - index] = media;
                     }
-                    listJobsMedia.add(job)
+                    listJobsMedia.add(job);
                 }
                 listJobsMedia.joinAll();
                 index += incrementSize + 1;
@@ -91,10 +91,6 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                     listMedia.add(media!!);
                     LiveDatas.addRicercaMedia(media);
                 }
-            }
-
-            withContext(Dispatchers.Main) {
-                Toast.makeText(context, "Finito!!", Toast.LENGTH_SHORT).show()
             }
 
             currentMediaBeingQueried = "";
@@ -328,11 +324,12 @@ class MediaDetails(application: Application) : AndroidViewModel(application) {
                 ) {
                     if (!response.isSuccessful) throw IOException("Unexpected code $response")
                     val body = response.body()!!
-                    continuation.resume(Pair(
-                        body.results.filter { it.media_type != "person" && it.media_type != "collection" }
-                            .map { Pair(it, it.media_type == "movie") }.toMutableList(),
-                        body.total_pages
-                    )
+                    continuation.resume(
+                        Pair(
+                            body.results.filter { it.media_type != "person" && it.media_type != "collection" }
+                                .map { Pair(it, it.media_type == "movie") }.toMutableList(),
+                            body.total_pages
+                        )
                     )
                 }
 
@@ -416,4 +413,3 @@ private fun getPosterPath(posterPath: String?, backdropPath: String?): String? {
     }
     return null
 }
-

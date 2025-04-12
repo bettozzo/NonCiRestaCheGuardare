@@ -29,4 +29,5 @@ data class WatchList(
 class InsertWatchListParams(
     val userid: String,
     val mediaid: Int,
+    val data_aggiunta: String,
 )

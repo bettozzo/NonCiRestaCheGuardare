@@ -14,13 +14,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
 import com.example.test.R
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import unitn.app.activities.LiveDatas
 import unitn.app.activities.ratings.DettaglioMedia
+import unitn.app.remotedb.CronologiaConRating
+import unitn.app.remotedb.Media
 import unitn.app.remotedb.RemoteDAO
+
 
 class ProfiloCronologia : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,56 +36,75 @@ class ProfiloCronologia : AppCompatActivity() {
             insets
         }
 
-        populateCronologia();
-
+        val cronologia: List<CronologiaConRating>;
+        runBlocking {
+            cronologia = RemoteDAO(this@ProfiloCronologia, coroutineContext).getCronologia()
+        }
+        Thread {
+            populateCronologia(cronologia);
+        }.start();
     }
 
-    private fun populateCronologia() {
+    private fun populateCronologia(cronologia: List<CronologiaConRating>) {
         val lista = findViewById<LinearLayout>(R.id.cronologiaLista)
         val inflater = LayoutInflater.from(this@ProfiloCronologia)
-        lifecycleScope.launch {
-            val cronologia = RemoteDAO(this@ProfiloCronologia, coroutineContext).getCronologia()
-
-            var lastDateSeen = "";
-
-            for ((media, date, rating, maxRating, recensione) in cronologia) {
-                //linea separazione per mese)
-                if (getMonthYear(date) != lastDateSeen) {
-                    lastDateSeen = getMonthYear(date);
-                    val separator =
-                        inflater.inflate(R.layout.item_separatore_data, lista, false);
-                    separator.findViewById<TextView>(R.id.data).text = lastDateSeen.toLiteralDate();
+        var lastDateSeen = "";
+        for ((media, date, rating, maxRating, recensione) in cronologia) {
+            //linea separazione per mese)
+            if (getMonthYear(date) != lastDateSeen) {
+                lastDateSeen = getMonthYear(date);
+                val separator =
+                    inflater.inflate(R.layout.item_separatore_data, lista, false);
+                separator.findViewById<TextView>(R.id.data).text = lastDateSeen.toLiteralDate();
+                runOnUiThread {
                     lista.addView(separator);
                 }
-
-                //entry della cronologia
-                val viewItem = inflater.inflate(R.layout.item_cronologia, lista, false);
-                val poster = viewItem.findViewById<ImageView>(R.id.poster);
-                val titoloView = viewItem.findViewById<TextView>(R.id.titoloFilm)
-                val ratingBar = viewItem.findViewById<RatingBar>(R.id.rating);
-
-                Picasso.get().load(media.poster_path).placeholder(R.drawable.missing_poster)
-                    .into(poster);
-                titoloView.text = media.titolo;
-
-                if (maxRating != null && rating != null) {
-                    ratingBar.rating = rating.toFloat();
-                    ratingBar.numStars = maxRating.toInt();
-                } else {
-                    val nonRecensitoView = viewItem.findViewById<Button>(R.id.nonRecensito);
-                    nonRecensitoView.visibility = View.VISIBLE;
-                    ratingBar.visibility = View.GONE;
-                    LiveDatas.updateColorsOfButtons(listOf(nonRecensitoView))
-                }
-
-                lista.addView(viewItem)
-                viewItem.setOnClickListener {
-                    val intent = Intent(this@ProfiloCronologia, DettaglioMedia::class.java)
-                    intent.putExtra("mediaId", media.mediaID);
-                    startActivity(intent)
-                }
+            }
+            val view = createView(media, rating, maxRating);
+            runOnUiThread {
+                lista.addView(view);
             }
         }
+    }
+
+    private fun createView(
+        media: Media,
+        rating: Float?,
+        maxRating: Float?,
+    ): View {
+        val lista = findViewById<LinearLayout>(R.id.cronologiaLista)
+        val inflater = LayoutInflater.from(this@ProfiloCronologia)
+
+
+        //entry della cronologia
+        val viewItem = inflater.inflate(R.layout.item_cronologia, lista, false);
+        val poster = viewItem.findViewById<ImageView>(R.id.poster);
+        val titoloView = viewItem.findViewById<TextView>(R.id.titoloFilm)
+        val ratingBar = viewItem.findViewById<RatingBar>(R.id.rating);
+
+        runOnUiThread {
+            Picasso.get().load(media.poster_path).placeholder(R.drawable.missing_poster)
+                .into(poster);
+        }
+        titoloView.text = media.titolo;
+
+        if (maxRating != null && rating != null) {
+            ratingBar.rating = rating.toFloat();
+            ratingBar.numStars = maxRating.toInt();
+        } else {
+            val nonRecensitoView = viewItem.findViewById<Button>(R.id.nonRecensito);
+            nonRecensitoView.visibility = View.VISIBLE;
+            ratingBar.visibility = View.GONE;
+            LiveDatas.updateColorsOfButtons(listOf(nonRecensitoView))
+        }
+
+        viewItem.setOnClickListener {
+            val intent = Intent(this@ProfiloCronologia, DettaglioMedia::class.java)
+            intent.putExtra("mediaId", media.mediaID);
+            intent.putExtra("titoloMedia", media.titolo);
+            startActivity(intent)
+        }
+        return viewItem;
     }
 
     private fun getMonthYear(dateYMD: String): String {

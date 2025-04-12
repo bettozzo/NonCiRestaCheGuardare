@@ -65,7 +65,6 @@
         android:background="@color/Grigio"
         android:gravity="top|start"
         android:hint="Recensione (opzionale)"
-        android:minLines="5"
         android:layout_marginTop="10dp"
         android:paddingHorizontal="5dp"
         android:scrollbars="vertical" />
